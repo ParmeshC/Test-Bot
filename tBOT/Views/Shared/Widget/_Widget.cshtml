@@ -1,0 +1,20 @@
+﻿@model  tBOT.Models.IWidget
+
+<div class="widget">
+    <div class="@Model.ClassName">
+
+        <div class="header">
+            @Model.HeaderText
+        </div>
+        <div class="body">
+
+            @Html.Partial(string.Concat(new[] { "Widget",
+              "/", "_SubWidget" }), @Model.SubWidget)
+
+        </div>
+        <div class="footer">
+            @Model.FooterText
+        </div>
+    </div>
+</div>
+

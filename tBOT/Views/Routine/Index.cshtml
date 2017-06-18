@@ -1,0 +1,81 @@
+﻿@*<div ng-controller="TabsParentController">
+        <tabset>
+            <tab ng-repeat="workspace in workspaces"
+                 heading="{{workspace.name}}"
+                 active=workspace.active>
+                <div ng-controller="TabsChildController"
+                     ng-init="workspace=workspace">
+                    <div>
+                        {{ workspace.name}} Apis
+                    </div>
+                </div>
+            </tab>
+        </tabset>
+    </div>*@
+
+<script src="https://cdn.rawgit.com/SheetJS/js-xlsx/v0.8.0/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.rawgit.com/SheetJS/js-xlsx/v0.8.0/dist/ods.js"></script>
+<script src="http://cdn.rawgit.com/angular-ui/ui-grid.info/gh-pages/release/3.0.0-rc.22/ui-grid.min.js"></script>
+<link rel="stylesheet" href="http://cdn.rawgit.com/angular-ui/ui-grid.info/gh-pages/release/3.0.0-rc.22/ui-grid.min.css" />
+
+
+<div>
+    <tabset>
+        <tab heading="Individual">
+
+        </tab>
+
+        <tab heading="Group">
+
+        </tab>
+
+        <tab heading="Import">
+            <div ng-controller="TabsParentController as vm">
+                <button type="button" class="btn btn-success" ng-click="vm.reset()">Reset Grid</button>
+                <br />
+                <input type="file" accept=".xls,.xlsx,.ods,.csv" fileread="" opts="vm.gridOptions" multiple="false" />
+                    
+                <table border="1" ng-show="vm.gridOptions.data.length" class="table">
+                    <tr>
+                        <td ng-repeat="hdr in vm.gridOptions.columnDefs">
+                            @*<select class="form-control" multiselect="multiselect"></select>*@
+                            <select title="App" class="form-control" multiselect="multiselect" data-ng-options="o.header for o in hdrMapping" ng-model="hdrMapped" ng-change="update()"></select>
+                            
+    </td>
+                    </tr>
+                    <tr>
+                        <th ng-repeat="hdr in vm.gridOptions.columnDefs">
+                            {{hdr.field}}
+                        </th>
+                    </tr>
+                    <tr ng-repeat="vlu in vm.gridOptions.data">
+                        <td ng-repeat="hdr in vm.gridOptions.columnDefs">
+                            {{vlu[hdr.field]}}      
+                        </td>
+                    </tr>
+
+                </table>
+                {{hdrMapped.header}}
+                    @*<pre ng-show="vm.gridOptions.data.length">{{vm.gridOptions.data |json}}</pre>*@
+                </div>
+        </tab>
+    </tabset>
+</div>
+
+
+
+
+
+@*<div id="grid1" ui-grid="vm.gridOptions" class="grid">
+                        <div class="grid-msg-overlay" ng-show="!vm.gridOptions.data.length">
+            <div class="msg">
+                <div class="center">
+                    <span class="muted">Select Spreadsheet File</span>
+                    <br />
+
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+

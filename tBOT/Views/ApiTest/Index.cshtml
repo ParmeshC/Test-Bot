@@ -1,0 +1,77 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/Content/ui-layout.css" type="text/css" />
+    <link rel="stylesheet" href="~/Content/flowchart.css" type="text/css" />
+    <link rel="stylesheet" href="~/Content/onedatastyle.css" type="text/css" />
+
+    <script src="~/Scripts/angular.js"></script>
+    <script src="~/Scripts/angular-drag-and-drop-lists.min.js"></script>
+    <script src="~/Scripts/ui-bootstrap-tpls-0.6.0.js"></script>
+    <script src="~/Scripts/ui-layout.js"></script>
+    <script src="~/Scripts/ngFlowchart.js"></script>
+    
+
+    <script src="~/Scripts/Draggable.js"></script> 
+    <script src="~/Scripts/FlowChart.js"></script>
+    <script src="~/Scripts/RoutineApp.js"></script>
+    <script src="~/Scripts/PlannerApp.js"></script>
+    <script src="~/Scripts/app.js"></script>
+
+
+    @*<link rel="stylesheet" href="~/Content/flowchart.css" type="text/css" />
+    <link rel="stylesheet" href="~/Content/onedatastyle.css" type="text/css" />*@
+
+
+    @*<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">*@
+    <script>
+        angular.module('x', ['ui.layout', 'ui.bootstrap', 'PlannerApp', 'my-app', 'QueryApp', 'NestedLists', 'Tab']);
+    </script>
+
+    <title>Api Testing</title>
+</head>
+<body ng-app="x">
+
+        <div ui-layout="{flow : 'column'}">
+
+            <div ui-layout-container>
+                @RenderPage("~/Views/Routine/Index.cshtml")
+            </div>
+
+            <div rotn-split>
+              <a><span class="ui-splitbar-icon"></span></a>
+            </div>
+
+            <div ui-layout-container>
+                @RenderPage("~/Views/Planner/PlannerRequest.cshtml")
+            </div>
+
+            <div plan-split>
+                <a><span class="ui-splitbar-icon"></span></a>
+            </div>
+
+            <div ui-layout-container>
+
+            <div class="container body-content">
+               @RenderPage("~/Views/Builder/ResponseQuery.cshtml")
+               @*@RenderPage("~/Views/Builder/DatabaseQuery.cshtml")*@
+            </div>
+
+            </div>
+        </div>
+</body>
+</html>
+
+
+
+
+
