@@ -39,9 +39,9 @@
                     <tr>
                         <td ng-repeat="hdr in vm.gridOptions.columnDefs">
                             @*<select class="form-control" multiselect="multiselect"></select>*@
-                            <select title="App" class="form-control" multiselect="multiselect" data-ng-options="o.header for o in hdrMapping" ng-model="hdrMapped" ng-change="update()"></select>
+                            <select title="App" class="form-control" multiselect="multiselect" data-ng-options="o.header for o in hdrMapping" data-ng-model="hdrMapped" ng-change="update($index,hdr.field)"></select>
                             
-    </td>
+                            </td>
                     </tr>
                     <tr>
                         <th ng-repeat="hdr in vm.gridOptions.columnDefs">

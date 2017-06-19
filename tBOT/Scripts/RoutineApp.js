@@ -55,15 +55,24 @@ angular.module('Tab', ['ui.grid'])
     .controller('TabsParentController', ['$scope', function ($scope) {
         var vm = this;
 
-
-
-
         vm.gridOptions = {};
         $scope.hdrMapping = [{ header: "Api", id: 1 }, { header: "App", id: 2 }, { header: "Version", id: 3 }];
-        $scope.hdrMapped = $scope.hdrMapping[0];
+        $scope.revisedHdrMapping = [{ header: "Api", id: 1 }, { header: "App", id: 2 }, { header: "Version", id: 3 }];
+        //$scope.hdrMapped = $scope.hdrMapping[0];
 
-        $scope.update = function () {
-            console.log($scope.hdrMapped)
+        $scope.update = function (indx,hdrval) {
+            //console.log($scope.hdrMapped)
+            $scope.hdrMapped = this.hdrMapped
+
+            console.log(this.hdrMapped)
+            console.log($scope.hdrMapping)
+            //var index = $scope.hdrMapping.indexOf(this.hdrMapped.id);
+            //$scope.hdrMapping.splice(index, 1);
+            console.log(this.hdrMapped.id)
+            $scope.revisedHdrMapping.splice({ id: this.hdrMapped.id }, 1);
+            console.log($scope.revisedHdrMapping)
+            console.log(hdrval)
+            console.log(indx)
         }
 
         //$scope.$watch('hdrMapped', function () {

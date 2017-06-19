@@ -60,7 +60,6 @@ PlannerApp.factory('envService', function ($http) {
             return $http.get("/Planner/GetAllAuthorizations");
         }
 
-
     };
 })
 
