@@ -169,19 +169,10 @@
       <DependentUpon>ModelApiTest.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ApiFunction.cs" />
-    <Compile Include="Models\Api_Config.cs">
-      <DependentUpon>ModelApiTest.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Authorization.cs">
       <DependentUpon>ModelApiTest.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Environment.cs">
-      <DependentUpon>ModelApiTest.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Group.cs">
-      <DependentUpon>ModelApiTest.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Group_Config.cs">
       <DependentUpon>ModelApiTest.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ModelApiTest.Context.cs">
@@ -199,49 +190,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ModelApiTest.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Models\Validation.cs">
-      <DependentUpon>ModelApiTest.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\api-test.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\demo-framework.css" />
-    <Content Include="Content\flowchart.css" />
+    <Content Include="Content\landing-page.css" />
     <Content Include="Content\nested.css" />
-    <Content Include="Content\onedatastyle.css" />
-    <Content Include="Content\ui-layout.css" />
-    <Content Include="demo\advanced\advanced-frame.html" />
-    <Content Include="demo\advanced\advanced.css" />
-    <Content Include="demo\advanced\advanced.html" />
-    <Content Include="demo\advanced\advanced.js" />
-    <Content Include="demo\framework\demo-framework.css" />
-    <Content Include="demo\framework\demo-framework.js" />
-    <Content Include="demo\framework\vendor\bootstrap-theme.min.css" />
-    <Content Include="demo\framework\vendor\bootstrap.min.css" />
-    <Content Include="demo\framework\vendor\ic_content_copy_black_24dp_2x.png" />
-    <Content Include="demo\framework\vendor\prism.css" />
-    <Content Include="demo\framework\vendor\prism.js" />
-    <Content Include="demo\framework\view-source.html" />
-    <Content Include="demo\framework\view-source.js" />
-    <Content Include="demo\index.html" />
-    <Content Include="demo\multi\multi-frame.html" />
-    <Content Include="demo\multi\multi.css" />
-    <Content Include="demo\multi\multi.html" />
-    <Content Include="demo\multi\multi.js" />
-    <Content Include="demo\nested\nested-frame.html" />
-    <Content Include="demo\nested\nested.css" />
-    <Content Include="demo\nested\nested.html" />
-    <Content Include="demo\nested\nested.js" />
-    <Content Include="demo\nested\trashcan.jpg" />
-    <Content Include="demo\simple\simple-frame.html" />
-    <Content Include="demo\simple\simple.css" />
-    <Content Include="demo\simple\simple.html" />
-    <Content Include="demo\simple\simple.js" />
-    <Content Include="demo\types\types-frame.html" />
-    <Content Include="demo\types\types.css" />
-    <Content Include="demo\types\types.html" />
-    <Content Include="demo\types\types.js" />
+    <Content Include="Content\api-test-query-builder.css" />
+    <Content Include="Content\api-test-ui-layout.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Models\ModelApiTest.Context.tt">
@@ -254,13 +211,11 @@
       <DependentUpon>ModelApiTest.edmx</DependentUpon>
       <LastGenOutput>ModelApiTest.cs</LastGenOutput>
     </Content>
-    <Content Include="Scripts\angular-animate.js" />
     <Content Include="Scripts\angular-drag-and-drop-lists.js" />
     <Content Include="Scripts\angular-drag-and-drop-lists.min.js" />
-    <Content Include="Scripts\angular-sanitize.js" />
     <Content Include="Scripts\angular.js" />
+    <Content Include="Scripts\api-test.js" />
     <Content Include="Scripts\app.js" />
-    <Content Include="Scripts\bootstrap.js" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -276,17 +231,13 @@
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <Content Include="Scripts\Draggable.js" />
     <Content Include="Scripts\FlowChart.js" />
-    <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\ngFlowchart.js" />
-    <Content Include="Scripts\PlannerApp.js" />
-    <Content Include="Scripts\respond.js" />
-    <Content Include="Scripts\respond.min.js" />
-    <Content Include="Scripts\rough.js" />
-    <Content Include="Scripts\RoutineApp.js" />
+    <Content Include="Scripts\api-test-planner.js" />
+    <Content Include="Scripts\api-test-routine.js" />
     <Content Include="Scripts\ui-bootstrap-tpls-0.6.0.js" />
     <Content Include="Scripts\ui-bootstrap-tpls-2.5.0.min.js" />
-    <Content Include="Scripts\ui-layout.js" />
-    <Content Include="Scripts\validationApp.js" />
+    <Content Include="Scripts\api-test-ui-layout.js" />
+    <Content Include="Scripts\xlsx.full.min.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -300,20 +251,17 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Shared\Widget\_Widget.cshtml" />
-    <Content Include="Views\Shared\Widget\_SubWidget.cshtml" />
-    <Content Include="Views\Shared\Widget\_WidgetContainer.cshtml" />
     <Content Include="Views\ApiTest\Index.cshtml" />
     <Content Include="Views\Planner\PlannerRequest.cshtml" />
-    <Content Include="Views\Routine\Index.cshtml" />
+    <Content Include="Views\Routine\RoutineRequest.cshtml" />
     <Content Include="Views\Planner\GetAllEnvironments.cshtml" />
     <Content Include="Views\Planner\GetAllAuthorizations.cshtml" />
     <Content Include="Views\Planner\GetApiResponse.cshtml" />
     <Content Include="Views\Builder\ResponseQuery.cshtml" />
     <Content Include="Views\Builder\DatabaseQuery.cshtml" />
+    <Content Include="Views\Routine\AddApiInfo.cshtml" />
+    <Content Include="Views\Routine\GetApiInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

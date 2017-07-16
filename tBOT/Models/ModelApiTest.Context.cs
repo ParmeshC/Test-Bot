@@ -26,11 +26,7 @@ namespace tBOT.Models
         }
     
         public virtual DbSet<API> APIs { get; set; }
-        public virtual DbSet<Api_Config> Api_Config { get; set; }
         public virtual DbSet<Authorization> Authorizations { get; set; }
         public virtual DbSet<Environment> Environments { get; set; }
-        public virtual DbSet<Group> Groups { get; set; }
-        public virtual DbSet<Group_Config> Group_Config { get; set; }
-        public virtual DbSet<Validation> Validations { get; set; }
     }
 }

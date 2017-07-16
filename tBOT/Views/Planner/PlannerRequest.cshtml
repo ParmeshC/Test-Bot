@@ -1,68 +1,72 @@
 ﻿
-<div class="jumbotron">
+
     <div ng-app="PlannerApp" ng-controller="PlannerCtrl" class="container-fluid">
-                <h2> Planner</h2>
-        <hr>
-        <div style="text-align:center">
+        @*<div ng-style="text-align:center">*@
+        <div ng-show="ApiInfoUrl">
+
+            @*<div class="form-inline">
+                <select title="App" class="form-control" multiselect="multiselect" data-ng-options="o.app for o in AppOptions" data-ng-model="apiApp"></select>
+                <input class="form-control" placeholder="Enter the API EndPoint..." ng-model="ApiInfo.EndPoint">
+                </div>*@
+
+            <div class="form-inline">
+                <h5>URL: <var><u style="overflow-wrap: break-word;">{{ApiInfoUrl}}</u></var></h5>
+                <h5>Version: <var><u>{{ApiInfo.Version}}</u></var></h5>
+                <h5>Schema Url: <var><a target="_blank" style="overflow-wrap: break-word;" href={{ApiInfo.SchemaUrl}}>{{ApiInfo.SchemaUrl}}</a></var></h5>
+            </div>
+
             <div class="form-inline">
                 <div class="input-group">
-                    <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span></span>
-                    <select title="App" class="form-control" multiselect="multiselect" data-ng-options="om.Server for om in envOptions" data-ng-model="apiEnv"></select>
+                    @*<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span></span>*@
+                    <select title="App" class="form-control" multiselect="multiselect" data-ng-options="om.Server for om in envOptions" data-ng-model="apiEnv" ng-change="updateApiInfo()"></select>
                 </div>
 
                 <div class="input-group">
-                    <span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span></span>
+                    @*<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span></span>*@
                     <select title="App" class="form-control" multiselect="multiselect" data-ng-options="o.UserName for o in authOptions" data-ng-model="apiAuth"></select>
                 </div>
+                <input type="submit" value="Get" ng-click="apiRequest()" class="btn btn-primary btn-sm">
             </div>
-
-            <div class="form-inline">
-                <select title="App" class="form-control" multiselect="multiselect" data-ng-options="o.app for o in AppOptions" data-ng-model="apiApp"></select>
-                <input class="form-control" placeholder="Enter the API Name..." ng-model="apiName">
-                <input type="submit" value="Request" ng-click="apiRequest()" class="btn btn-primary btn-sm">
-            </div>         
         </div>
 
-            <div class="form-inline" ng-show="requestResult">
-                <h5 style="overflow-wrap: break-word;">{{results[0].Url}}</h5>
-                <h5 style="overflow-wrap: break-word;">{{results[0].LatestVersion}}</h5>
-                <div class="text-right">
-                    <a ng-if="results[0].ResponseContent.StatusCode =='200'" href="#">Total Count <span class="badge">{{results[0].TotalCount}}</span></a>
-                    <span ng-if="results[0].ResponseContent.StatusCode =='200'" class="label label-success">Status: {{results[0].ResponseContent.StatusCode}} {{results[0].ResponseContent.ResponsePhrase}}</span>
-                    <span ng-if="results[0].ResponseContent.StatusCode !='200'" class="label label-warning">Status: {{results[0].ResponseContent.StatusCode}} {{results[0].ResponseContent.ResponsePhrase}}</span>
-                </div>
-                <tabset>
-                    <tab heading="Body">
-                        <pre ng-if="results[0].ResponseContent.IsResponseArray">{{results[0].ResponseContent.ResponseArray| json}}</pre>
-                        <pre ng-if="!results[0].ResponseContent.IsResponseArray && results[0].ResponseContent.ResponseObject!=null">{{results[0].ResponseContent.ResponseObject| json}}</pre>
-                        <pre ng-if="!results[0].ResponseContent.IsResponseArray && results[0].ResponseContent.ResponseObject==null">{{results[0].ResponseContent.Description}}</pre>
-                    </tab>
-                    <tab heading="Headers">                        
-                        <div ng-repeat="header in results[0].ResponseContent.ResponseHeaders">
-                            <h5>
-                                {{header.Key}}:-
-                                <span style="font-size:small; overflow-wrap: break-word;" ng-repeat="value in header.Value">{{value}}</span>
-                            </h5>
-                        </div>                        
-                    </tab>
-                    <tab heading="Schema">
-                            <span ng-if="results[0].SchemaValid=='False'" class="label label-danger">Schema Validation: Fail</span>
-                            <span ng-if="results[0].SchemaValid=='True'" class="label label-success">Schema Validation: Success</span>
-                            <pre>Schema validated against:{{results[0].SchemaValidatedJson| json}}</pre>
-                            <pre ng-if="results[0].SchemaErrors!=''" >Schema Errors:{{results[0].SchemaErrors| json}}</pre>
-                        <h5>Schema Url: <span style="font-size:small; overflow-wrap: break-word;">{{results[0].SchemaUrl}}</span></h5>
-                            <pre>Schema:{{results[0].Schema}}</pre>
-                    </tab>
-                    <tab heading="Validate">     
-                        <pre>{{results| json}}</pre>
-                    </tab>
-                </tabset>
-
+        <div class="form-inline" ng-show="requestResult">
+            <h5 style="overflow-wrap: break-word;">{{results[0].Url}}</h5>
+            <h5 style="overflow-wrap: break-word;">{{results[0].LatestVersion}}</h5>
+            <div class="text-right">
+                <a ng-if="results[0].ResponseContent.StatusCode =='200'" href="#">Total Count <span class="badge">{{results[0].TotalCount}}</span></a>
+                <span ng-if="results[0].ResponseContent.StatusCode =='200'" class="label label-success">Status: {{results[0].ResponseContent.StatusCode}} {{results[0].ResponseContent.ResponsePhrase}}</span>
+                <span ng-if="results[0].ResponseContent.StatusCode !='200'" class="label label-warning">Status: {{results[0].ResponseContent.StatusCode}} {{results[0].ResponseContent.ResponsePhrase}}</span>
             </div>
-            <img ng-show="reqestStatus" id="spinner" ng-src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" style="display:inline-block; text-align:center">
-        
+            <tabset>
+                <tab heading="Body">
+                    <pre ng-if="results[0].ResponseContent.IsResponseArray">{{results[0].ResponseContent.ResponseArray| json}}</pre>
+                    <pre ng-if="!results[0].ResponseContent.IsResponseArray && results[0].ResponseContent.ResponseObject!=null">{{results[0].ResponseContent.ResponseObject| json}}</pre>
+                    <pre ng-if="!results[0].ResponseContent.IsResponseArray && results[0].ResponseContent.ResponseObject==null">{{results[0].ResponseContent.Description}}</pre>
+                </tab>
+                <tab heading="Headers">
+                    <div ng-repeat="header in results[0].ResponseContent.ResponseHeaders">
+                        <h5>
+                            {{header.Key}}:-
+                            <span style="font-size:small; overflow-wrap: break-word;" ng-repeat="value in header.Value">{{value}}</span>
+                        </h5>
+                    </div>
+                </tab>
+                <tab heading="Schema">
+                    <span ng-if="results[0].SchemaValid=='False'" class="label label-danger">Schema Validation: Fail</span>
+                    <span ng-if="results[0].SchemaValid=='True'" class="label label-success">Schema Validation: Success</span>
+                    <pre>Schema validated against:{{results[0].SchemaValidatedJson| json}}</pre>
+                    <pre ng-if="results[0].SchemaErrors!=''">Schema Errors:{{results[0].SchemaErrors| json}}</pre>
+                    <h5>Schema Url: <span style="font-size:small; overflow-wrap: break-word;">{{results[0].SchemaUrl}}</span></h5>
+                    <pre>Schema:{{results[0].Schema}}</pre>
+                </tab>
+                <tab heading="Validate">
+                    <pre>{{results| json}}</pre>
+                </tab>
+            </tabset>
 
+        </div>
+        <img ng-show="reqestStatus" id="spinner" ng-src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" style="display:inline-block; text-align:center">
 
-     </div>
-</div>
+    </div>
+
 

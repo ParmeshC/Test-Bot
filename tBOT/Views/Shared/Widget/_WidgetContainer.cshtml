@@ -1,7 +1,0 @@
-﻿@model  tBOT.Models.IWidget
-
-@foreach (tBOT.Models.IWidget wm in ViewBag.Widgets)
-{
-
-    @Html.Partial(string.Concat(new[] { "Widget", "/", "_Widget" }), wm)
-}

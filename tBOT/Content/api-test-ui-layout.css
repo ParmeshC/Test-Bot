@@ -1,6 +1,7 @@
+
 .stretch {
   position: absolute;
-  top: 0;
+  top: 26px;
   left: 0;
   right: 0;
   bottom: 0;
@@ -62,7 +63,8 @@
 
 .ui-layout-column > .plan-split {
     width: 8px;
-    height: 100%;
+    top:26px;
+    /*height: 100%;*/
     cursor: w-resize;
     -webkit-flex-direction: column;
     flex-direction: column;
@@ -95,7 +97,8 @@
 
 .ui-layout-column > .rotn-split {
     width: 8px;
-    height: 100%;
+    top: 26px;
+    /*height: 100%;*/
     cursor: w-resize;
     -webkit-flex-direction: column;
     flex-direction: column;
@@ -110,6 +113,25 @@
         font-size: 16px;
         /*color: #aaa;*/
     }
+
+.ui-layout-header {
+    padding-top: 5px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 0px;
+    color: inherit;
+    background-color: #eee
+}
+
+ .ui-layout-header > hr {
+        margin-top: 0px;
+        margin-bottom: 0px;
+        border: 0;
+        border-top: 1px solid #337ab7;
+    }
+
+
 
 
 

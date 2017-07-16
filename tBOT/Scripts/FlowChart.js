@@ -166,8 +166,7 @@ app.controller('AppCtrl', function AppCtrl($scope, prompt, Modelfactory, flowcha
             }
         };
 
-        $scope.keyUp = function (evt) {
-            console.log(evt.keyCode);
+        $scope.keyUp = function (evt) {            
             if (evt.keyCode === deleteKeyCode) {
                 modelservice.deleteSelected();
             }
@@ -267,11 +266,11 @@ app.controller('AppCtrl', function AppCtrl($scope, prompt, Modelfactory, flowcha
 
         $scope.callbacks = {
             edgeDoubleClick: function () {
-                console.log('Edge double clicked.');
+
 
             },
             edgeMouseOver: function () {
-                console.log('mouserover')
+
 
             },
             //isValidEdge: function (source, destination) {
@@ -285,12 +284,10 @@ app.controller('AppCtrl', function AppCtrl($scope, prompt, Modelfactory, flowcha
                 $scope.EdgeDestNodeName = modelservice.nodes.getNode(edge.destination).name;
             },
             nodeRemoved: function (node) {
-                console.log("node removed");
-                console.log(node);
+
             },
             edgeRemoved: function (edge) {
-                console.log("edge removed");
-                console.log(edge);
+
             },
             checkboxChecked: function (connectorId, checkedStatus) {
                 $scope.CheckboxChecked = checkedStatus;
@@ -299,7 +296,6 @@ app.controller('AppCtrl', function AppCtrl($scope, prompt, Modelfactory, flowcha
             },
             nodeCallbacks: {
                 'doubleClick': function (event) {
-                    console.log('Node was doubleclicked.')
                 }
             }
         };

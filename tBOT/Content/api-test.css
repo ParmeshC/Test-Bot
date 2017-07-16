@@ -1,7 +1,10 @@
-body {
-    padding-top: 70px;
-    padding-bottom: 30px;
-}
+/*Make sure that the '*,' is commented or removed from one of the the @media print properties
+    in bootstrap.css file, because it is hiding the connector dots on the tables of the Query builder component
+    example below
+*/
+
+
+/*Start NestedList Display Styling Block*/
 
 .box {
     margin-bottom: 20px;
@@ -68,3 +71,4 @@ body {
     background-image: -webkit-linear-gradient(top,#fcf8e3 0,#faf2cc 100%);
     background-image: linear-gradient(to bottom,#fcf8e3 0,#faf2cc 100%);
 }
+/*End NestedList Display Styling Block*/

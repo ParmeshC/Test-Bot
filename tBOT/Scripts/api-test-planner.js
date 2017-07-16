@@ -1,21 +1,30 @@
-﻿var PlannerApp = angular.module('PlannerApp', ['ui.bootstrap']);
-PlannerApp.controller('PlannerCtrl', function (envService, $scope) {    
+﻿var PlannerApp = angular.module('api.test.planner', []);
+PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedService, $scope) {    
 
-    $scope.apiName;
-    
-     
+    $scope.$on('handleBroadcast', function () {
+        $scope.ApiInfo = apiTestSharedService.apiInfo;
+        $scope.updateApiInfo();
+    });
+
+    $scope.updateApiInfo = function () {
+        $scope.ApiInfoUrl = "http://" + $scope.apiEnv.Server + "/" + $scope.ApiInfo.APP + "/" + $scope.ApiInfo.Connector + "/" + $scope.ApiInfo.EndPoint;
+        $scope.ApiInfoSchema = $scope.ApiInfo.SchemaUrl
+        $scope.ApiInfoVersion = $scope.ApiInfo.Version
+    }
+
     $scope.envOptions;
-    envService.getEnvironments().then(function (d) {
+    PlannerFactory.getEnvironments().then(function (d) {
         $scope.envOptions = d.data;        
-        $scope.apiEnv = $scope.envOptions[0];        
+        $scope.apiEnv = $scope.envOptions[0]; 
+               
     });
         
     
     $scope.authOptions;
-    envService.getAuthorizations().then(function (d) {
+    PlannerFactory.getAuthorizations().then(function (d) {
         $scope.authOptions = d.data;
         $scope.apiAuth = $scope.authOptions[0];
-    });    
+    });
 
     
     $scope.AppOptions = [{ app: "IntegrationApi", id: 1 }, { app: "StudentApi", id: 2 }];
@@ -34,21 +43,19 @@ PlannerApp.controller('PlannerCtrl', function (envService, $scope) {
             $scope.requestResult = true;
         });
     }
-
 });
 
-PlannerApp.factory('envService', function ($http) {
+PlannerApp.factory('PlannerFactory', function ($http) {
     return {
 
         getApiResponse: function (scp) {
             return $http.get("/Planner/GetApiResponse"
                 + "?SrvNm=" + scp.apiEnv.Server                
-                + "&Port=" + scp.apiEnv.Port
                 + "&UsrNm=" + scp.apiAuth.UserName
                 + "&PassWrd=" + scp.apiAuth.Password
                 + "&AuthType=" + scp.apiAuth.Type
                 + "&ApiAPP=" + scp.apiApp.app
-                + "&ApiName=" + scp.apiName
+                + "&ApiEndPoint=" + scp.apiEndPoint
                 );
         },
 
@@ -62,7 +69,3 @@ PlannerApp.factory('envService', function ($http) {
 
     };
 })
-
-//PlannerApp.filter("prettyJSON", () => json => JSON.stringify(json, null, " "))
-
-

@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'C:\Users\rekhap\documents\visual studio 2017\Projects\tBOT\tBOT\Models\ModelApiTest.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\Parmesh\Source\Repos\tbot\tBOT\Models\ModelApiTest.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

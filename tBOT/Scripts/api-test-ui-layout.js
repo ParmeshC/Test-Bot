@@ -1,10 +1,11 @@
 'use strict';
 
-var app = angular.module('ui.layout', []);
+var app = angular.module('api.test.ui.layout', []);
 app.controller('uiLayoutCtrl', ['$scope', '$attrs', '$element', '$window', 'LayoutContainer',
     function uiLayoutCtrl($scope, $attrs, $element, $window, LayoutContainer) {
         
         var ctrl = this;
+        var opts = angular.extend({}, $scope.$eval($attrs.uiLayout), $scope.$eval($attrs.options));
         var animationFrameRequested;
         var lastPos;
 
@@ -20,7 +21,7 @@ app.controller('uiLayoutCtrl', ['$scope', '$attrs', '$element', '$window', 'Layo
 
         $element.addClass('stretch');
         $element.addClass('ui-layout-column');
-
+  
         function draw() {
 
             var currentWidth = $element[0].getBoundingClientRect()['width']
@@ -126,6 +127,7 @@ app.controller('uiLayoutCtrl', ['$scope', '$attrs', '$element', '$window', 'Layo
             PlannerArea.maxSize = availableSize * PlannerAreaMaxvalue
 
             RoutineArea.left = 0;
+            
             RoutineArea.size = RoutineArea.collapsed ? 0 : RoutineArea.minSize;
 
             if (PlannerArea.collapsed)
@@ -143,7 +145,7 @@ app.controller('uiLayoutCtrl', ['$scope', '$attrs', '$element', '$window', 'Layo
             PlannerArea.left = RoutineSplitter.left + RoutineSplitter.size;
             PlannerArea.size = PlannerArea.collapsed ? 0 : PlannerArea.minSize;
 
-            PlannerSplitter.left = PlannerArea.left + PlannerArea.size
+            PlannerSplitter.left = PlannerArea.left + PlannerArea.size            
             
 
             BuilderArea.left = PlannerSplitter.left + PlannerSplitter.size;
@@ -155,7 +157,7 @@ app.controller('uiLayoutCtrl', ['$scope', '$attrs', '$element', '$window', 'Layo
 
             ctrl.containers.splice(ctrl.containers.length, 0, container);
 
-            //Call calucale when all the containers are added
+            //Call calculate when all the containers are added
             if (ctrl.containers.length == 5) { ctrl.calculate();}
             
         };
@@ -364,7 +366,7 @@ app.directive('planSplit', ['LayoutContainer', function (LayoutContainer) {
             if (!element.hasClass('stretch')) element.addClass('stretch');
             if (!element.hasClass('plan-split')) element.addClass('plan-split');
 
-            var animationClass = 'animate-column' ;
+            var animationClass = 'animate-column';
             element.addClass(animationClass);
 
             scope.splitbar = LayoutContainer.Splitbar();
@@ -565,7 +567,7 @@ app.directive('uiLayoutContainer',
                             if (!element.hasClass('stretch')) element.addClass('stretch');
                             if (!element.hasClass('ui-layout-container')) element.addClass('ui-layout-container');
 
-                            var animationClass = 'animate-column';
+                            var animationClass = 'animate-column';                                                      
                             element.addClass(animationClass);
 
                             scope.$watch('container.size', function (newValue) {

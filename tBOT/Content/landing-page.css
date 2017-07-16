@@ -1,0 +1,103 @@
+﻿/*Start LandingPage Display Styling Block*/
+
+body {
+    background-color: #111;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #eee;
+}
+
+.inverse-all .auto-invert.fg-text, .inverse-all .auto-invert .fg-text {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.inverse-all .auto-invert.fg-text-d, .inverse-all .auto-invert .fg-text-d, .inverse-all .auto-invert .fg-link {
+    color: #fff;
+}
+
+
+.fg-text, .fg-hov-text:hover, .fg-active-text.active {
+    color: #626262;
+}
+
+[class*="font-cond"] {
+    font-weight: normal;
+}
+
+.lts-xl {
+    letter-spacing: 0.6rem;
+}
+
+.case-u {
+    text-transform: uppercase;
+}
+
+p, ul, ol, blockquote {
+    margin-bottom: 1.7em;
+}
+
+
+.pady-100, .pady-100-all > *, .pady-100-links > li > a {
+    padding-top: 100px;
+    padding-bottom: 100px;
+}
+
+.align-center {
+    text-align: center;
+}
+
+.fg-text-d, .fg-hov-text-d:hover, .fg-active-text-d.active {
+    color: #222;
+}
+
+
+[class*="font-reg"] {
+    font-weight: normal;
+}
+
+
+.lts-sm {
+    letter-spacing: 0.1rem;
+}
+
+
+h1 {
+    font-size: 3em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0 0 1.7rem 0;
+    line-height: 1.3em;
+}
+
+h2 {
+    font-size: 2.8em;
+}
+
+.fg-accent, .fg-hov-accent:hover, .fg-active-accent.active {
+    color: #E6AF2A;
+}
+
+.fs-400 {
+    font-size: 400%;
+}
+
+.icon-btn {
+    display: inline-block;
+    text-align: center;
+    height: 2em;
+    width: 2em;
+    line-height: 2em;
+    position: relative;
+}
+
+p, ul, ol, blockquote {
+    margin-bottom: 1.7em;
+}
+
+.mgb-30, .mgb-30-all > * {
+    margin-bottom: 30px;
+}
+
+
+/*End LandingPage Display Styling Block*/

@@ -10,66 +10,85 @@
     <meta name="viewport" content="width=device-width" />
 
     <link rel="stylesheet" href="~/Content/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="~/Content/ui-layout.css" type="text/css" />
-    <link rel="stylesheet" href="~/Content/flowchart.css" type="text/css" />
-    <link rel="stylesheet" href="~/Content/onedatastyle.css" type="text/css" />
+    <link rel="stylesheet" href="~/Content/api-test-ui-layout.css" type="text/css" />
+    <link rel="stylesheet" href="~/Content/api-test-query-builder.css" type="text/css" />
+    <link rel="stylesheet" href="~/Content/api-test.css">
 
+    
     <script src="~/Scripts/angular.js"></script>
     <script src="~/Scripts/angular-drag-and-drop-lists.min.js"></script>
     <script src="~/Scripts/ui-bootstrap-tpls-0.6.0.js"></script>
-    <script src="~/Scripts/ui-layout.js"></script>
-    <script src="~/Scripts/ngFlowchart.js"></script>
     
+    <script src="~/Scripts/ngFlowchart.js"></script>    
 
     <script src="~/Scripts/Draggable.js"></script> 
     <script src="~/Scripts/FlowChart.js"></script>
-    <script src="~/Scripts/RoutineApp.js"></script>
-    <script src="~/Scripts/PlannerApp.js"></script>
+    <script src="~/Scripts/api-test.js"></script>
+    <script src="~/Scripts/api-test-ui-layout.js"></script>
+    <script src="~/Scripts/api-test-routine.js"></script>
+    <script src="~/Scripts/api-test-planner.js"></script>
     <script src="~/Scripts/app.js"></script>
+    <script src="~/Scripts/xlsx.full.min.js"></script>
 
-
-    @*<link rel="stylesheet" href="~/Content/flowchart.css" type="text/css" />
-    <link rel="stylesheet" href="~/Content/onedatastyle.css" type="text/css" />*@
-
-
-    @*<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">*@
-    <script>
-        angular.module('x', ['ui.layout', 'ui.bootstrap', 'PlannerApp', 'my-app', 'QueryApp', 'NestedLists', 'Tab']);
-    </script>
-
-    <title>Api Testing</title>
+    <title>t-BOT</title>
 </head>
-<body ng-app="x">
+<body ng-app="api.test" ng-cloak>
+                <nav class="navbar navbar-inverse">
+                    <div class="container-fluid">
+                        <ul class="nav navbar-nav">
+                            <li><a style="padding-left:0px; padding-top:10px;" href="/Home"><span style="font-size: 20px" class="glyphicon glyphicon-arrow-left"></span></a></li>                            
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            @*<li>Hello,<a href="#"><span class="username"></span> @MyHelpers.UserFullName()</a></li>*@
+                            <li><a href="#"><span class="username"></span>Hello, @User.Identity.Name</a></li>
 
-        <div ui-layout="{flow : 'column'}">
+                        </ul>
+                    </div>
+                </nav>
+            <div ui-layout="{flow : 'column'}">
+                <div ui-layout-container>
+                    <div class="ui-layout-header">
+                        <h5>Routine</h5>
+                        @*<hr>*@
+                    </div>
+                    @RenderPage("~/Views/Routine/RoutineRequest.cshtml")
+                </div>
 
-            <div ui-layout-container>
-                @RenderPage("~/Views/Routine/Index.cshtml")
+                <div rotn-split>
+                    <a><span class="ui-splitbar-icon"></span></a>
+                </div>
+
+                <div ui-layout-container>
+                    <div class="ui-layout-header">
+                        <h5>Planner</h5>
+                        @*<hr>*@
+                    </div>
+                    @RenderPage("~/Views/Planner/PlannerRequest.cshtml")
+                </div>
+
+                <div plan-split>
+                    <a><span class="ui-splitbar-icon"></span></a>
+                </div>
+
+                <div ui-layout-container>
+   
+
+                    <div class="container body-content">
+                        @RenderPage("~/Views/Builder/ResponseQuery.cshtml")
+                        @RenderPage("~/Views/Builder/DatabaseQuery.cshtml")
+                    </div>
+                </div>
             </div>
 
-            <div rotn-split>
-              <a><span class="ui-splitbar-icon"></span></a>
-            </div>
-
-            <div ui-layout-container>
-                @RenderPage("~/Views/Planner/PlannerRequest.cshtml")
-            </div>
-
-            <div plan-split>
-                <a><span class="ui-splitbar-icon"></span></a>
-            </div>
-
-            <div ui-layout-container>
-
-            <div class="container body-content">
-               @RenderPage("~/Views/Builder/ResponseQuery.cshtml")
-               @*@RenderPage("~/Views/Builder/DatabaseQuery.cshtml")*@
-            </div>
-
-            </div>
-        </div>
 </body>
 </html>
+
+
+
+
+
+
+
 
 
 

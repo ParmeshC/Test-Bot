@@ -964,7 +964,6 @@ if (!Function.prototype.bind) {
             } else {
                 CyAddribute = ((pt1.y - pt2.y) / 2) + pt2.y;
             }
-            console.log(CyAddribute);
             return CyAddribute;
         };
 
@@ -978,7 +977,6 @@ if (!Function.prototype.bind) {
             } else {
                 CxAddribute = ((pt1.x - pt2.x) / 2) + pt2.x;
             }
-            console.log(CxAddribute);
             return CxAddribute;
         };
     }
@@ -1399,8 +1397,7 @@ if (!Function.prototype.bind) {
                     scope.modelservice.nodes.checkBoxClick(connector.id, status);
 
                 });
-                    //scope.isChecked = !(scope.isChecked);
-                    //console.log(scope.x);
+
                 }
             }
         };

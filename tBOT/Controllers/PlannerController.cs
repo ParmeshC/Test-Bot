@@ -51,17 +51,17 @@ namespace tBOT.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetApiResponse(string SrvNm, string Port, string UsrNm, string PassWrd, string AuthType, string ApiAPP, string ApiName)
+        public ActionResult GetApiResponse(string SrvNm, string Port, string UsrNm, string PassWrd, string AuthType, string ApiAPP, string ApiEndPoint)
         {
             //BlockingCollection<API.ReponseResult> items = new BlockingCollection<API.ReponseResult>();
             //items = ApiResponse(SrvNm, Port, UsrNm, PassWrd, AuthType, ApiAPP, ApiName);
 
-            return Content(JsonConvert.SerializeObject(ApiResponse(SrvNm, Port, UsrNm, PassWrd, AuthType, ApiAPP, ApiName)), "application/json");
+            return Content(JsonConvert.SerializeObject(ApiResponse(SrvNm, UsrNm, PassWrd, AuthType, ApiAPP, ApiEndPoint)), "application/json");
 
             //return Json(items, JsonRequestBehavior.AllowGet);
         }
 
-        public BlockingCollection<API.ReponseResult> ApiResponse(string srvNm, string port, string usrNm, string passWrd, string authType, string apiAPP, string apiName)
+        public BlockingCollection<API.ReponseResult> ApiResponse(string srvNm, string usrNm, string passWrd, string authType, string apiAPP, string apiEndPoint)
         {
             tbotEntities ApiEntity = new tbotEntities();
             var allApis = ApiEntity.APIs.ToList();
@@ -72,9 +72,10 @@ namespace tBOT.Controllers
             //string port = "8088";
             string connector = "api";
             string requestBody = "";
-            string rawSchemaUrl = @"https://git.ellucian.com:8443/projects/HEDM/repos/hedm-models/raw/schema/" + apiName + @".json?at=refs%2Fheads%2Fdevelop";
+            string rawSchemaUrl = @"https://git.ellucian.com:8443/projects/HEDM/repos/hedm-models/raw/schema/" + apiEndPoint.Trim() + @".json?at=refs%2Fheads%2Fdevelop";
 
-            string requestUrl = @"http://" + srvNm + @":" + port + @"/" + apiAPP + @"/" + connector + @"/" + apiName;
+            
+            string requestUrl = @"http://" + srvNm + @"/" + apiAPP + @"/" + connector + @"/" + apiEndPoint;
             var TranslationApi = API.Request.GetResponseInfo(
                 usrNm,
                 passWrd,
@@ -135,8 +136,6 @@ namespace tBOT.Controllers
             });
 
             return queue;
-
-
         }
 
         public ConcurrentQueue<API.ReponseResult> AllApiResponse()
@@ -148,20 +147,14 @@ namespace tBOT.Controllers
 
             Parallel.ForEach(allApis, (currentRow) =>
             {
-                //string serverName = @"m040145.ellucian.com";
-                //string port="8088";
-
-                string serverName = @"149.24.38.75";
-                string port = "7004";
-
-
-
+                //string serverName = @"m040145.ellucian.com:8088";
+                string serverName = @"149.24.38.75:7004";
 
                 string connector = "api";
                 string requestBody = "";
-                string rawSchemaUrl = @"https://git.ellucian.com:8443/projects/HEDM/repos/hedm-models/raw/schema/" + currentRow.Name + @".json?at=refs%2Fheads%2Fdevelop";
+                string rawSchemaUrl = @"https://git.ellucian.com:8443/projects/HEDM/repos/hedm-models/raw/schema/" + currentRow.EndPoint + @".json?at=refs%2Fheads%2Fdevelop";
 
-                string requestUrl = @"http://" + serverName + @":" + port + @"/" + currentRow.APP + @"/" + connector + @"/" + currentRow.Name;
+                string requestUrl = @"http://" + serverName + @"/" + currentRow.APP + @"/" + connector + @"/" + currentRow.EndPoint;
                 var TranslationApi = API.Request.GetResponseInfo(
                     "grails_user",
                     "u_pick_it",
