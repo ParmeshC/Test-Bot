@@ -51,48 +51,41 @@ namespace tBOT.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetApiResponse(string SrvNm, string Port, string UsrNm, string PassWrd, string AuthType, string ApiAPP, string ApiEndPoint)
+        public ActionResult GetApiResponse(API.RequestData RequestData)
         {
             //BlockingCollection<API.ReponseResult> items = new BlockingCollection<API.ReponseResult>();
             //items = ApiResponse(SrvNm, Port, UsrNm, PassWrd, AuthType, ApiAPP, ApiName);
 
-            return Content(JsonConvert.SerializeObject(ApiResponse(SrvNm, UsrNm, PassWrd, AuthType, ApiAPP, ApiEndPoint)), "application/json");
+            return Content(JsonConvert.SerializeObject(ApiResponse(RequestData)), "application/json");
 
             //return Json(items, JsonRequestBehavior.AllowGet);
         }
 
-        public BlockingCollection<API.ReponseResult> ApiResponse(string srvNm, string usrNm, string passWrd, string authType, string apiAPP, string apiEndPoint)
+        public BlockingCollection<API.ReponseResult> ApiResponse(API.RequestData requestData)
         {
             tbotEntities ApiEntity = new tbotEntities();
             var allApis = ApiEntity.APIs.ToList();
 
             BlockingCollection<API.ReponseResult> queue = new BlockingCollection<API.ReponseResult>();
 
-            //string serverName = @"m040145.ellucian.com";
-            //string port = "8088";
-            string connector = "api";
-            string requestBody = "";
-            string rawSchemaUrl = @"https://git.ellucian.com:8443/projects/HEDM/repos/hedm-models/raw/schema/" + apiEndPoint.Trim() + @".json?at=refs%2Fheads%2Fdevelop";
-
-            
-            string requestUrl = @"http://" + srvNm + @"/" + apiAPP + @"/" + connector + @"/" + apiEndPoint;
             var TranslationApi = API.Request.GetResponseInfo(
-                usrNm,
-                passWrd,
-                authType,
-                "en-in",
-                "application/json",
-                "application/json",
-                "GET",
-                requestUrl,
-                requestBody);
+                requestData.UserName,
+                requestData.Password,
+                requestData.AuthType,
+                requestData.Lang,
+                requestData.Accept,
+                requestData.ContentType,
+                requestData.RequestMethod,
+                requestData.RequestUrl,
+                requestData.RequestBody);
+
             string ValidationSchema = "";
-            if (!string.IsNullOrEmpty(rawSchemaUrl))
+            if (!string.IsNullOrEmpty(requestData.RawschemaUrl))
             {
                 try
                 {
                     using (WebClient client = new WebClient())
-                    { ValidationSchema = client.DownloadString(rawSchemaUrl); }
+                    { ValidationSchema = client.DownloadString(requestData.RawschemaUrl); }
                 }
                 catch
                 {
@@ -122,10 +115,10 @@ namespace tBOT.Controllers
             queue.Add(new API.ReponseResult
             {
                 ResponseContent = TranslationApi,
-                Url = requestUrl,
-                SchemaUrl = rawSchemaUrl,
+                Url = requestData.RequestUrl,
+                SchemaUrl = requestData.RawschemaUrl,
                 Schema = ValidationSchema,
-                SchemaValidatedJson = firstResponseObject,                
+                SchemaValidatedJson = firstResponseObject,               
                 SchemaValid = IsShemaValid.ToString(),
                 SchemaErrors = schemaErrors,
                 GetListMessage = headerMessage,
@@ -207,7 +200,6 @@ namespace tBOT.Controllers
 
 
         }
-
 
     }
 }

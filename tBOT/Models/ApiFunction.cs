@@ -224,7 +224,6 @@ namespace tBOT.API
         
     }
 
-
     public class ResponseData
     {
         public string ResponseBody { get; set; }
@@ -240,12 +239,17 @@ namespace tBOT.API
 
     public class RequestData
     {
+        public string AuthType { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public string Lang { get; set; }
         public string Accept { get; set; }
         public string ContentType { get; set; }
         public string RequestMethod { get; set; }
         public string RequestUrl { get; set; }
         public string RequestBody { get; set; }
-        public string ResourceName { get; set; }
+        public string EndPoint { get; set; }
+        public string RawschemaUrl { get; set; }
 
     }
 
@@ -253,15 +257,6 @@ namespace tBOT.API
     {
         public string MessageKey { get; set; }
         public string ExpectedErrorMessage { get; set; }
-    }
-
-    public class ValidationRequestData : RequestData
-    {
-        public string ServerName { get; set; }
-        public string Port { get; set; }
-        public string APP { get; set; }
-        public string Connector { get; set; }
-        public string RawschemaUrl { get; set; }
     }
 
     public static class Translate

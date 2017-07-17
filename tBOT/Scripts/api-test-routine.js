@@ -122,18 +122,3 @@ RoutineApp.factory('RoutineFactory', function ($http) {
         }
     };
 })
-
-
-
-//RoutineApp.service('RoutineService', function () {
-//        this.getValue = function () {
-//            return this.myValue;
-//        };
-
-//        this.setValue = function (newValue) {
-//            this.myValue = newValue;
-//        }
-//    });
-
-
-
