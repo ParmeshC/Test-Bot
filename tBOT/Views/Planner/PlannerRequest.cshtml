@@ -55,10 +55,10 @@
                     <tab heading="Schema">
                         <span ng-if="results[0].SchemaValid=='False'" class="label label-danger">Schema Validation: Fail</span>
                         <span ng-if="results[0].SchemaValid=='True'" class="label label-success">Schema Validation: Success</span>
-                        <pre>Schema validated against:{{results[0].SchemaValidatedJson| json}}</pre>
                         <pre ng-if="results[0].SchemaErrors!=''">Schema Errors:{{results[0].SchemaErrors| json}}</pre>
-                        <h5>Schema Url: <span style="font-size:small; overflow-wrap: break-word;">{{results[0].SchemaUrl}}</span></h5>
-                        <pre>Schema:{{results[0].Schema}}</pre>
+                        <h5>Schema Url: <var><a target="_blank" style="overflow-wrap: break-word;" href={{results[0].SchemaUrl}}>{{results[0].SchemaUrl}}</a></var></h5>
+                        <pre>Schema validated against:{{results[0].SchemaValidatedJson| json}}</pre>
+                        @*<pre>Schema:{{results[0].Schema}}</pre>*@
                     </tab>
                     <tab heading="Validate">
                         @*<pre>{{results| json}}</pre>*@

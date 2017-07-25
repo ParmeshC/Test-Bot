@@ -3,14 +3,27 @@ ApiTest.service('apiTestSharedService', function ($rootScope) {
 
         var sharedService= {};
         sharedService.apiInfo = '';
+        sharedService.apiResponseInfo = '';
 
-    this.prepForBroadcast= function (info) {
-        this.apiInfo = info;
-        this.broadcastInfo();
+        this.ApiInfoBroadcast= function (ApiInfo) {
+        this.apiInfo = ApiInfo;
+        this.broadcastApiInfo();
     };
 
-    this.broadcastInfo= function () {
-        $rootScope.$broadcast('handleBroadcast');
+    this.broadcastApiInfo= function () {
+        $rootScope.$broadcast('handleApiInfoBroadcast');
+    };
+
+
+    
+
+    this.ApiRsponseInfoBroadcast = function (ApiRsponseInfo) {
+        this.apiResponseInfo = ApiRsponseInfo;
+        this.broadcastApiResponseInfo();
+    };
+
+    this.broadcastApiResponseInfo = function () {
+        $rootScope.$broadcast('handleApiRsponseInfoBroadcast');
     };
 
     });

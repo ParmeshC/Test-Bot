@@ -1,7 +1,7 @@
 ﻿var PlannerApp = angular.module('api.test.planner', []);
 PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedService, $scope) {    
 
-    $scope.$on('handleBroadcast', function () {
+    $scope.$on('handleApiInfoBroadcast', function () {
         $scope.ApiInfo = apiTestSharedService.apiInfo;
         $scope.updateApiInfo();
     });
@@ -66,6 +66,8 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
             $scope.results = d.data;
             $scope.reqestStatus = false;
             $scope.requestResult = true;
+
+            apiTestSharedService.ApiRsponseInfoBroadcast($scope.results);
         });
 
     };

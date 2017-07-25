@@ -19,8 +19,8 @@ RoutineApp.controller('RoutineCtrl', function (RoutineFactory, apiTestSharedServ
         $scope.mpblHdr = jsonData;
     }
 
-    $scope.endPointClick = function (info) {
-        apiTestSharedService.prepForBroadcast(info);
+    $scope.endPointClick = function (apiInfo) {
+        apiTestSharedService.ApiInfoBroadcast(apiInfo);
     }
 
 

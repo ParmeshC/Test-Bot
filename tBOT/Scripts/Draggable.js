@@ -1,5 +1,12 @@
 ﻿(function (NestedLists) {
-    NestedLists.controller("NestedListsController", ['$scope', function ($scope) {
+    NestedLists.controller("NestedListsController", ['$scope', 'apiTestSharedService', function ($scope, apiTestSharedService) {
+
+
+        $scope.$on('handleApiRsponseInfoBroadcast', function () {
+            $scope.ApiResponseInfo = apiTestSharedService.apiResponseInfo;
+        });
+
+
 
         $scope.models = {
         selected: null,
@@ -7,7 +14,8 @@
             { type: "item", id: 2 },
             { type: "container", id: 1, columns: [[], []] }
         ],
-        dropzones: {
+        dropzones:
+        {
             "A":
            [
     {
