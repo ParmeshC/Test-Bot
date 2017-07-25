@@ -65,9 +65,10 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
         PlannerFactory.getApiResponse($scope).then(function (d) {
             $scope.results = d.data;
             $scope.reqestStatus = false;
-            $scope.requestResult = true;
+            $scope.requestResult = true;    
 
-            apiTestSharedService.ApiRsponseInfoBroadcast($scope.results);
+            console.log($scope.results);
+            //apiTestSharedService.ApiRsponseInfoBroadcast($scope.results);
         });
 
     };

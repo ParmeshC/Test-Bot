@@ -14,16 +14,13 @@ ApiTest.service('apiTestSharedService', function ($rootScope) {
         $rootScope.$broadcast('handleApiInfoBroadcast');
     };
 
-
-    
-
     this.ApiRsponseInfoBroadcast = function (ApiRsponseInfo) {
         this.apiResponseInfo = ApiRsponseInfo;
         this.broadcastApiResponseInfo();
     };
 
     this.broadcastApiResponseInfo = function () {
-        $rootScope.$broadcast('handleApiRsponseInfoBroadcast');
+        $rootScope.$broadcast('handleApiResponseInfoBroadcast');
     };
 
     });

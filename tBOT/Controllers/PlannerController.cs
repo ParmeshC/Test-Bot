@@ -14,6 +14,8 @@ using System.Web.Mvc;
 using tBOT.Models;
 using System.Data.Entity.Design.PluralizationServices;
 using System.Globalization;
+using System.Text.RegularExpressions;
+
 namespace tBOT.Controllers
 {
 
@@ -206,11 +208,12 @@ namespace tBOT.Controllers
             CultureInfo cultInfo = new CultureInfo("en-us");
             PluralizationService pluralSrv = PluralizationService.CreateService(cultInfo);
 
-            string[] tokens = EndPoint.Split('-');
             string lastWord = EndPoint.Split('-').Last();
 
-            string resourceName = string.Join("-", tokens.Take(tokens.Length - 1));
-            return pluralSrv.IsPlural(lastWord) == true ? resourceName + "-" + pluralSrv.Singularize(lastWord) : resourceName + "-" + lastWord;
+            int Place = EndPoint.LastIndexOf(lastWord);
+            string newLastWord= pluralSrv.IsPlural(lastWord) == true ? pluralSrv.Singularize(lastWord) : lastWord;
+
+            return EndPoint.Remove(Place, lastWord.Length).Insert(Place, newLastWord);
 
         }
 
@@ -224,7 +227,7 @@ namespace tBOT.Controllers
         private Boolean checkLatestVersion(string HedtechMediaType, string ExpectedVersion)
         {
 
-            ExpectedVersion = "V" + Convert.ToInt32(ExpectedVersion) + "+json";
+            ExpectedVersion = "v" + Regex.Match(ExpectedVersion, @"\d+$").Value + "+json";
             return HedtechMediaType.Contains(ExpectedVersion) ;
 
         }
@@ -233,37 +236,48 @@ namespace tBOT.Controllers
         {
 
             API.ReponseResult responseResult = new API.ReponseResult();
+            API.ValidationData validationResult = new API.ValidationData();
+
             responseResult = ApiResponse(RequestData).Take();
 
-
-            responseResult.ValidationContent.ExpectedListHeaderMessage = "List of " + singularizeEndPoint(RequestData.EndPoint) + "resources";
-            responseResult.ValidationContent.ExpectedGuidHeaderMessage = "Details for the " + singularizeEndPoint(RequestData.EndPoint) + "resource";
+            
+            validationResult.ExpectedListHeaderMessage = "List of " + singularizeEndPoint(RequestData.EndPoint) + " resources";
+            validationResult.ExpectedGuidHeaderMessage = "Details for the " + singularizeEndPoint(RequestData.EndPoint) + " resource";
             TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
-            responseResult.ValidationContent.ExpectedInvalidGuidHeaderMessage = textInfo.ToTitleCase(singularizeEndPoint(RequestData.EndPoint).Replace("-", " ")) + " not found";
+            validationResult.ExpectedInvalidGuidHeaderMessage = textInfo.ToTitleCase(singularizeEndPoint(RequestData.EndPoint).Replace("-", " ")) + " not found";
 
             if (responseResult.ResponseContent.StatusCode == 200)
             {
-                responseResult.ValidationContent.LatestVersionValid = checkLatestVersion(responseResult.LatestVersion, RequestData.Version);
+                validationResult.LatestVersion = responseResult.LatestVersion;
+                validationResult.ExpectedLatestVersion = validationResult.LatestVersion;
+                validationResult.LatestVersionValid = checkLatestVersion(validationResult.ExpectedLatestVersion, RequestData.Version);
 
-                responseResult.ValidationContent.ListHeaderMessageValid = checkHeaderMessage(ApiResponse(RequestData).Take().GetListMessage, responseResult.ValidationContent.ExpectedListHeaderMessage);
+                validationResult.ListHeaderMessage = ApiResponse(RequestData).Take().GetListMessage;
+                validationResult.ListHeaderMessageValid = checkHeaderMessage(validationResult.ListHeaderMessage, validationResult.ExpectedListHeaderMessage);
 
-                RequestData.RequestUrl = RequestData.RequestUrl + @"/" + responseResult.Guid;
-                responseResult.ValidationContent.GuidHeaderMessageValid = checkHeaderMessage(ApiResponse(RequestData).Take().GetListMessage, responseResult.ValidationContent.ExpectedGuidHeaderMessage);
+                if (!string.IsNullOrEmpty(responseResult.Guid))
+                {
+                    RequestData.RequestUrl = RequestData.RequestUrl + @"/" + responseResult.Guid;
+                    validationResult.GuidHeaderMessage = ApiResponse(RequestData).Take().GetListMessage;
+                    validationResult.GuidHeaderMessageValid = checkHeaderMessage(validationResult.GuidHeaderMessage, validationResult.ExpectedGuidHeaderMessage);
 
 
-                RequestData.RequestUrl = RequestData.RequestUrl + @"/" + "invalid-Guid-0123";
-                responseResult.ValidationContent.InvalidGuidHeaderMessageValid = checkHeaderMessage(ApiResponse(RequestData).Take().GetListMessage, responseResult.ValidationContent.ExpectedInvalidGuidHeaderMessage);
-
-
+                    RequestData.RequestUrl = RequestData.RequestUrl + "invalid-Guid-0123";
+                    validationResult.InvalidGuidHeaderMessage = ApiResponse(RequestData).Take().GetListMessage;
+                    validationResult.InvalidGuidHeaderMessageValid = checkHeaderMessage(validationResult.InvalidGuidHeaderMessage, validationResult.ExpectedInvalidGuidHeaderMessage);
+                }
             }
             else
             {
-                responseResult.ValidationContent.LatestVersionValid = false;
-                responseResult.ValidationContent.ListHeaderMessageValid = false;
-                responseResult.ValidationContent.GuidHeaderMessageValid = false;
-                responseResult.ValidationContent.InvalidGuidHeaderMessageValid = false;
+                validationResult.LatestVersionValid = false;
+                validationResult.ListHeaderMessageValid = false;
+                validationResult.GuidHeaderMessageValid = false;
+                validationResult.InvalidGuidHeaderMessageValid = false;
 
             }
+
+
+            responseResult.ValidationContent = validationResult;
 
             return responseResult;
 

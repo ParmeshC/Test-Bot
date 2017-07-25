@@ -241,15 +241,20 @@ namespace tBOT.API
 
     public class ValidationData
     {
+        public string ListHeaderMessage { get; set; }
         public string ExpectedListHeaderMessage { get; set; }
         public Boolean ListHeaderMessageValid { get; set; }
 
+        public string GuidHeaderMessage { get; set; }
         public string ExpectedGuidHeaderMessage { get; set; }
         public Boolean GuidHeaderMessageValid { get; set; }
 
+        public string InvalidGuidHeaderMessage { get; set; }
         public string ExpectedInvalidGuidHeaderMessage { get; set; }
         public Boolean InvalidGuidHeaderMessageValid { get; set; }
-        
+
+        public string LatestVersion { get; set; }
+        public string ExpectedLatestVersion { get; set; }
         public Boolean LatestVersionValid { get; set; }
 
 
