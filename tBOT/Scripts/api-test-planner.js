@@ -60,6 +60,7 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
         $scope.requestData["RequestBody"] = "";
         $scope.requestData["EndPoint"] = $scope.ApiInfo.EndPoint;
         $scope.requestData["RawschemaUrl"] = $scope.ApiInfoSchema;
+        $scope.requestData["Version"] = $scope.ApiInfo.Version;
 
         PlannerFactory.getApiResponse($scope).then(function (d) {
             $scope.results = d.data;

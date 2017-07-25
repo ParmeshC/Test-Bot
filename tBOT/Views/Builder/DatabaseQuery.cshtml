@@ -1,8 +1,7 @@
 ﻿
 <body ng-app="QueryApp" ng-controller="AppCtrl" ng-keydown="keyDown($event)" ng-keyup="keyUp($event)">
     <div style="width: 100%; height: 1000px;">
-        <div class="button-overlay">
-            <button ng-click="addNewNode()" title="Add a new node to then chart">Add Node</button>
+        <!--<div class="button-overlay">-->
             <!--<button ng-click="addNewInputConnector()" ng-disabled="modelservice.nodes.getSelectedNodes().length == 0"-->
             <!--title="Add a new input connector to the selected node">-->
             <!--Add Input-->
@@ -11,17 +10,19 @@
             <!--title="Add a new output connector to the selected node">-->
             <!--Add Output-->
             <!--</button>-->
-            <button ng-click="deleteSelected()"
-                    ng-disabled="modelservice.nodes.getSelectedNodes().length == 0 && modelservice.edges.getSelectedEdges().length == 0"
-                    title="Delete selected nodes and connections">
-                Delete Selected
-            </button>
-            <button ng-click="activateWorkflow()">
-                Activate Workflow
-            </button>
-        </div>
+       <!--</div>-->
+        <br/>
+        <button class="btn btn-primary btn-sm" ng-click="addNewNode()" title="Add a new node to then chart">Add Node</button>
+        <button class="btn btn-primary btn-sm" ng-click="deleteSelected()"
+                ng-disabled="modelservice.nodes.getSelectedNodes().length == 0 && modelservice.edges.getSelectedEdges().length == 0"
+                title="Delete selected nodes and connections">
+            Delete Selected
+        </button>
+        <button class="btn btn-primary btn-sm" ng-click="activateWorkflow()">Activate Workflow</button>
         <fc-canvas model="model" selected-objects="flowchartselected" edge-style="curved" callbacks="callbacks"
-                   automatic-resize="true"></fc-canvas>
+                   automatic-resize="true">            
+        </fc-canvas>
+
     </div>
 
 </body>

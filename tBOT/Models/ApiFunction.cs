@@ -210,6 +210,7 @@ namespace tBOT.API
     public class ReponseResult
     {
         public ResponseData ResponseContent { get; set; }
+        public ValidationData ValidationContent { get; set; }
         public string Url { get; set; }
         public string SchemaUrl { get; set; }
         public string Schema { get; set; }
@@ -237,6 +238,24 @@ namespace tBOT.API
         public string Description { get; set; }
     }
 
+
+    public class ValidationData
+    {
+        public string ExpectedListHeaderMessage { get; set; }
+        public Boolean ListHeaderMessageValid { get; set; }
+
+        public string ExpectedGuidHeaderMessage { get; set; }
+        public Boolean GuidHeaderMessageValid { get; set; }
+
+        public string ExpectedInvalidGuidHeaderMessage { get; set; }
+        public Boolean InvalidGuidHeaderMessageValid { get; set; }
+        
+        public Boolean LatestVersionValid { get; set; }
+
+
+
+    }
+
     public class RequestData
     {
         public string AuthType { get; set; }
@@ -250,6 +269,7 @@ namespace tBOT.API
         public string RequestBody { get; set; }
         public string EndPoint { get; set; }
         public string RawschemaUrl { get; set; }
+        public string Version { get; set; }
 
     }
 

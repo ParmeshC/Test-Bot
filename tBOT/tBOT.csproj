@@ -67,9 +67,13 @@
     <Reference Include="Newtonsoft.Json.Schema, Version=2.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.Schema.2.0.11\lib\net45\Newtonsoft.Json.Schema.dll</HintPath>
     </Reference>
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Oracle.ManagedDataAccess.12.2.1100\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.Entity.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
@@ -172,6 +176,7 @@
     <Compile Include="Models\Authorization.cs">
       <DependentUpon>ModelApiTest.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DataAccess.cs" />
     <Compile Include="Models\Environment.cs">
       <DependentUpon>ModelApiTest.tt</DependentUpon>
     </Compile>
@@ -262,13 +267,16 @@
     <Content Include="Views\Builder\DatabaseQuery.cshtml" />
     <Content Include="Views\Routine\AddApiInfo.cshtml" />
     <Content Include="Views\Routine\GetApiInfo.cshtml" />
+    <Content Include="Views\Builder\BuilderRequest.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\themes\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">

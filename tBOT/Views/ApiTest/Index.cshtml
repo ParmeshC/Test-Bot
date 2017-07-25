@@ -3,7 +3,7 @@
     Layout = null;
 }
 
-<!DOCTYPE html>
+
 
 <html>
 <head>
@@ -14,15 +14,18 @@
     <link rel="stylesheet" href="~/Content/api-test-query-builder.css" type="text/css" />
     <link rel="stylesheet" href="~/Content/api-test.css">
 
+
+
+
     
     <script src="~/Scripts/angular.js"></script>
     <script src="~/Scripts/angular-drag-and-drop-lists.min.js"></script>
     <script src="~/Scripts/ui-bootstrap-tpls-0.6.0.js"></script>
-    
-    <script src="~/Scripts/ngFlowchart.js"></script>    
 
-    <script src="~/Scripts/Draggable.js"></script> 
     <script src="~/Scripts/FlowChart.js"></script>
+    <script src="~/Scripts/ngFlowchart.js"></script> 
+    <script src="~/Scripts/Draggable.js"></script> 
+    
     <script src="~/Scripts/api-test.js"></script>
     <script src="~/Scripts/api-test-ui-layout.js"></script>
     <script src="~/Scripts/api-test-routine.js"></script>
@@ -71,11 +74,14 @@
                 </div>
 
                 <div ui-layout-container>
+                    <div class="ui-layout-header">
+                        <h5>Builder</h5>
+                        @*<hr>*@
+                    </div>
    
 
                     <div class="container body-content">
-                        @RenderPage("~/Views/Builder/ResponseQuery.cshtml")
-                        @RenderPage("~/Views/Builder/DatabaseQuery.cshtml")
+                        @RenderPage("~/Views/Builder/BuilderRequest.cshtml")                        
                     </div>
                 </div>
             </div>

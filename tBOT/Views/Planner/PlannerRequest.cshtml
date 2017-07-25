@@ -29,44 +29,45 @@
             </div>
         </div>
 
-        <div class="form-inline" ng-show="requestResult">
-            <h5 style="overflow-wrap: break-word;">{{results[0].Url}}</h5>
-            <h5 style="overflow-wrap: break-word;">{{results[0].LatestVersion}}</h5>
-            <div class="text-right">
-                <a ng-if="results[0].ResponseContent.StatusCode =='200'" href="#">Total Count <span class="badge">{{results[0].TotalCount}}</span></a>
-                <span ng-if="results[0].ResponseContent.StatusCode =='200'" class="label label-success">Status: {{results[0].ResponseContent.StatusCode}} {{results[0].ResponseContent.ResponsePhrase}}</span>
-                <span ng-if="results[0].ResponseContent.StatusCode !='200'" class="label label-warning">Status: {{results[0].ResponseContent.StatusCode}} {{results[0].ResponseContent.ResponsePhrase}}</span>
+        @*<div class="form-inline" ng-show="requestResult">*@
+            <div class="form-inline" >
+                <h5 style="overflow-wrap: break-word;">{{results[0].Url}}</h5>
+                <h5 style="overflow-wrap: break-word;">{{results[0].LatestVersion}}</h5>
+                <div class="text-right">
+                    <a ng-if="results[0].ResponseContent.StatusCode =='200'" href="#">Total Count <span class="badge">{{results[0].TotalCount}}</span></a>
+                    <span ng-if="results[0].ResponseContent.StatusCode =='200'" class="label label-success">Status: {{results[0].ResponseContent.StatusCode}} {{results[0].ResponseContent.ResponsePhrase}}</span>
+                    <span ng-if="results[0].ResponseContent.StatusCode !='200'" class="label label-warning">Status: {{results[0].ResponseContent.StatusCode}} {{results[0].ResponseContent.ResponsePhrase}}</span>
+                </div>
+                <tabset>
+                    <tab heading="Body">
+                        <pre ng-if="results[0].ResponseContent.IsResponseArray">{{results[0].ResponseContent.ResponseArray| json}}</pre>
+                        <pre ng-if="!results[0].ResponseContent.IsResponseArray && results[0].ResponseContent.ResponseObject!=null">{{results[0].ResponseContent.ResponseObject| json}}</pre>
+                        <pre ng-if="!results[0].ResponseContent.IsResponseArray && results[0].ResponseContent.ResponseObject==null">{{results[0].ResponseContent.Description}}</pre>
+                    </tab>
+                    <tab heading="Headers">
+                        <div ng-repeat="header in results[0].ResponseContent.ResponseHeaders">
+                            <h5>
+                                {{header.Key}}:-
+                                <span style="font-size:small; overflow-wrap: break-word;" ng-repeat="value in header.Value">{{value}}</span>
+                            </h5>
+                        </div>
+                    </tab>
+                    <tab heading="Schema">
+                        <span ng-if="results[0].SchemaValid=='False'" class="label label-danger">Schema Validation: Fail</span>
+                        <span ng-if="results[0].SchemaValid=='True'" class="label label-success">Schema Validation: Success</span>
+                        <pre>Schema validated against:{{results[0].SchemaValidatedJson| json}}</pre>
+                        <pre ng-if="results[0].SchemaErrors!=''">Schema Errors:{{results[0].SchemaErrors| json}}</pre>
+                        <h5>Schema Url: <span style="font-size:small; overflow-wrap: break-word;">{{results[0].SchemaUrl}}</span></h5>
+                        <pre>Schema:{{results[0].Schema}}</pre>
+                    </tab>
+                    <tab heading="Validate">
+                        @*<pre>{{results| json}}</pre>*@
+                    </tab>
+                </tabset>
+
             </div>
-            <tabset>
-                <tab heading="Body">
-                    <pre ng-if="results[0].ResponseContent.IsResponseArray">{{results[0].ResponseContent.ResponseArray| json}}</pre>
-                    <pre ng-if="!results[0].ResponseContent.IsResponseArray && results[0].ResponseContent.ResponseObject!=null">{{results[0].ResponseContent.ResponseObject| json}}</pre>
-                    <pre ng-if="!results[0].ResponseContent.IsResponseArray && results[0].ResponseContent.ResponseObject==null">{{results[0].ResponseContent.Description}}</pre>
-                </tab>
-                <tab heading="Headers">
-                    <div ng-repeat="header in results[0].ResponseContent.ResponseHeaders">
-                        <h5>
-                            {{header.Key}}:-
-                            <span style="font-size:small; overflow-wrap: break-word;" ng-repeat="value in header.Value">{{value}}</span>
-                        </h5>
-                    </div>
-                </tab>
-                <tab heading="Schema">
-                    <span ng-if="results[0].SchemaValid=='False'" class="label label-danger">Schema Validation: Fail</span>
-                    <span ng-if="results[0].SchemaValid=='True'" class="label label-success">Schema Validation: Success</span>
-                    <pre>Schema validated against:{{results[0].SchemaValidatedJson| json}}</pre>
-                    <pre ng-if="results[0].SchemaErrors!=''">Schema Errors:{{results[0].SchemaErrors| json}}</pre>
-                    <h5>Schema Url: <span style="font-size:small; overflow-wrap: break-word;">{{results[0].SchemaUrl}}</span></h5>
-                    <pre>Schema:{{results[0].Schema}}</pre>
-                </tab>
-                <tab heading="Validate">
-                    <pre>{{results| json}}</pre>
-                </tab>
-            </tabset>
+            <img ng-show="reqestStatus" id="spinner" ng-src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" style="display:inline-block; text-align:center">
 
         </div>
-        <img ng-show="reqestStatus" id="spinner" ng-src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" style="display:inline-block; text-align:center">
-
-    </div>
 
 
