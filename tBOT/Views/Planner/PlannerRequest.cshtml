@@ -2,20 +2,22 @@
 
     <div ng-app="PlannerApp" ng-controller="PlannerCtrl" class="container-fluid">
         @*<div ng-style="text-align:center">*@
-        <div ng-show="ApiInfoUrl">
 
+        <h5 ng-show="ApiInfo.length>1">Selected: <var><u style="overflow-wrap: break-word;">{{ApiInfo.length}}</u></var></h5>
+
+        <div>
             @*<div class="form-inline">
                 <select title="App" class="form-control" multiselect="multiselect" data-ng-options="o.app for o in AppOptions" data-ng-model="apiApp"></select>
                 <input class="form-control" placeholder="Enter the API EndPoint..." ng-model="ApiInfo.EndPoint">
                 </div>*@
 
-            <div class="form-inline">
+            <div ng-show="ApiInfo.length==1" class="form-inline">                
                 <h5>URL: <var><u style="overflow-wrap: break-word;">{{ApiInfoUrl}}</u></var></h5>
-                <h5>Version: <var><u>{{ApiInfo.Version}}</u></var></h5>
-                <h5>Schema Url: <var><a target="_blank" style="overflow-wrap: break-word;" href={{ApiInfo.SchemaUrl}}>{{ApiInfo.SchemaUrl}}</a></var></h5>
+                @*<h5>Version: <var><u>{{ApiInfoVersion}}</u></var></h5>
+                <h5>Schema Url: <var><a target="_blank" style="overflow-wrap: break-word;" href={{ApiInfoSchema}}>{{ApiInfoSchema}}</a></var></h5>*@
             </div>
 
-            <div class="form-inline">
+            <div ng-show="ApiInfo.length>0" class="form-inline">
                 <div class="input-group">
                     @*<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span></span>*@
                     <select title="App" class="form-control" multiselect="multiselect" data-ng-options="om.Server for om in envOptions" data-ng-model="apiEnv" ng-change="updateApiInfo()"></select>

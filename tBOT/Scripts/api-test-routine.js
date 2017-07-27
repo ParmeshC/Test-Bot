@@ -1,6 +1,6 @@
 ﻿var RoutineApp = angular.module('api.test.routine', []);
 
-RoutineApp.controller('RoutineCtrl', function (RoutineFactory, apiTestSharedService, $scope) {
+RoutineApp.controller('RoutineCtrl', function (RoutineFactory, apiTestSharedService, $scope, $filter) {
     var vm = this;
     var jsonData = [{ header: "EndPoint", id: 0 }, { header: "App", id: 1 }, { header: "Connector", id: 2 }, { header: "Version", id: 3 }];
 
@@ -19,8 +19,14 @@ RoutineApp.controller('RoutineCtrl', function (RoutineFactory, apiTestSharedServ
         $scope.mpblHdr = jsonData;
     }
 
-    $scope.endPointClick = function (apiInfo) {
-        apiTestSharedService.ApiInfoBroadcast(apiInfo);
+    $scope.ApiInfo;
+    RoutineFactory.getApiInfo().then(function (d) {
+        $scope.ApiInfo = d.data;
+    });
+
+
+    $scope.AddApiInfo = function () {
+        RoutineFactory.addApiInfoToDB($scope.mpdHdrNdata);
     }
 
 
@@ -28,16 +34,32 @@ RoutineApp.controller('RoutineCtrl', function (RoutineFactory, apiTestSharedServ
     $scope.sortReverse = false;  // set the default sort order
     $scope.searchEndPoint = '';     // set the default search/filter term
 
-    $scope.ApiInfo;
-    RoutineFactory.getApiInfo().then(function (d) {
-        $scope.ApiInfo = d.data;
-    });    
 
 
-    $scope.AddApiInfo = function () {
-        RoutineFactory.addApiInfoToDB($scope.mpdHdrNdata);
+    $scope.selectedRows = [];
+    var getAllSelected = function () {
+        $scope.selectedRows = $scope.ApiInfo.filter(function (item) {
+            return item.Selected;
+        });
+        apiTestSharedService.ApiInfoBroadcast($scope.selectedRows);
+        return $scope.selectedRows.length === $scope.ApiInfo.length;
     }
 
+    var setAllSelected = function (value) {
+        angular.forEach($scope.ApiInfo, function (item) {
+            item.Selected = value;
+        });
+    }
+
+    $scope.allSelected = function (value) {
+        if (value !== undefined) {
+            return setAllSelected(value);
+        } else {
+            return getAllSelected();
+        }
+        
+    }
+    
     $scope.update = function (clmIndx) {
         if (this.slctdHdr != undefined) {
             var index = this.slctdHdr['id'];
@@ -109,7 +131,6 @@ RoutineApp.directive("fileread", [function () {
     };
 }]);
 
-
 RoutineApp.factory('RoutineFactory', function ($http) {
     return {
 
@@ -121,4 +142,4 @@ RoutineApp.factory('RoutineFactory', function ($http) {
             return $http.post("/Routine/AddApiInfo", ApiInput);
         }
     };
-})
+});

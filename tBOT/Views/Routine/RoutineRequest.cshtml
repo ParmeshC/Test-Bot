@@ -1,5 +1,5 @@
 ﻿
-    <div ng-controller="RoutineCtrl as vm">
+<div ng-controller="RoutineCtrl as vm">
         <tabset>
             <tab heading="Individual">
                 <form>
@@ -10,10 +10,16 @@
                         </div>
                     </div>
                 </form>
+                <button class="btn btn-primary" ng-click="getAllSelectedRows()">Get All Selected Rows</button>
 
+                @*{{selectedRows | json}}*@
                 <table class="table table-bordered table-striped table-hover">
                     <thead>
                         <tr>
+                            <td>
+                                <input type="checkbox" ng-model="allSelected" ng-model-options="{getterSetter: true}" />
+                            </td>
+
                             <td>
                                 <a href="" ng-click="sortType = 'Id'; sortReverse = !sortReverse">
                                     ID
@@ -55,8 +61,9 @@
                     <tbody>
 
                         <tr ng-repeat="info in ApiInfo | orderBy:sortType:sortReverse | filter:searchEndPoint">
-                            <td> {{info.Id}}</td>
-                            <td ng-click="endPointClick(info)"><var><a href="">{{info.EndPoint}}</a></var></td>
+                            <td><input type="checkbox" ng-model="info.Selected"/></td> 
+                            <td>{{info.Id}}</td>                            
+                            <td>{{info.EndPoint}}</td>
                             <td> {{info.APP}}</td>
                             <td> {{info.Connector}}</td>
                             <td> {{info.Version}}</td>
@@ -102,5 +109,8 @@
             </tab>
         </tabset>
     </div>
+
+
+
 
 

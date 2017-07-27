@@ -3,20 +3,22 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
 
     $scope.$on('handleApiInfoBroadcast', function () {
         $scope.ApiInfo = apiTestSharedService.apiInfo;
-        $scope.updateApiInfo();
+        if ($scope.ApiInfo.length > 0)
+        {
+            $scope.updateApiInfo($scope.ApiInfo[0]);
+        }
     });
 
-    $scope.updateApiInfo = function () {
-        $scope.ApiInfoUrl = "http://" + $scope.apiEnv.Server + "/" + $scope.ApiInfo.APP + "/" + $scope.ApiInfo.Connector + "/" + $scope.ApiInfo.EndPoint;
-        $scope.ApiInfoSchema = $scope.ApiInfo.SchemaUrl
-        $scope.ApiInfoVersion = $scope.ApiInfo.Version
+    $scope.updateApiInfo = function (info) {
+        $scope.ApiInfoUrl = "http://" + $scope.apiEnv.Server + "/" + info.APP + "/" + info.Connector + "/" + info.EndPoint;
+        $scope.ApiInfoSchema = info.SchemaUrl
+        $scope.ApiInfoVersion = info.Version
     }
 
     $scope.envOptions;
     PlannerFactory.getEnvironments().then(function (d) {
         $scope.envOptions = d.data;        
-        $scope.apiEnv = $scope.envOptions[0]; 
-               
+        $scope.apiEnv = $scope.envOptions[0];
     });
         
     
@@ -47,27 +49,28 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
     $scope.requestResult = false;
     $scope.reqestStatus = false;
     $scope.results = [];
-    $scope.requestData = {};
+    $scope.requestData = [];
     $scope.apiRequest = function () {
-         $scope.requestData["AuthType"] = $scope.apiAuth.Type;
-        $scope.requestData["UserName"] = $scope.apiAuth.UserName;
-        $scope.requestData["Password"] = $scope.apiAuth.Password;
-        $scope.requestData["Lang"] = "en-in";
-        $scope.requestData["Accept"] = "application/json";
-        $scope.requestData["ContentType"] = "application/json";
-        $scope.requestData["RequestMethod"] = "GET";
-        $scope.requestData["RequestUrl"] = $scope.ApiInfoUrl;
-        $scope.requestData["RequestBody"] = "";
-        $scope.requestData["EndPoint"] = $scope.ApiInfo.EndPoint;
-        $scope.requestData["RawschemaUrl"] = $scope.ApiInfoSchema;
-        $scope.requestData["Version"] = $scope.ApiInfo.Version;
-
-        PlannerFactory.getApiResponse($scope).then(function (d) {
+        angular.forEach($scope.ApiInfo, function (info) {
+            $scope.requestData.push({
+                ["AuthType"]:$scope.apiAuth.Type,
+                ["UserName"]: $scope.apiAuth.UserName,
+                ["Password"]: $scope.apiAuth.Password,
+                ["Lang"]: "en-in",
+                ["Accept"]:"application/json",
+                ["ContentType"]:"application/json",
+                ["RequestMethod"]:"GET",
+                ["RequestUrl"]:"http://" + $scope.apiEnv.Server + "/" + info.APP + "/" + info.Connector + "/" + info.EndPoint,
+                ["RequestBody"]:"",
+                ["EndPoint"]:info.EndPoint,
+                ["RawschemaUrl"]:info.SchemaUrl,
+                ["Version"]:info.Version
+            });           
+        })
+        PlannerFactory.getApiResponseList($scope).then(function (d) {
             $scope.results = d.data;
             $scope.reqestStatus = false;
-            $scope.requestResult = true;    
-
-            console.log($scope.results);
+            $scope.requestResult = true;
             //apiTestSharedService.ApiRsponseInfoBroadcast($scope.results);
         });
 
@@ -81,6 +84,10 @@ PlannerApp.factory('PlannerFactory', function ($http) {
 
         getApiResponse: function (scp) {
             return $http.post("/Planner/GetApiResponse", scp.requestData);
+        },
+
+        getApiResponseList: function (scp) {
+            return $http.post("/Planner/GetApiResponseList", scp.requestData);
         },
 
         //getApiResponse: function (scp) {

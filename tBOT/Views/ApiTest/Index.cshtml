@@ -13,8 +13,7 @@
     <link rel="stylesheet" href="~/Content/api-test-ui-layout.css" type="text/css" />
     <link rel="stylesheet" href="~/Content/api-test-query-builder.css" type="text/css" />
     <link rel="stylesheet" href="~/Content/api-test.css">
-
-
+    
 
 
     
@@ -33,6 +32,8 @@
     <script src="~/Scripts/app.js"></script>
     <script src="~/Scripts/xlsx.full.min.js"></script>
 
+    
+
     <title>t-BOT</title>
 </head>
 <body ng-app="api.test" ng-cloak>
@@ -42,8 +43,8 @@
                             <li><a style="padding-left:0px; padding-top:10px;" href="/Home"><span style="font-size: 20px" class="glyphicon glyphicon-arrow-left"></span></a></li>                            
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a><span class="username"></span>Hello, @MyHelpers.UserFullName()</a></li>
-                            @*<li><a><span class="username"></span>Hello, @User.Identity.Name</a></li>*@
+                            @*<li><a><span class="username"></span>Hello, @MyHelpers.UserFullName()</a></li>*@
+                            <li><a><span class="username"></span>Hello, @User.Identity.Name</a></li>
 
                         </ul>
                     </div>
