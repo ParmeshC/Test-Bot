@@ -1,6 +1,6 @@
 ﻿var RoutineApp = angular.module('api.test.routine', []);
 
-RoutineApp.controller('RoutineCtrl', function (RoutineFactory, apiTestSharedService, $scope, $filter) {
+RoutineApp.controller('RoutineCtrl', function (RoutineFactory, apiTestSharedService, $scope) {
     var vm = this;
     var jsonData = [{ header: "EndPoint", id: 0 }, { header: "App", id: 1 }, { header: "Connector", id: 2 }, { header: "Version", id: 3 }];
 
@@ -36,29 +36,28 @@ RoutineApp.controller('RoutineCtrl', function (RoutineFactory, apiTestSharedServ
 
 
 
+    //This section helps to toggle with the check box
     $scope.selectedRows = [];
     var getAllSelected = function () {
-        $scope.selectedRows = $scope.ApiInfo.filter(function (item) {
-            return item.Selected;
+        var selectedItems = $scope.ApiInfo.filter(function (item) {
+            return item.selected;
         });
-        apiTestSharedService.ApiInfoBroadcast($scope.selectedRows);
-        return $scope.selectedRows.length === $scope.ApiInfo.length;
+        $scope.selectedRows = selectedItems;
+        apiTestSharedService.ApiInfoBroadcast($scope.selectedRows);        
     }
 
-    var setAllSelected = function (value) {
-        angular.forEach($scope.ApiInfo, function (item) {
-            item.Selected = value;
-        });
+    $scope.toggleAll = function () {
+        var toggleStatus = $scope.isAllSelected;
+        angular.forEach($scope.ApiInfo, function (itm) { itm.selected = toggleStatus; });
+        getAllSelected();
     }
 
-    $scope.allSelected = function (value) {
-        if (value !== undefined) {
-            return setAllSelected(value);
-        } else {
-            return getAllSelected();
-        }
-        
+    $scope.optionToggled = function () {
+        $scope.isAllSelected = $scope.ApiInfo.every(function (itm) { return itm.selected; })
+        getAllSelected();
     }
+    //*****************
+
     
     $scope.update = function (clmIndx) {
         if (this.slctdHdr != undefined) {
