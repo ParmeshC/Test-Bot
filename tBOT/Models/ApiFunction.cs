@@ -238,9 +238,11 @@ namespace tBOT.API
         public string Description { get; set; }
     }
 
-
     public class ValidationData
     {
+        public Boolean PassStatus { get; set; }
+        public int PassCount { get; set; }
+        public int FailCount { get; set; }
         public string ListHeaderMessage { get; set; }
         public string ExpectedListHeaderMessage { get; set; }
         public Boolean ListHeaderMessageValid { get; set; }
@@ -256,8 +258,6 @@ namespace tBOT.API
         public string LatestVersion { get; set; }
         public string ExpectedLatestVersion { get; set; }
         public Boolean LatestVersionValid { get; set; }
-
-
 
     }
 

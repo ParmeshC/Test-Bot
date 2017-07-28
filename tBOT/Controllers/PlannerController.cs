@@ -172,6 +172,45 @@ namespace tBOT.Controllers
                     validationResult.InvalidGuidHeaderMessageValid = false;
 
                 }
+                validationResult.PassStatus = true;
+                if (validationResult.LatestVersionValid == true)
+                { validationResult.PassCount++; }
+                else
+                {
+                    validationResult.FailCount++;
+                    validationResult.PassStatus = false;
+                }
+
+
+                if (validationResult.ListHeaderMessageValid == true)
+                { validationResult.PassCount++; }
+                else
+                {
+                    ++validationResult.FailCount;
+                    validationResult.PassStatus = false;
+                }
+
+
+                if (validationResult.GuidHeaderMessageValid == true)
+                { validationResult.PassCount++; }
+                else
+                {
+                    validationResult.FailCount++;
+                    validationResult.PassStatus = false;
+                }
+
+                if (validationResult.InvalidGuidHeaderMessageValid == true)
+                { validationResult.PassCount++; }
+                else
+                {
+                    validationResult.FailCount++;
+                    validationResult.PassStatus = false;
+                }
+
+
+
+
+
                 responseResult.ValidationContent = validationResult;
                 queue.Enqueue(responseResult);
             });
@@ -231,18 +270,21 @@ namespace tBOT.Controllers
                     validationResult.ExpectedLatestVersion = RequestData.Version;
                     validationResult.LatestVersionValid = checkLatestVersion(validationResult.LatestVersion, RequestData.Version);
 
+
                     validationResult.ListHeaderMessage = ApiResponse(RequestData).Take().GetListMessage;
                     validationResult.ListHeaderMessageValid = checkHeaderMessage(validationResult.ListHeaderMessage, validationResult.ExpectedListHeaderMessage);
-
-                    if (!string.IsNullOrEmpty(responseResult.Guid))
+                
+                if (!string.IsNullOrEmpty(responseResult.Guid))
                     {
                         RequestData.RequestUrl = RequestData.RequestUrl + @"/" + responseResult.Guid;
                         validationResult.GuidHeaderMessage = ApiResponse(RequestData).Take().GetListMessage;
                         validationResult.GuidHeaderMessageValid = checkHeaderMessage(validationResult.GuidHeaderMessage, validationResult.ExpectedGuidHeaderMessage);
 
+
                         RequestData.RequestUrl = RequestData.RequestUrl + "invalid-Guid-0123";
                         validationResult.InvalidGuidHeaderMessage = ApiResponse(RequestData).Take().GetListMessage;
                         validationResult.InvalidGuidHeaderMessageValid = checkHeaderMessage(validationResult.InvalidGuidHeaderMessage, validationResult.ExpectedInvalidGuidHeaderMessage);
+
                     }
                 }
                 else
@@ -251,9 +293,9 @@ namespace tBOT.Controllers
                     validationResult.ListHeaderMessageValid = false;
                     validationResult.GuidHeaderMessageValid = false;
                     validationResult.InvalidGuidHeaderMessageValid = false;
-
                 }
-                responseResult.ValidationContent = validationResult;
+
+            responseResult.ValidationContent = validationResult;
                 return responseResult;
         }
 
