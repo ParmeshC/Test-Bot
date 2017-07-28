@@ -3,17 +3,8 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
 
     $scope.$on('handleApiInfoBroadcast', function () {
         $scope.ApiInfo = apiTestSharedService.apiInfo;
-        if ($scope.ApiInfo.length > 0)
-        {
-            $scope.updateApiInfo($scope.ApiInfo[0]);
-        }
-    });
 
-    $scope.updateApiInfo = function (info) {
-        $scope.ApiInfoUrl = "http://" + $scope.apiEnv.Server + "/" + info.APP + "/" + info.Connector + "/" + info.EndPoint;
-        $scope.ApiInfoSchema = info.SchemaUrl
-        $scope.ApiInfoVersion = info.Version
-    }
+    });
 
     $scope.envOptions;
     PlannerFactory.getEnvironments().then(function (d) {
@@ -32,25 +23,12 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
     $scope.AppOptions = [{ app: "IntegrationApi", id: 1 }, { app: "StudentApi", id: 2 }];
     $scope.apiApp = $scope.AppOptions[0];
 
-
-    //$scope.requestResult = false;
-    //$scope.reqestStatus = false;
-    //$scope.results = [];
-    //$scope.apiRequest = function () {
-    //    $scope.reqestStatus = true;
-    //    $scope.requestResult = false;
-    //    PlannerFactory.getApiResponse($scope).then(function (d) {
-    //        $scope.results = d.data;
-    //        $scope.reqestStatus = false;
-    //        $scope.requestResult = true;
-    //    });
-    //}
-
-    $scope.requestResult = false;
     $scope.reqestStatus = false;
     $scope.results = [];
     $scope.requestData = [];
     $scope.apiRequest = function () {
+        $scope.requestData.splice(0, $scope.requestData.length)//deletes all the items in the array
+        $scope.reqestStatus = true;
         angular.forEach($scope.ApiInfo, function (info) {
             $scope.requestData.push({
                 ["AuthType"]:$scope.apiAuth.Type,
@@ -67,11 +45,11 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
                 ["Version"]:info.Version
             });           
         })
+        $scope.results.splice(0, $scope.results.length)//deletes all the items in the array
         PlannerFactory.getApiResponseList($scope).then(function (d) {
             $scope.results = d.data;
             $scope.reqestStatus = false;
-            $scope.requestResult = true;
-            //apiTestSharedService.ApiRsponseInfoBroadcast($scope.results);
+            apiTestSharedService.ApiRsponseInfoBroadcast($scope.results);
         });
 
     };
@@ -89,17 +67,6 @@ PlannerApp.factory('PlannerFactory', function ($http) {
         getApiResponseList: function (scp) {
             return $http.post("/Planner/GetApiResponseList", scp.requestData);
         },
-
-        //getApiResponse: function (scp) {
-        //    return $http.get("/Planner/GetApiResponse"
-        //        + "?SrvNm=" + scp.apiEnv.Server                
-        //        + "&UsrNm=" + scp.apiAuth.UserName
-        //        + "&PassWrd=" + scp.apiAuth.Password
-        //        + "&AuthType=" + scp.apiAuth.Type
-        //        + "&ApiAPP=" + scp.apiApp.app
-        //        + "&ApiEndPoint=" + scp.apiEndPoint
-        //        );
-        //},
 
         getEnvironments: function () {
             return $http.get("/Planner/GetAllEnvironments");

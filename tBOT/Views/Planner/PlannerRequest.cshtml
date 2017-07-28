@@ -3,21 +3,13 @@
     <div ng-app="PlannerApp" ng-controller="PlannerCtrl" class="container-fluid">
         @*<div ng-style="text-align:center">*@
 
-        <h5 ng-show="ApiInfo.length>1">Selected: <var><u style="overflow-wrap: break-word;">{{ApiInfo.length}}</u></var></h5>
+        
 
         <div>
-            @*<div class="form-inline">
-                <select title="App" class="form-control" multiselect="multiselect" data-ng-options="o.app for o in AppOptions" data-ng-model="apiApp"></select>
-                <input class="form-control" placeholder="Enter the API EndPoint..." ng-model="ApiInfo.EndPoint">
-                </div>*@
 
-            <div ng-show="ApiInfo.length==1" class="form-inline">                
-                <h5>URL: <var><u style="overflow-wrap: break-word;">{{ApiInfoUrl}}</u></var></h5>
-                @*<h5>Version: <var><u>{{ApiInfoVersion}}</u></var></h5>
-                <h5>Schema Url: <var><a target="_blank" style="overflow-wrap: break-word;" href={{ApiInfoSchema}}>{{ApiInfoSchema}}</a></var></h5>*@
-            </div>
 
             <div ng-show="ApiInfo.length>0" class="form-inline">
+                <h5>Selected: <var><u style="overflow-wrap: break-word;">{{ApiInfo.length}}</u></var></h5>
                 <div class="input-group">
                     @*<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span></span>*@
                     <select title="App" class="form-control" multiselect="multiselect" data-ng-options="om.Server for om in envOptions" data-ng-model="apiEnv" ng-change="updateApiInfo()"></select>
@@ -30,12 +22,12 @@
                 <input type="submit" value="Get" ng-click="apiRequest()" class="btn btn-primary btn-sm">
             </div>
         </div>
-        <div class="form-inline" ng-show="requestResult">
+        <div class="form-inline" ng-show="results.length>0">
             <table class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
                         <td>
-                            URL
+                            EndPoint
                         </td>
                         <td>
                             Status
@@ -56,14 +48,14 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="responseResult in results">
-                        <td>{{responseResult.Url}}</td>
+                        <td><h5 style="overflow-wrap: break-word;">{{responseResult.EndPoint}}</h5></td>
                         <td>
-                            <span ng-if="responseResult.ResponseContent.StatusCode =='200'" class="label label-success">{{responseResult.ResponseContent.StatusCode}} {{responseResult.ResponseContent.ResponsePhrase}}</span>
-                            <span ng-if="responseResult.ResponseContent.StatusCode !='200'" class="label label-warning">{{responseResult.ResponseContent.StatusCode}} {{responseResult.ResponseContent.ResponsePhrase}}</span>
-                        </td>                        
+                            <span ng-if="responseResult.ResponseContent.StatusCode =='200'" class="label-success">{{responseResult.ResponseContent.StatusCode}} {{responseResult.ResponseContent.ResponsePhrase}}</span>
+                            <span ng-if="responseResult.ResponseContent.StatusCode !='200'" class="label-warning">{{responseResult.ResponseContent.StatusCode}} {{responseResult.ResponseContent.ResponsePhrase}}</span>
+                        </td>
                         <td>
-                            <span ng-if="!responseResult.ValidationContent.PassStatus" class="label label-danger">Test Failed</span>
-                            <span ng-if="responseResult.ValidationContent.PassStatus" class="label label-success">Test Success</span>                        
+                            <span ng-if="!responseResult.ValidationContent.PassStatus" class="label label-danger">Failed</span>
+                            <span ng-if="responseResult.ValidationContent.PassStatus" class="label label-success">Success</span>                        
                         </td>
                         <td>{{responseResult.ValidationContent.PassCount}}</td>
                         <td>{{responseResult.ValidationContent.FailCount}}</td>
@@ -72,47 +64,7 @@
                 </tbody>
             </table>
         </div>
-
-
-        @*<div class="form-inline" ng-show="requestResult">
-                <h5 style="overflow-wrap: break-word;">{{results.Url}}</h5>
-                <h5 style="overflow-wrap: break-word;">{{results.LatestVersion}}</h5>
-                <div class="text-right">
-                    <a ng-if="results.ResponseContent.StatusCode =='200'" href="#">Total Count <span class="badge">{{results.TotalCount}}</span></a>
-                    <span ng-if="results.ResponseContent.StatusCode =='200'" class="label label-success">Status: {{results.ResponseContent.StatusCode}} {{results.ResponseContent.ResponsePhrase}}</span>
-                    <span ng-if="results.ResponseContent.StatusCode !='200'" class="label label-warning">Status: {{results.ResponseContent.StatusCode}} {{results.ResponseContent.ResponsePhrase}}</span>
-                </div>
-                <tabset>
-                    <tab heading="Body">
-                        <pre ng-if="results.ResponseContent.IsResponseArray">{{results.ResponseContent.ResponseArray| json}}</pre>
-                        <pre ng-if="!results.ResponseContent.IsResponseArray && results.ResponseContent.ResponseObject!=null">{{results.ResponseContent.ResponseObject| json}}</pre>
-                        <pre ng-if="!results.ResponseContent.IsResponseArray && results.ResponseContent.ResponseObject==null">{{results.ResponseContent.Description}}</pre>
-                    </tab>
-                    <tab heading="Headers">
-                        <div ng-repeat="header in results.ResponseContent.ResponseHeaders">
-                            <h5>
-                                {{header.Key}}:-
-                                <span style="font-size:small; overflow-wrap: break-word;" ng-repeat="value in header.Value">{{value}}</span>
-                            </h5>
-                        </div>
-                    </tab>
-                    <tab heading="Schema">
-                        <span ng-if="results.SchemaValid=='False'" class="label label-danger">Schema Validation: Fail</span>
-                        <span ng-if="results.SchemaValid=='True'" class="label label-success">Schema Validation: Success</span>
-                        <pre ng-if="results.SchemaErrors!=''">Schema Errors:{{results.SchemaErrors| json}}</pre>
-                        <h5>Schema Url: <var><a target="_blank" style="overflow-wrap: break-word;" href={{results.SchemaUrl}}>{{results.SchemaUrl}}</a></var></h5>
-                        <pre>Schema validated against:{{results.SchemaValidatedJson| json}}</pre>
-                        <pre>Schema:{{results.Schema}}</pre>
-                    </tab>
-                    <tab heading="Validate">
-                        <span ng-if="results.ValidationContent.ListHeaderMessageValid=='False'" class="label label-danger">ListHeaderMessage: Expected:{{results.ValidationContent.ExpectedListHeaderMessage}} Actual:{{results.ValidationContent.ListHeaderMessage}}</span>
-                        <span ng-if="results.ValidationContent.ListHeaderMessageValid=='True'" class="label label-success">ListHeaderMessage: Expected:{{results.ValidationContent.ExpectedListHeaderMessage}} Actual:{{results.ValidationContent.ListHeaderMessage}}</span>
-
-                        <pre>{{results.ValidationContent| json}}</pre>
-                    </tab>
-                </tabset>
-            </div>*@
-            <img ng-show="reqestStatus" id="spinner" ng-src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" style="display:inline-block; text-align:center">
+        <img ng-show="reqestStatus" id="spinner" ng-src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" style="display:inline-block; text-align:center">
 
         </div>
 

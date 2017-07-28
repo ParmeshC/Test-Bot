@@ -212,6 +212,7 @@ namespace tBOT.API
         public ResponseData ResponseContent { get; set; }
         public ValidationData ValidationContent { get; set; }
         public string Url { get; set; }
+        public string EndPoint { get; set; }
         public string SchemaUrl { get; set; }
         public string Schema { get; set; }
         public JObject SchemaValidatedJson { get; set; }

@@ -1,15 +1,6 @@
 ﻿(function (NestedLists) {
     NestedLists.controller("NestedListsController", ['$scope', 'apiTestSharedService', function ($scope, apiTestSharedService) {
 
-
-        $scope.$on('handleApiResponseInfoBroadcast', function () {
-            $scope.ApiResponseInfo = apiTestSharedService.apiResponseInfo;
-            console.log($scope.ApiResponseInfo)
-        });
-
-        
-
-
         $scope.models = {
         selected: null,
         templates: [

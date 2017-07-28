@@ -219,6 +219,7 @@
     <Content Include="Scripts\angular-drag-and-drop-lists.js" />
     <Content Include="Scripts\angular-drag-and-drop-lists.min.js" />
     <Content Include="Scripts\angular.js" />
+    <Content Include="Scripts\api-test-builder.js" />
     <Content Include="Scripts\api-test.js" />
     <Content Include="Scripts\app.js" />
     <Content Include="ApplicationInsights.config">

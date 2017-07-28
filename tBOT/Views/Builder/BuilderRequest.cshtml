@@ -1,7 +1,46 @@
 ﻿
 <div>
-   @RenderPage("~/Views/Builder/DatabaseQuery.cshtml")
+    <div class="form-inline" ng-show="requestResult">
+            <h5 style="overflow-wrap: break-word;">{{results.Url}}</h5>
+            <h5 style="overflow-wrap: break-word;">{{results.LatestVersion}}</h5>
+            <div class="text-right">
+                <a ng-if="results.ResponseContent.StatusCode =='200'" href="#">Total Count <span class="badge">{{results.TotalCount}}</span></a>
+                <span ng-if="results.ResponseContent.StatusCode =='200'" class="label label-success">Status: {{results.ResponseContent.StatusCode}} {{results.ResponseContent.ResponsePhrase}}</span>
+                <span ng-if="results.ResponseContent.StatusCode !='200'" class="label label-warning">Status: {{results.ResponseContent.StatusCode}} {{results.ResponseContent.ResponsePhrase}}</span>
+            </div>
+            <tabset>
+                <tab heading="Body">
+                    <pre ng-if="results.ResponseContent.IsResponseArray">{{results.ResponseContent.ResponseArray| json}}</pre>
+                    <pre ng-if="!results.ResponseContent.IsResponseArray && results.ResponseContent.ResponseObject!=null">{{results.ResponseContent.ResponseObject| json}}</pre>
+                    <pre ng-if="!results.ResponseContent.IsResponseArray && results.ResponseContent.ResponseObject==null">{{results.ResponseContent.Description}}</pre>
+                </tab>
+                <tab heading="Headers">
+                    <div ng-repeat="header in results.ResponseContent.ResponseHeaders">
+                        <h5>
+                            {{header.Key}}:-
+                            <span style="font-size:small; overflow-wrap: break-word;" ng-repeat="value in header.Value">{{value}}</span>
+                        </h5>
+                    </div>
+                </tab>
+                <tab heading="Schema">
+                    <span ng-if="results.SchemaValid=='False'" class="label label-danger">Schema Validation: Fail</span>
+                    <span ng-if="results.SchemaValid=='True'" class="label label-success">Schema Validation: Success</span>
+                    <pre ng-if="results.SchemaErrors!=''">Schema Errors:{{results.SchemaErrors| json}}</pre>
+                    <h5>Schema Url: <var><a target="_blank" style="overflow-wrap: break-word;" href={{results.SchemaUrl}}>{{results.SchemaUrl}}</a></var></h5>
+                    <pre>Schema validated against:{{results.SchemaValidatedJson| json}}</pre>
+                    <pre>Schema:{{results.Schema}}</pre>
+                </tab>
+                <tab heading="Validate">
+                    <span ng-if="results.ValidationContent.ListHeaderMessageValid=='False'" class="label label-danger">ListHeaderMessage: Expected:{{results.ValidationContent.ExpectedListHeaderMessage}} Actual:{{results.ValidationContent.ListHeaderMessage}}</span>
+                    <span ng-if="results.ValidationContent.ListHeaderMessageValid=='True'" class="label label-success">ListHeaderMessage: Expected:{{results.ValidationContent.ExpectedListHeaderMessage}} Actual:{{results.ValidationContent.ListHeaderMessage}}</span>
 
-   @RenderPage("~/Views/Builder/ResponseQuery.cshtml")
+                    <pre>{{results.ValidationContent| json}}</pre>
+                </tab>
+            </tabset>
+        </div>
+
+   @*@RenderPage("~/Views/Builder/DatabaseQuery.cshtml")
+
+   @RenderPage("~/Views/Builder/ResponseQuery.cshtml")*@
     
 </div>

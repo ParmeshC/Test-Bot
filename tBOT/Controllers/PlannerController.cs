@@ -114,6 +114,7 @@ namespace tBOT.Controllers
             {
                 ResponseContent = TranslationApi,
                 Url = requestData.RequestUrl,
+                EndPoint = requestData.EndPoint,
                 SchemaUrl = requestData.RawschemaUrl,
                 Schema = ValidationSchema,
                 SchemaValidatedJson = firstResponseObject,               
