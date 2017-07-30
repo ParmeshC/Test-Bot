@@ -1,10 +1,20 @@
 ﻿var PlannerApp = angular.module('api.test.planner', []);
 PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedService, $scope) {    
 
-    $scope.$on('handleApiInfoBroadcast', function () {
-        $scope.ApiInfo = apiTestSharedService.apiInfo;
+    $scope.$on('handleApiRequestListBroadcast', function () {
+        $scope.ApiRequestList = apiTestSharedService.apiRequestList;
 
     });
+
+    $scope.sortType = 'Status'; // set the default sort type
+    $scope.sortReverse = false;  // set the default sort order
+
+
+    $scope.getApiInfo = function (ResponseResult) {
+        $scope.responseResult = ResponseResult;
+        apiTestSharedService.apiResponseInfoBroadcast(ResponseResult);
+    }
+
 
     $scope.envOptions;
     PlannerFactory.getEnvironments().then(function (d) {
@@ -29,7 +39,9 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
     $scope.apiRequest = function () {
         $scope.requestData.splice(0, $scope.requestData.length)//deletes all the items in the array
         $scope.reqestStatus = true;
-        angular.forEach($scope.ApiInfo, function (info) {
+        apiTestSharedService.apiResponseListBroadcast(null);
+        apiTestSharedService.apiResponseInfoBroadcast(null);
+        angular.forEach($scope.ApiRequestList, function (info) {
             $scope.requestData.push({
                 ["AuthType"]:$scope.apiAuth.Type,
                 ["UserName"]: $scope.apiAuth.UserName,
@@ -49,7 +61,7 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
         PlannerFactory.getApiResponseList($scope).then(function (d) {
             $scope.results = d.data;
             $scope.reqestStatus = false;
-            apiTestSharedService.ApiRsponseInfoBroadcast($scope.results);
+            apiTestSharedService.apiResponseListBroadcast($scope.results);
         });
 
     };

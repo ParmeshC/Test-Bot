@@ -1,19 +1,4 @@
-﻿
-@{
-    ViewBag.Title = "Index";
-}
-
-<h2>Query Builder</h2>
-
-
-
-<link rel="stylesheet" type="text/css" href="~/Content/nested.css">
-
-<script src="~/Scripts/angular-drag-and-drop-lists.min.js"></script>
-<script src="~/Scripts/Draggable.js"></script>
-
-
-<div ng-app="NestedLists" ng-controller="NestedListsController" class="nestedDemo">
+﻿<div ng-app="NestedLists" ng-controller="NestedListsController" class="nestedDemo">
 
     <div class="nestedDemo row">
 
@@ -108,7 +93,7 @@
         <div class="col-md-10">
             <div class="row">
                 @*<div ng-repeat="(zone, list) in models.dropzones" class="col-md-6">*@
-                <div ng-repeat="(zone, list) in ApiResponseInfo" class="col-md-6">
+                <div ng-repeat="(zone, list) in ApiResponseInfoObject" class="col-md-6">
                     <div class="dropzone box box-yellow">
                         <!-- The dropzone also uses the list template -->
                         <h3>{{zone}}</h3>
@@ -119,14 +104,14 @@
                     </div>
                 </div>
             </div>
-            <div view-source="nested"></div>
+             @*<div view-source="nested"></div>
             <h2>Generated Model</h2>
-            <pre>{{modelAsJson}}</pre>
+            <pre>{{modelAsJson}}</pre>*@
         </div>
 
         <!-- Sidebar -->
 
-        <div class="col-md-2">
+        @*<div class="col-md-2">
             <div class="toolbox box box-grey box-padding">
                 <h3>New Elements</h3>
                 <ul>
@@ -152,7 +137,7 @@
                     <li></li>
                 </ul>
             </div>
-        </div>
+        </div>*@
     </div>
 </div>
 

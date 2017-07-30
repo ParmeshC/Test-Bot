@@ -1,6 +1,15 @@
 ﻿(function (NestedLists) {
     NestedLists.controller("NestedListsController", ['$scope', 'apiTestSharedService', function ($scope, apiTestSharedService) {
 
+
+        $scope.$on('handleApiResponseInfoBroadcast', function () {
+            $scope.ApiResponseInfo = apiTestSharedService.apiResponseInfo; 
+            if ($scope.ApiResponseInfo !== null) {
+                $scope.ApiResponseInfoObject = $scope.ApiResponseInfo.ResponseContent.IsResponseArray ? $scope.ApiResponseInfo.ResponseContent.ResponseArray : $scope.ApiResponseInfo.ResponseContent.ResponseObject;
+            }
+        });
+        
+
         $scope.models = {
         selected: null,
         templates: [
@@ -125,7 +134,7 @@
             transclude: true,
             link: function (scope, elem, attrs)
             {                
-                if (scope.node != undefined)
+                if (scope.node !== undefined)
                 {
                         scope.indxValue = scope.indx;
                         scope.nodeValue = scope.node;

@@ -3,11 +3,16 @@
 BuilderApp.controller('BuilderCtrl', function ($scope, apiTestSharedService) {
 
 
-    $scope.$on('handleApiResponseInfoBroadcast', function () {
-        $scope.ApiResponseInfo = apiTestSharedService.apiResponseInfo;
-        console.log($scope.ApiResponseInfo)
+    $scope.$on('handleApiResponseListBroadcast', function () {
+        $scope.ApiResponseList = apiTestSharedService.apiResponseList;
+        console.log($scope.ApiResponseList);
     });
 
+
+
+    $scope.$on('handleApiResponseInfoBroadcast', function () {
+        $scope.ApiResponseInfo = apiTestSharedService.apiResponseInfo;
+    });
 
 
 

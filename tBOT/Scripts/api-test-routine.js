@@ -43,7 +43,7 @@ RoutineApp.controller('RoutineCtrl', function (RoutineFactory, apiTestSharedServ
             return item.selected;
         });
         $scope.selectedRows = selectedItems;
-        apiTestSharedService.ApiInfoBroadcast($scope.selectedRows);        
+        apiTestSharedService.apiRequestListBroadcast($scope.selectedRows);        
     }
 
     $scope.toggleAll = function () {

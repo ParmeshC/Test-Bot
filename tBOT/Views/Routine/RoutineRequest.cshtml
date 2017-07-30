@@ -1,58 +1,55 @@
-﻿
-<div ng-controller="RoutineCtrl as vm">
+﻿<div ng-controller="RoutineCtrl as vm">
         <tabset>
             <tab heading="Individual">
-                <form>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-addon"><i class="fa fa-search"></i></div>
-                            <input type="text" class="form-control" placeholder="Search" ng-model="searchEndPoint">
-                        </div>
-                    </div>
-                </form>
-                <button class="btn btn-primary" ng-click="getAllSelectedRows()">Get All Selected Rows</button>
-
-                @*{{selectedRows | json}}*@
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+                    <input type="text" class="form-control" placeholder="Search" ng-model="searchEndPoint">
+                </div>
                 <table class="table table-bordered table-striped table-hover">
                     <thead>
                         <tr>
                             <td>
                                 <input type="checkbox" ng-click="toggleAll()" ng-model="isAllSelected">
+                                <a href="" ng-click="sortType = 'selected'; sortReverse = !sortReverse">
+                                    <span ng-class="sortType=='selected' && !sortReverse?'glyphicon glyphicon-sort-by-attributes':
+                                        sortType=='selected' && sortReverse?'glyphicon glyphicon-sort-by-attributes-alt':
+                                        'glyphicon glyphicon-sort'">
+                                    </span>
+                                </a>
                             </td>
-
                             <td>
                                 <a href="" ng-click="sortType = 'Id'; sortReverse = !sortReverse">
                                     ID
-                                    <span ng-show="sortType == 'Id' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-show="sortType == 'Id' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-show="sortType == 'Id' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                    <span ng-show="sortType == 'Id' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>                                    
                                 </a>
                             </td>
                             <td>
                                 <a href="" ng-click="sortType = 'EndPoint'; sortReverse = !sortReverse">
                                     EndPoint
-                                    <span ng-show="sortType == 'EndPoint' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-show="sortType == 'EndPoint' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-show="sortType == 'EndPoint' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                    <span ng-show="sortType == 'EndPoint' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>                                    
                                 </a>
                             </td>
                             <td>
                                 <a href="" ng-click="sortType = 'APP'; sortReverse = !sortReverse">
                                     APP
-                                    <span ng-show="sortType == 'APP' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-show="sortType == 'APP' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-show="sortType == 'APP' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                    <span ng-show="sortType == 'APP' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span> 
                                 </a>
                             </td>
                             <td>
                                 <a href="" ng-click="sortType = 'Connector'; sortReverse = !sortReverse">
                                     Connector
-                                    <span ng-show="sortType == 'Connector' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-show="sortType == 'Connector' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-show="sortType == 'Connector' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                    <span ng-show="sortType == 'Connector' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span> 
                                 </a>
                             </td>
                             <td>
                                 <a href="" ng-click="sortType = 'Version'; sortReverse = !sortReverse">
                                     Version
-                                    <span ng-show="sortType == 'Version' && !sortReverse" class="fa fa-caret-down"></span>
-                                    <span ng-show="sortType == 'Version' && sortReverse" class="fa fa-caret-up"></span>
+                                    <span ng-show="sortType == 'Version' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                    <span ng-show="sortType == 'Version' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span> 
                                 </a>
                             </td>
                         </tr>
@@ -71,14 +68,11 @@
                     </tbody>
 
                 </table>
-
-
             </tab>
             <tab heading="Group">
 
             </tab>
             <tab heading="Import">
-
                 <div class="btn btn-info btn-block" ng-show="!vm.gridOptions.data.length">
                     <label for="file-upload" style="display:inline">Browse file</label>
                     <input id="file-upload" type="file" accept=".xls,.xlsx,.ods,.csv" fileread="" opts="vm.gridOptions" style="display:none" />

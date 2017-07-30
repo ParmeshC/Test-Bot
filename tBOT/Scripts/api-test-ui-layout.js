@@ -189,7 +189,7 @@ app.controller('uiLayoutCtrl', ['$scope', '$attrs', '$element', '$window', 'Layo
                 RoutineSplitter.size = 0;
                 PlannerArea.size = 0;
                 PlannerSplitter.left = 0
-                BuilderArea.left = 0
+                BuilderArea.left = 10
                 BuilderArea.size = (currentWidth - BuilderArea.left)
                 
 
@@ -237,7 +237,6 @@ app.controller('uiLayoutCtrl', ['$scope', '$attrs', '$element', '$window', 'Layo
                 BuilderArea.left = PlannerSplitter.left + PlannerSplitter.size;
                 BuilderArea.size = (currentWidth - BuilderArea.left)
             }
-
             return PlannerArea.collapsed;
         };
 

@@ -1,20 +1,15 @@
-﻿
-
-    <div ng-app="PlannerApp" ng-controller="PlannerCtrl" class="container-fluid">
+﻿    <div ng-controller="PlannerCtrl" class="container-fluid">
         @*<div ng-style="text-align:center">*@
-
-        
-
         <div>
-
-
-            <div ng-show="ApiInfo.length>0" class="form-inline">
-                <h5>Selected: <var><u style="overflow-wrap: break-word;">{{ApiInfo.length}}</u></var></h5>
+            <br />
+            <div ng-show="ApiRequestList.length>0" class="form-inline">                
+                <div class="input-group">
+                    <h5>Selected:{{ApiRequestList.length}}</h5>
+                </div>
                 <div class="input-group">
                     @*<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span></span>*@
-                    <select title="App" class="form-control" multiselect="multiselect" data-ng-options="om.Server for om in envOptions" data-ng-model="apiEnv" ng-change="updateApiInfo()"></select>
+                    <select title="App" class="form-control" multiselect="multiselect" data-ng-options="om.Server for om in envOptions" data-ng-model="apiEnv"></select>
                 </div>
-
                 <div class="input-group">
                     @*<span class="input-group-addon btn btn-primary"><span class="glyphicon glyphicon-plus-sign"></span></span>*@
                     <select title="App" class="form-control" multiselect="multiselect" data-ng-options="o.UserName for o in authOptions" data-ng-model="apiAuth"></select>
@@ -22,47 +17,51 @@
                 <input type="submit" value="Get" ng-click="apiRequest()" class="btn btn-primary btn-sm">
             </div>
         </div>
+        <input ng-show="results.length>0" type="text" class="form-control" placeholder="Filter EndPoint..." ng-model="searchEndPoint">
         <div class="form-inline" ng-show="results.length>0">
-            <table class="table table-bordered table-striped table-hover">
-                <thead>
-                    <tr>
-                        <td>
-                            EndPoint
-                        </td>
-                        <td>
-                            Status
-                        </td>
-                        <td>
-                            Result
-                        </td>
-                        <td>
-                            Pass
-                        </td>
-                        <td>
-                            Fail
-                        </td>
-                        <td>
-                            Total
-                        </td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="responseResult in results">
-                        <td><h5 style="overflow-wrap: break-word;">{{responseResult.EndPoint}}</h5></td>
-                        <td>
-                            <span ng-if="responseResult.ResponseContent.StatusCode =='200'" class="label-success">{{responseResult.ResponseContent.StatusCode}} {{responseResult.ResponseContent.ResponsePhrase}}</span>
-                            <span ng-if="responseResult.ResponseContent.StatusCode !='200'" class="label-warning">{{responseResult.ResponseContent.StatusCode}} {{responseResult.ResponseContent.ResponsePhrase}}</span>
-                        </td>
-                        <td>
-                            <span ng-if="!responseResult.ValidationContent.PassStatus" class="label label-danger">Failed</span>
-                            <span ng-if="responseResult.ValidationContent.PassStatus" class="label label-success">Success</span>                        
-                        </td>
-                        <td>{{responseResult.ValidationContent.PassCount}}</td>
-                        <td>{{responseResult.ValidationContent.FailCount}}</td>
-                        <td>{{responseResult.ValidationContent.FailCount+responseResult.ValidationContent.PassCount}}</td>
-                    </tr>
-                </tbody>
-            </table>
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <td>
+                                <a href="" ng-click="sortType = 'EndPoint'; sortReverse = !sortReverse">
+                                    EndPoint
+                                    <span ng-show="sortType == 'EndPoint' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                    <span ng-show="sortType == 'EndPoint' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>  
+                                </a>
+                            </td>
+                            <td>
+                                <a href="" ng-click="sortType = 'ResponseContent.StatusCode'; sortReverse = !sortReverse">
+                                    Status
+                                    <span ng-show="sortType == 'ResponseContent.StatusCode' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                    <span ng-show="sortType == 'ResponseContent.StatusCode' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="" ng-click="sortType = 'ValidationContent.PassCount/ValidationContent.FailCount+ValidationContent.PassCount'; sortReverse = !sortReverse">
+                                    Result
+                                    <span ng-show="sortType == 'ValidationContent.PassCount/ValidationContent.FailCount+ValidationContent.PassCount' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                    <span ng-show="sortType == 'ValidationContent.PassCount/ValidationContent.FailCount+ValidationContent.PassCount' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                                </a>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="responseResult in results | filter:{EndPoint:searchEndPoint} | orderBy:sortType:sortReverse" ng-class="responseResult.ResponseContent.StatusCode ==200 ?'success':'danger'">
+                            <td>{{responseResult.EndPoint}}</td>
+                            <td>
+                                {{responseResult.ResponseContent.StatusCode}}
+                            </td>
+                            <td>
+                                <button type="button" ng-class="responseResult.ValidationContent.PassStatus?'btn btn-success btn-block':'btn btn-danger btn-block'" ng-click="getApiInfo(responseResult)">                                
+                                 <span ng-class="responseResult.ValidationContent.PassStatus?'glyphicon glyphicon-thumbs-up':'glyphicon glyphicon-thumbs-down'">&nbsp;</span>
+                                 <span class="badge">
+                                  {{responseResult.ValidationContent.PassCount}}/{{responseResult.ValidationContent.FailCount+responseResult.ValidationContent.PassCount}}
+                                 </span></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+           
         </div>
         <img ng-show="reqestStatus" id="spinner" ng-src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" style="display:inline-block; text-align:center">
 

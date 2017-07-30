@@ -51,6 +51,7 @@ namespace tBOT.Controllers
         public ActionResult GetApiResponseList(List<API.RequestData> RequestData)
         {
             return Content(JsonConvert.SerializeObject(ApiResponseList(RequestData)), "application/json");
+
         }
 
 
