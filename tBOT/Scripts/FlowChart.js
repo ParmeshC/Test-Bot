@@ -6,7 +6,7 @@
         NodeTemplatePathProvider.setTemplatePath("flowchart/node.html");
     });
 
-app.controller('AppCtrl', function AppCtrl($scope, prompt, Modelfactory, flowchartConstants) {
+app.controller('AppCtrl', function AppCtrl($scope, prompt, QueryBuilderFactory, Modelfactory, flowchartConstants) {
 
         var deleteKeyCode = 46;
         var ctrlKeyCode = 17;
@@ -15,6 +15,50 @@ app.controller('AppCtrl', function AppCtrl($scope, prompt, Modelfactory, flowcha
         var nextNodeID = 10;
         var nextConnectorID = 20;
         var ctrlDown = false;
+
+
+        $scope.resultTableSchema = [];
+        $scope.resultTableNames = [];
+        $scope.tableSchemaRequestData = [];
+        $scope.tableSchemaRequest = function () {
+            $scope.tableSchemaRequestData.splice(0, $scope.tableSchemaRequestData.length);//deletes all the items in the array
+            $scope.tableSchemaRequestData.push({
+                ["HostName"]: "149.24.38.229",
+                ["PortNumber"]: "1521",
+                ["ServiceName"]: "BAN83",
+                ["UserId"]: "baninst1",
+                ["Password"]: "u_pick_it"
+            });
+            $scope.resultTableSchema.splice(0, $scope.resultTableSchema.length);//deletes all the items in the array
+            $scope.resultTableNames.splice(0, $scope.resultTableSchema.length);//deletes all the items in the array
+
+            QueryBuilderFactory.getTableSchema($scope).then(function (d) {
+                $scope.resultTableSchema = d.data;
+                console.log($scope.resultTableSchema);
+            });
+
+            QueryBuilderFactory.getAllTableNames($scope).then(function (d) {
+                $scope.resultTableNames = d.data;
+                console.log($scope.resultTableNames);
+            });
+
+
+
+        };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         var model = {
             nodes: [
@@ -187,10 +231,12 @@ app.controller('AppCtrl', function AppCtrl($scope, prompt, Modelfactory, flowcha
         };
 
         $scope.addNewNode = function () {
-            var nodeName = prompt("Enter a node name:", "New node");
+            var nodeName = prompt("Enter a table name:", "table name...");
             if (!nodeName) {
                 return;
             }
+            console.log("Calling table schema request")
+            $scope.tableSchemaRequest();
 
             var newNode = {
                 name: nodeName,
@@ -301,4 +347,19 @@ app.controller('AppCtrl', function AppCtrl($scope, prompt, Modelfactory, flowcha
         };
         modelservice.registerCallbacks($scope.callbacks.edgeAdded, $scope.callbacks.nodeRemoved, $scope.callbacks.edgeRemoved, $scope.callbacks.checkboxChecked);
 
-    });
+        });
+
+
+app.factory('QueryBuilderFactory', function ($http) {
+    return {
+
+        getTableSchema: function (scp) {
+            return $http.post("/Builder/GetTableSchema", scp.tableSchemaRequestData[0]);
+        },
+
+            getAllTableNames: function (scp) {
+                return $http.post("/Builder/GetAllTableNames", scp.tableSchemaRequestData[0]);
+        }
+
+    };
+});

@@ -1,5 +1,5 @@
-﻿<div ng-controller="BuilderCtrl" class="container-fluid" ng-show="ApiResponseInfo!=null">
-    <div class="form-inline">            
+﻿<div ng-controller="BuilderCtrl" class="container-fluid">
+    <div class="form-inline" ng-show="ApiResponseInfo!=null">            
         <h5><var><a target="_blank" style="overflow-wrap: break-word;" href={{ApiResponseInfo.Url}}>{{ApiResponseInfo.Url}}</a></var></h5>    
         <div class="text-right">
                 <a ng-if="ApiResponseInfo.ResponseContent.StatusCode =='200'">Total Count <span class="badge">{{ApiResponseInfo.TotalCount}}</span></a>
@@ -39,4 +39,6 @@
                 </tab>*@
             </tabset>
         </div>
+    @RenderPage("~/Views/Builder/DatabaseQuery.cshtml")
 </div>
+

@@ -25,7 +25,7 @@ namespace tBOT.API
             return connString;
         }
 
-        private Dictionary<string, string> GetTableColumnsWithData(string TableName, DataConnection ConnectionParameter )
+        public Dictionary<string, string> GetTableColumnsWithData(string TableName, DataConnection ConnectionParameter )
         {
             Dictionary<string, string> columnNamesDictionay = new Dictionary<string, string>();
             try
@@ -34,17 +34,14 @@ namespace tBOT.API
 
 
                 string connectionString = GetConnectionString(ConnectionParameter);
-                string tablename = "RFRFFID";
+                //string Tablename = "RFRFFID";
                 using (OracleConnection connection = new OracleConnection())
                 {
                     connection.ConnectionString = connectionString;
                     connection.Open();
-                    Console.WriteLine("State: {0}", connection.State);
-                    Console.WriteLine("ConnectionString: {0}",
-                                      connection.ConnectionString);
 
                     OracleCommand command = connection.CreateCommand();
-                    string sql = "select COLUMN_NAME,NULLABLE from  all_tab_columns where Table_Name='" + tablename + "'";
+                    string sql = "select COLUMN_NAME,NULLABLE from  all_tab_columns where Table_Name='" + TableName + "'";
 
                     command.CommandText = sql;
 
@@ -61,7 +58,7 @@ namespace tBOT.API
                         }
                     }
 
-                    selectQuery = selectQuery + " FROM " + tablename + " WHERE ROWNUM = 1";
+                    selectQuery = selectQuery + " FROM " + TableName + " WHERE ROWNUM = 1";
                     command.CommandText = selectQuery;
                     reader = command.ExecuteReader();
                     while (reader.Read())
@@ -85,10 +82,48 @@ namespace tBOT.API
             catch (Exception err)
             {
                 //log the error
-                //MessageBox.Show(err.Message.ToString());
+                Console.WriteLine("An error occurred: '{0}'", err);
 
             }
             return columnNamesDictionay;
+        }
+
+        public List<string> GetAllTableNames(DataConnection ConnectionParameter)
+        {
+            List<string> tableNames = new List<string>();
+            try
+            {
+                string connectionString = GetConnectionString(ConnectionParameter);
+                using (OracleConnection connection = new OracleConnection())
+                {
+                    connection.ConnectionString = connectionString;
+                    connection.Open();
+
+                    OracleCommand command = connection.CreateCommand();
+                    string sql = "select table_name from user_tables";
+                    command.CommandText = sql;
+                    OracleDataReader reader = command.ExecuteReader();
+                    //reader.FetchSize = reader.RowSize * 1000;
+                    while (reader.Read())
+                    {
+                        if (reader.HasRows)
+                        {
+                            for (int index = 0; index < reader.FieldCount; index++)
+                            {
+                                string clmnValue = reader.GetValue(index).ToString();                                
+                                tableNames.Add(clmnValue);
+                            }
+                        }
+                    }
+                }
+
+            }
+            catch (Exception err)
+            {
+                //log the error
+                Console.WriteLine("An error occurred: '{0}'", err);
+            }
+            return tableNames;
         }
     }
 

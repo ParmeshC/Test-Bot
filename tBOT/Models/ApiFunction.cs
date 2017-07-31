@@ -328,7 +328,7 @@ namespace tBOT.API
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine("An error occurred: '{0}'", ex);
             }
             return status;
         }
@@ -358,7 +358,7 @@ namespace tBOT.API
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine("An error occurred: '{0}'", ex);
             }
             return key;
         }

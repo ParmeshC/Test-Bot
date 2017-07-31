@@ -108,9 +108,8 @@
                 template:
                 '<ul dnd-list>\n' +
                 '<li ng-repeat="(indx,node) in list track by $index"\n' +
-                '><member></member></li></ul>',
-                
-            }
+                '><member></member></li></ul>'
+            };
         }
         collection.$inject = [];
         angular
@@ -146,12 +145,12 @@
                         }
                         else
                         {
-                            var prop
+                            var prop;
                             for (prop in scope.node) {
                                 if (angular.isObject(scope.node[prop])) {
                                     scope.nodeValueIsObject = true;
                                     scope.indxValue = prop;
-                                    scope.nodeValue = scope.node[prop]
+                                    scope.nodeValue = scope.node[prop];
                                 }
                             }
                         }
@@ -159,7 +158,7 @@
                 if (scope.nodeValueIsObject)
                 {
                     elem.append("<collection list='nodeValue'></collection>");
-                    $compile(elem.contents())(scope)
+                    $compile(elem.contents())(scope);
                 } 
                 }
             }
