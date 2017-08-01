@@ -8,267 +8,251 @@
 
 app.controller('AppCtrl', function AppCtrl($scope, prompt, QueryBuilderFactory, Modelfactory, flowchartConstants) {
 
-        var deleteKeyCode = 46;
-        var ctrlKeyCode = 17;
-        var aKeyCode = 65;
-        var escKeyCode = 27;
-        var nextNodeID = 10;
-        var nextConnectorID = 20;
-        var ctrlDown = false;
+    var deleteKeyCode = 46;
+    var ctrlKeyCode = 17;
+    var aKeyCode = 65;
+    var escKeyCode = 27;
+    var nextNodeID = 10;
+    var nextConnectorID = 20;
+    var ctrlDown = false;
 
+   
 
-        $scope.resultTableSchema = [];
-        $scope.resultTableNames = [];
+    var model = {
+        nodes: [
+            {
+                "id": 2,
+                "name": "Environment-1",
+                "x": 10,
+                "y": 10,
+                connectors: [
+                    {
+                        name: 'column1',
+                        type: flowchartConstants.bottomConnectorType,
+                        id: 9,
+                        isChecked: true
+                    },
+                    {
+                        name: 'column2',
+                        type: flowchartConstants.bottomConnectorType,
+                        id: 10,
+                        isChecked: false
+                    }
+                ],
+            },
+            {
+                "id": 3,
+                "name": "Environment-2",
+                "x": 400,
+                "y": 250,
+                connectors: [
+                    {
+                        name: 'column1',
+                        type: flowchartConstants.topConnectorType,
+                        id: 1,
+                        isChecked: false
+                    },
+                    {
+                        name: 'column2',
+                        type: flowchartConstants.topConnectorType,
+                        id: 2,
+                        isChecked: false
+                    },
+                    {
+                        name: 'column3',
+                        type: flowchartConstants.topConnectorType,
+                        id: 3,
+                        isChecked: false
+                    },
+                    {
+                        name: 'column4',
+                        type: flowchartConstants.bottomConnectorType,
+                        id: 4,
+                        isChecked: false
+                    },
+                    {
+                        name: 'column5',
+                        type: flowchartConstants.bottomConnectorType,
+                        id: 5,
+                        isChecked: false
+                    },
+                    {
+                        name: 'column6',
+                        type: flowchartConstants.bottomConnectorType,
+                        id: 12,
+                        isChecked: false
+                    }
+                ]
+            },
+            {
+                "id": 4,
+                "name": "Environment-3",
+                "x": 700,
+                "y": 500,
+                connectors: [
+                    {
+                        name: 'column1',
+                        type: flowchartConstants.topConnectorType,
+                        id: 13,
+                        isChecked: false
+                    },
+                    {
+                        name: 'column2',
+                        type: flowchartConstants.topConnectorType,
+                        id: 14,
+                        isChecked: false
+                    },
+                    {
+                        name: 'column3',
+                        type: flowchartConstants.bottomConnectorType,
+                        id: 15,
+                        isChecked: false
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "name": "Environment-4",
+                "x": 100,
+                "y": 500,
+                connectors: [
+                    {
+                        name: 'column1',
+                        type: flowchartConstants.topConnectorType,
+                        id: 16,
+                        isChecked: false
+                    },
+                    {
+                        name: 'column2',
+                        type: flowchartConstants.topConnectorType,
+                        id: 17,
+                        isChecked: false
+                    },
+                    {
+                        name: 'column3',
+                        type: flowchartConstants.topConnectorType,
+                        id: 18,
+                        isChecked: true
+                    }
+                ]
+
+            }
+        ],
+        edges: [
+            {
+                source: 10,
+                destination: 1
+            },
+            {
+                source: 5,
+                destination: 14
+            },
+            {
+                source: 5,
+                destination: 18
+            }
+        ]
+    };
+
+    $scope.flowchartselected = [];
+    var modelservice = Modelfactory(model, $scope.flowchartselected);
+
+    $scope.model = model;
+    $scope.modelservice = modelservice;
+
+    $scope.keyDown = function (evt) {
+        if (evt.keyCode === ctrlKeyCode) {
+            ctrlDown = true;
+            evt.stopPropagation();
+            evt.preventDefault();
+        }
+    };
+
+    $scope.keyUp = function (evt) {
+        if (evt.keyCode === deleteKeyCode) {
+            modelservice.deleteSelected();
+        }
+
+        if (evt.keyCode == aKeyCode && ctrlDown) {
+            modelservice.selectAll();
+        }
+
+        if (evt.keyCode == escKeyCode) {
+            modelservice.deselectAll();
+        }
+
+        if (evt.keyCode === ctrlKeyCode) {
+            ctrlDown = false;
+            evt.stopPropagation();
+            evt.preventDefault();
+        }
+    };
+
+    $scope.addNewNode = function () {
+        var nodeName = prompt("Enter a table name:", "table name...");
+        if (!nodeName) {
+            return;
+        }
+
+        var connectors = [];
         $scope.tableSchemaRequestData = [];
-        $scope.tableSchemaRequest = function () {
             $scope.tableSchemaRequestData.splice(0, $scope.tableSchemaRequestData.length);//deletes all the items in the array
             $scope.tableSchemaRequestData.push({
                 ["HostName"]: "149.24.38.229",
                 ["PortNumber"]: "1521",
                 ["ServiceName"]: "BAN83",
                 ["UserId"]: "baninst1",
-                ["Password"]: "u_pick_it"
+                ["Password"]: "u_pick_it",
+                ["TableName"]: nodeName
             });
-            $scope.resultTableSchema.splice(0, $scope.resultTableSchema.length);//deletes all the items in the array
-            $scope.resultTableNames.splice(0, $scope.resultTableSchema.length);//deletes all the items in the array
-
-            QueryBuilderFactory.getTableSchema($scope).then(function (d) {
+            //connectors.splice(0, $scope.resultTableSchema.length);//deletes all the items in the array
+            QueryBuilderFactory.getTableDescribe($scope).then(function (d) {
                 $scope.resultTableSchema = d.data;
                 console.log($scope.resultTableSchema);
-            });
-
-            QueryBuilderFactory.getAllTableNames($scope).then(function (d) {
-                $scope.resultTableNames = d.data;
-                console.log($scope.resultTableNames);
-            });
-
-
-
-        };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        var model = {
-            nodes: [
-                {
-                    "id": 2,
-                    "name": "Environment-1",
-                    "x": 10,
-                    "y": 10,
-                    connectors: [
-                        {
-                            name: 'column1',
-                            type: flowchartConstants.bottomConnectorType,
-                            id: 9,
-                            isChecked: true
-                        },
-                        {
-                            name: 'column2',
-                            type: flowchartConstants.bottomConnectorType,
-                            id: 10,
-                            isChecked: false
-                        }
-                    ],
-                },
-                {
-                    "id": 3,
-                    "name": "Environment-2",
-                    "x": 400,
-                    "y": 250,
-                    connectors: [
-                        {
-                            name: 'column1',
-                            type: flowchartConstants.topConnectorType,
-                            id: 1,
-                            isChecked: false
-                        },
-                        {
-                            name: 'column2',
-                            type: flowchartConstants.topConnectorType,
-                            id: 2,
-                            isChecked: false
-                        },
-                        {
-                            name: 'column3',
-                            type: flowchartConstants.topConnectorType,
-                            id: 3,
-                            isChecked: false
-                        },
-                        {
-                            name: 'column4',
-                            type: flowchartConstants.bottomConnectorType,
-                            id: 4,
-                            isChecked: false
-                        },
-                        {
-                            name: 'column5',
-                            type: flowchartConstants.bottomConnectorType,
-                            id: 5,
-                            isChecked: false
-                        },
-                        {
-                            name: 'column6',
-                            type: flowchartConstants.bottomConnectorType,
-                            id: 12,
-                            isChecked: false
-                        }
-                    ]
-                },
-                {
-                    "id": 4,
-                    "name": "Environment-3",
-                    "x": 700,
-                    "y": 500,
-                    connectors: [
-                        {
-                            name: 'column1',
-                            type: flowchartConstants.topConnectorType,
-                            id: 13,
-                            isChecked: false
-                        },
-                        {
-                            name: 'column2',
-                            type: flowchartConstants.topConnectorType,
-                            id: 14,
-                            isChecked: false
-                        },
-                        {
-                            name: 'column3',
-                            type: flowchartConstants.bottomConnectorType,
-                            id: 15,
-                            isChecked: false
-                        }
-                    ]
-                },
-                {
-                    "id": 5,
-                    "name": "Environment-4",
-                    "x": 100,
-                    "y": 500,
-                    connectors: [
-                        {
-                            name: 'column1',
-                            type: flowchartConstants.topConnectorType,
-                            id: 16,
-                            isChecked: false
-                        },
-                        {
-                            name: 'column2',
-                            type: flowchartConstants.topConnectorType,
-                            id: 17,
-                            isChecked: false
-                        },
-                        {
-                            name: 'column3',
-                            type: flowchartConstants.topConnectorType,
-                            id: 18,
-                            isChecked: true
-                        }
-                    ]
-
+                for (prop in $scope.resultTableSchema) {
+                    connectors.push({
+                        ['name']: prop,
+                        ['id']: nextConnectorID++,
+                        ['type']: flowchartConstants.topConnectorType,
+                        ['isChecked']: false
+                    })
                 }
-            ],
-            edges: [
-                {
-                    source: 10,
-                    destination: 1
-                },
-                {
-                    source: 5,
-                    destination: 14
-                },
-                {
-                    source: 5,
-                    destination: 18
-                }
-            ]
-        };
+                console.log(connectors);
+            });
+        var newNode = {
+            name: nodeName,
+            id: nextNodeID++,
+            x: 200,
+            y: 100,
 
-        $scope.flowchartselected = [];
-        var modelservice = Modelfactory(model, $scope.flowchartselected);
+            connectors
+        //connectors: [
 
-        $scope.model = model;
-        $scope.modelservice = modelservice;
-
-        $scope.keyDown = function (evt) {
-            if (evt.keyCode === ctrlKeyCode) {
-                ctrlDown = true;
-                evt.stopPropagation();
-                evt.preventDefault();
-            }
-        };
-
-        $scope.keyUp = function (evt) {            
-            if (evt.keyCode === deleteKeyCode) {
-                modelservice.deleteSelected();
-            }
-
-            if (evt.keyCode == aKeyCode && ctrlDown) {
-                modelservice.selectAll();
-            }
-
-            if (evt.keyCode == escKeyCode) {
-                modelservice.deselectAll();
-            }
-
-            if (evt.keyCode === ctrlKeyCode) {
-                ctrlDown = false;
-                evt.stopPropagation();
-                evt.preventDefault();
-            }
-        };
-
-        $scope.addNewNode = function () {
-            var nodeName = prompt("Enter a table name:", "table name...");
-            if (!nodeName) {
-                return;
-            }
-            console.log("Calling table schema request")
-            $scope.tableSchemaRequest();
-
-            var newNode = {
-                name: nodeName,
-                id: nextNodeID++,
-                x: 200,
-                y: 100,
-                connectors: [
-                    {
-                        name: 'column1,',
-                        id: nextConnectorID++,
-                        type: flowchartConstants.topConnectorType,
-                        isChecked: false
-                    },
-                    {
-                        name: 'column2',
-                        id: nextConnectorID++,
-                        type: flowchartConstants.topConnectorType,
-                        isChecked: false
-                    },
-                    {
-                        name: 'column3',
-                        id: nextConnectorID++,
-                        type: flowchartConstants.bottomConnectorType,
-                        isChecked: true
-                    },
-                    {
-                        name: 'column4',
-                        id: nextConnectorID++,
-                        type: flowchartConstants.bottomConnectorType,
-                        isChecked: false
-                    }
-                ]
+        //            {
+        //                name: 'column1,',
+        //                id: nextConnectorID++,
+        //                type: flowchartConstants.topConnectorType,
+        //                isChecked: false
+        //            },
+        //            {
+        //                name: 'column2',
+        //                id: nextConnectorID++,
+        //                type: flowchartConstants.topConnectorType,
+        //                isChecked: false
+        //            },
+        //            {
+        //                name: 'column3',
+        //                id: nextConnectorID++,
+        //                type: flowchartConstants.bottomConnectorType,
+        //                isChecked: true
+        //            },
+        //            {
+        //                name: 'column4',
+        //                id: nextConnectorID++,
+        //                type: flowchartConstants.bottomConnectorType,
+        //                isChecked: false
+        //            }
+        //        ]
             };
 
             model.nodes.push(newNode);
@@ -354,12 +338,19 @@ app.factory('QueryBuilderFactory', function ($http) {
     return {
 
         getTableSchema: function (scp) {
+            console.log(scp.tableSchemaRequestData)
             return $http.post("/Builder/GetTableSchema", scp.tableSchemaRequestData[0]);
         },
 
             getAllTableNames: function (scp) {
                 return $http.post("/Builder/GetAllTableNames", scp.tableSchemaRequestData[0]);
-        }
+        },
+
+            getTableDescribe: function (scp) {
+                return $http.post("/Builder/GetTableDescription", scp.tableSchemaRequestData[0]);
+            },
+
+            
 
     };
 });

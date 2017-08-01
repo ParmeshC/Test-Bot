@@ -25,15 +25,14 @@ namespace tBOT.API
             return connString;
         }
 
-        public Dictionary<string, string> GetTableColumnsWithData(string TableName, DataConnection ConnectionParameter )
+        public Dictionary<string, string> GetTableColumnsWithData(TableShemaRequest tableShemaRequest)
         {
             Dictionary<string, string> columnNamesDictionay = new Dictionary<string, string>();
             try
             {
                 string selectQuery = null;
 
-
-                string connectionString = GetConnectionString(ConnectionParameter);
+                string connectionString = GetConnectionString(tableShemaRequest);
                 //string Tablename = "RFRFFID";
                 using (OracleConnection connection = new OracleConnection())
                 {
@@ -41,7 +40,7 @@ namespace tBOT.API
                     connection.Open();
 
                     OracleCommand command = connection.CreateCommand();
-                    string sql = "select COLUMN_NAME,NULLABLE from  all_tab_columns where Table_Name='" + TableName + "'";
+                    string sql = "select COLUMN_NAME,NULLABLE from  all_tab_columns where Table_Name='" + tableShemaRequest.TableName + "'";
 
                     command.CommandText = sql;
 
@@ -58,7 +57,7 @@ namespace tBOT.API
                         }
                     }
 
-                    selectQuery = selectQuery + " FROM " + TableName + " WHERE ROWNUM = 1";
+                    selectQuery = selectQuery + " FROM " + tableShemaRequest.TableName + " WHERE ROWNUM = 1";
                     command.CommandText = selectQuery;
                     reader = command.ExecuteReader();
                     while (reader.Read())
@@ -87,6 +86,45 @@ namespace tBOT.API
             }
             return columnNamesDictionay;
         }
+
+
+        public List<TableSchemaDescription> GetTableDescribe(TableShemaRequest tableShemaRequest)
+        {
+            List<TableSchemaDescription> tableDescribeList = new List<TableSchemaDescription>();
+            try
+            {
+                string connectionString = GetConnectionString(tableShemaRequest);
+                using (OracleConnection connection = new OracleConnection())
+                {
+                    connection.ConnectionString = connectionString;
+                    connection.Open();
+
+                    OracleCommand command = connection.CreateCommand();
+                    string sql = "select COLUMN_NAME,NULLABLE from  all_tab_columns where Table_Name='" + tableShemaRequest.TableName + "'";
+
+                    command.CommandText = sql;
+                    OracleDataReader reader = command.ExecuteReader();
+                    
+                    while (reader.Read())
+                    {
+                            TableSchemaDescription tableDescribe = new TableSchemaDescription();
+                            tableDescribe.Name = Convert.ToString(reader["COLUMN_NAME"]);
+                            tableDescribe.Null = Convert.ToString(reader["NULLABLE"]);
+                            tableDescribeList.Add(tableDescribe);
+                    }
+                }
+
+            }
+            catch (Exception err)
+            {
+                //log the error
+                Console.WriteLine("An error occurred: '{0}'", err);
+
+            }
+            return tableDescribeList;
+        }
+
+        
 
         public List<string> GetAllTableNames(DataConnection ConnectionParameter)
         {
@@ -127,6 +165,8 @@ namespace tBOT.API
         }
     }
 
+
+
     public class DataConnection
     {
         public string HostName { get; set; }
@@ -136,5 +176,15 @@ namespace tBOT.API
         public string Password { get; set; }
 
     }
+    public class TableShemaRequest : DataConnection
+    {
+        public string TableName { get; set; }
+    }
 
+    public class TableSchemaDescription
+    {
+        public string Name { get; set; }
+        public string Null { get; set; }
+
+    }
 }
