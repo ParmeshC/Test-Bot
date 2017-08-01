@@ -26,13 +26,12 @@ namespace tBOT.Controllers
             return View();
         }
 
-        public ActionResult GetTableSchema(TableShemaRequest tableShemaRequest)
+        public ActionResult GetTableSchema(TableShemaRequest tableSchemaRequest)
         {
             Dictionary<string, string> columnNamesDictionay = new Dictionary<string, string>();
             DataAccess DtAcss = new DataAccess();
 
-
-            columnNamesDictionay = DtAcss.GetTableColumnsWithData(tableShemaRequest);
+            columnNamesDictionay = DtAcss.GetTableColumnsWithData(tableSchemaRequest);
             return Content(JsonConvert.SerializeObject(columnNamesDictionay), "application/json");
         }
 
@@ -46,12 +45,12 @@ namespace tBOT.Controllers
         }
 
 
-        public ActionResult GetTableDescription(TableShemaRequest tableShemaRequest)
+        public ActionResult GetTableDescription(TableShemaRequest tableSchemaRequest)
         {
             List<TableSchemaDescription> tableDescribe = new List<TableSchemaDescription>();
             DataAccess DtAcss = new DataAccess();
 
-            tableDescribe = DtAcss.GetTableDescribe(tableShemaRequest);
+            tableDescribe = DtAcss.GetTableDescribe(tableSchemaRequest);
             return Content(JsonConvert.SerializeObject(tableDescribe), "application/json");
         }
 

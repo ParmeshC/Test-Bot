@@ -11,14 +11,15 @@
             <!--Add Output-->
             <!--</button>-->
        <!--</div>-->
-        <br/>
-        <button class="btn btn-primary btn-sm" ng-click="addNewNode()" title="Add a new node to then chart">Add Node</button>
-        <button class="btn btn-primary btn-sm" ng-click="deleteSelected()"
+        
+        <button class="btn btn-primary btn-sm" ng-click="addNewNode()" title="Add a new Table to the chart">Add Table</button>
+        @*<button class="btn btn-primary btn-sm" ng-click="deleteSelected()"
                 ng-disabled="modelservice.nodes.getSelectedNodes().length == 0 && modelservice.edges.getSelectedEdges().length == 0"
                 title="Delete selected nodes and connections">
             Delete Selected
         </button>
-        <button class="btn btn-primary btn-sm" ng-click="activateWorkflow()">Activate Workflow</button>
+        <button class="btn btn-primary btn-sm" ng-click="activateWorkflow()">Activate Workflow</button>*@
+        <pre>{{model|json}}</pre>
         <fc-canvas model="model" selected-objects="flowchartselected" edge-style="curved" callbacks="callbacks"
                    automatic-resize="true">            
         </fc-canvas>

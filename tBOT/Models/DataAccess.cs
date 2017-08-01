@@ -53,7 +53,6 @@ namespace tBOT.API
                         {
                             columnNamesDictionay.Add(columnName, "");
                             selectQuery = selectQuery != null ? selectQuery + ", " + columnName : "SELECT " + columnName;
-
                         }
                     }
 
@@ -122,9 +121,7 @@ namespace tBOT.API
 
             }
             return tableDescribeList;
-        }
-
-        
+        }        
 
         public List<string> GetAllTableNames(DataConnection ConnectionParameter)
         {
