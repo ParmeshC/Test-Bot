@@ -26,13 +26,13 @@ namespace tBOT.Controllers
             return View();
         }
 
-        public ActionResult GetTableSchema(DataConnection DtCon)
+        public ActionResult GetTableSchema(TableShemaRequest tableShemaRequest)
         {
             Dictionary<string, string> columnNamesDictionay = new Dictionary<string, string>();
             DataAccess DtAcss = new DataAccess();
 
 
-            columnNamesDictionay = DtAcss.GetTableColumnsWithData("RFRFFID", DtCon);
+            columnNamesDictionay = DtAcss.GetTableColumnsWithData(tableShemaRequest);
             return Content(JsonConvert.SerializeObject(columnNamesDictionay), "application/json");
         }
 
@@ -44,5 +44,17 @@ namespace tBOT.Controllers
             tableNames = DtAcss.GetAllTableNames( DtCon);
             return Content(JsonConvert.SerializeObject(tableNames), "application/json");
         }
+
+
+        public ActionResult GetTableDescription(TableShemaRequest tableShemaRequest)
+        {
+            List<TableSchemaDescription> tableDescribe = new List<TableSchemaDescription>();
+            DataAccess DtAcss = new DataAccess();
+
+            tableDescribe = DtAcss.GetTableDescribe(tableShemaRequest);
+            return Content(JsonConvert.SerializeObject(tableDescribe), "application/json");
+        }
+
+
     }
 }
