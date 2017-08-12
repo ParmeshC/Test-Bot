@@ -14,6 +14,7 @@ using System.ComponentModel;
 
 namespace tBOT.API
 {
+
     public static class Request
     {
         private static void setMessages(JObject jsonObject, out string errorMessage, out string description)
@@ -110,7 +111,7 @@ namespace tBOT.API
                     }
                     else
                     {
-                        description = responsePhrase + System.Environment.NewLine + Response.Content.Headers.ToString();
+                        description = responsePhrase + Environment.NewLine + Response.Content.Headers.ToString();
                     }
                     responseHeaders = Response.Headers.ToArray();
                     responsePhrase = Response.ReasonPhrase;
@@ -222,8 +223,7 @@ namespace tBOT.API
         public string Guid { get; set; }
         public string GetListMessage { get; set; }
         public string MaxPageSize { get; set; }
-        public string TotalCount { get; set; }
-        
+        public string TotalCount { get; set; }        
     }
 
     public class ResponseData
@@ -259,7 +259,6 @@ namespace tBOT.API
         public string LatestVersion { get; set; }
         public string ExpectedLatestVersion { get; set; }
         public Boolean LatestVersionValid { get; set; }
-
     }
 
     public class RequestData

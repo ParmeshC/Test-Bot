@@ -15,6 +15,7 @@ using tBOT.Models;
 using System.Data.Entity.Design.PluralizationServices;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using tBOT.Validation;
 
 namespace tBOT.Controllers
 {
@@ -152,8 +153,18 @@ namespace tBOT.Controllers
                     validationResult.ExpectedLatestVersion = currentRow.Version;
                     validationResult.LatestVersionValid = checkLatestVersion(validationResult.LatestVersion, currentRow.Version);
 
-                    validationResult.ListHeaderMessage = ApiResponse(currentRow).Take().GetListMessage;
-                    validationResult.ListHeaderMessageValid = checkHeaderMessage(validationResult.ListHeaderMessage, validationResult.ExpectedListHeaderMessage);
+
+
+                    //validationResult.ListHeaderMessage = ApiResponse(currentRow).Take().GetListMessage;
+                    //validationResult.ListHeaderMessageValid = checkHeaderMessage(validationResult.ListHeaderMessage, validationResult.ExpectedListHeaderMessage);
+
+
+                    ListHeaderMessageValidationInfo LHMVinfo = new ListHeaderMessageValidationInfo();
+                    responseResult = ApiResponse(currentRow).Take();
+
+                    var a = FactoryValidation.CreateGeneric<ListHeaderMessageValidationInfo>();
+                    LHMVinfo=a.Validate(responseResult);
+
 
                     if (!string.IsNullOrEmpty(responseResult.Guid))
                     {

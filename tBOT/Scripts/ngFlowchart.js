@@ -553,6 +553,7 @@ if (!Function.prototype.bind) {
             modelservice.checkboxCheckedCallback = checkboxCheckedCallback || angular.noop;
 
             function selectObject(object) {
+                
                 if (modelservice.selectedObjects.indexOf(object) === -1) {
                     modelservice.selectedObjects.push(object);
                 }

@@ -1,108 +1,120 @@
 ﻿<div ng-controller="RoutineCtrl as vm">
-        <tabset>
-            <tab heading="Individual">
-                <div class="input-group">
-                    <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
-                    <input type="text" class="form-control" placeholder="Search" ng-model="searchEndPoint">
-                </div>
-                <table class="table table-bordered table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <td>
+    <uib-tabset>
+        <uib-tab heading="Individual">
+            <div class="input-group">
+                <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+                <input type="text" class="form-control" placeholder="Search" ng-model="searchEndPoint">
+            </div>
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <td>
+                            <nobr>
                                 <input type="checkbox" ng-click="toggleAll()" ng-model="isAllSelected">
                                 <a href="" ng-click="sortType = 'selected'; sortReverse = !sortReverse">
-                                    <span ng-class="sortType=='selected' && !sortReverse?'glyphicon glyphicon-sort-by-attributes':
-                                        sortType=='selected' && sortReverse?'glyphicon glyphicon-sort-by-attributes-alt':
-                                        'glyphicon glyphicon-sort'">
-                                    </span>
+                                <span ng-class="sortType=='selected' && !sortReverse?'glyphicon glyphicon-sort-by-attributes':
+                                                                sortType=='selected' && sortReverse?'glyphicon glyphicon-sort-by-attributes-alt':
+                                                                'glyphicon glyphicon-sort'">
+                                </span>
                                 </a>
-                            </td>
-                            <td>
-                                <a href="" ng-click="sortType = 'Id'; sortReverse = !sortReverse">
-                                    ID
-                                    <span ng-show="sortType == 'Id' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
-                                    <span ng-show="sortType == 'Id' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>                                    
-                                </a>
-                            </td>
-                            <td>
+                            </nobr>
+                          </td>
+                        <td>
+                            <nobr>
+                            <a href="" ng-click="sortType = 'Id'; sortReverse = !sortReverse">
+                                ID
+                                <span ng-show="sortType == 'Id' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                <span ng-show="sortType == 'Id' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                            </a>
+                            </nobr>
+                        </td>
+                        <td>
+                            <nobr>
                                 <a href="" ng-click="sortType = 'EndPoint'; sortReverse = !sortReverse">
                                     EndPoint
                                     <span ng-show="sortType == 'EndPoint' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
-                                    <span ng-show="sortType == 'EndPoint' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>                                    
+                                    <span ng-show="sortType == 'EndPoint' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
                                 </a>
-                            </td>
-                            <td>
+                            </nobr>
+                        </td>
+                        <td>
+                            <nobr>
                                 <a href="" ng-click="sortType = 'APP'; sortReverse = !sortReverse">
                                     APP
                                     <span ng-show="sortType == 'APP' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
-                                    <span ng-show="sortType == 'APP' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span> 
+                                    <span ng-show="sortType == 'APP' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
                                 </a>
-                            </td>
-                            <td>
+                            </nobr>
+                        </td>
+                        <td>
+                            <nobr>
                                 <a href="" ng-click="sortType = 'Connector'; sortReverse = !sortReverse">
                                     Connector
                                     <span ng-show="sortType == 'Connector' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
-                                    <span ng-show="sortType == 'Connector' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span> 
+                                    <span ng-show="sortType == 'Connector' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
                                 </a>
-                            </td>
-                            <td>
+                            </nobr>
+                        </td>
+                        <td>
+                            <nobr>
                                 <a href="" ng-click="sortType = 'Version'; sortReverse = !sortReverse">
                                     Version
                                     <span ng-show="sortType == 'Version' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
-                                    <span ng-show="sortType == 'Version' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span> 
+                                    <span ng-show="sortType == 'Version' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
                                 </a>
-                            </td>
-                        </tr>
-                    </thead>
+                            </nobr>
+                        </td>
+                    </tr>
+                </thead>
 
-                    <tbody>
+                <tbody>
 
-                        <tr ng-repeat="info in ApiInfo | orderBy:sortType:sortReverse | filter:searchEndPoint">
-                            <td><input type="checkbox" ng-model="info.selected" ng-change="optionToggled()"></td> 
-                            <td>{{info.Id}}</td>                            
-                            <td>{{info.EndPoint}}</td>
-                            <td> {{info.APP}}</td>
-                            <td> {{info.Connector}}</td>
-                            <td> {{info.Version}}</td>
-                        </tr>
-                    </tbody>
+                    <tr ng-repeat="info in ApiInfo | orderBy:sortType:sortReverse | filter:searchEndPoint">
+                        <td><input type="checkbox" ng-model="info.selected" ng-change="optionToggled()"></td>
+                        <td>{{info.Id}}</td>
+                        <td>{{info.EndPoint}}</td>
+                        <td> {{info.APP}}</td>
+                        <td> {{info.Connector}}</td>
+                        <td> {{info.Version}}</td>
+                    </tr>
+                </tbody>
 
+            </table>
+        </uib-tab>
+        <uib-tab heading="Group">
+
+        </uib-tab>
+        <uib-tab heading="Import">
+            <div class="btn btn-info btn-block" ng-show="!vm.gridOptions.data.length">
+                <label for="file-upload" style="display:inline">Browse file</label>
+                <input id="file-upload" type="file" accept=".xls,.xlsx,.ods,.csv" fileread="" opts="vm.gridOptions" style="display:none" />
+            </div>
+            <div ng-show="vm.gridOptions.data.length">
+                <button type="button" class="btn btn-danger btn-block" ng-click="vm.reset()">Reset <span class="badge">{{vm.gridOptions.data.length}}</span> Grid Items</button>
+                <button type="button" class="btn btn-primary btn-block" ng-click="AddApiInfo()">Load Mapped Columns</button>
+                <br />
+                <table class="table table-bordered">
+                    <tr>
+                        <td ng-repeat="hdr in vm.gridOptions.columnDefs">
+                            {{mpdHdr[$index]}}
+                            <select ng-show="!mpdHdr[$index] && mpblHdr.length" style="width: inherit" title="App" class="form-control" multiselect="multiselect" data-ng-options="o.header for o in mpblHdr" data-ng-model="slctdHdr" ng-change="update($index)"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th ng-repeat="hdr in vm.gridOptions.columnDefs">
+                            {{hdr.field}}
+                        </th>
+                    </tr>
+                    <tr ng-repeat="vlu in vm.gridOptions.data">
+                        <td ng-repeat="hdr in vm.gridOptions.columnDefs">
+                            {{vlu[hdr.field]}}
+                        </td>
+                    </tr>
                 </table>
-            </tab>
-            <tab heading="Group">
-
-            </tab>
-            <tab heading="Import">
-                <div class="btn btn-info btn-block" ng-show="!vm.gridOptions.data.length">
-                    <label for="file-upload" style="display:inline">Browse file</label>
-                    <input id="file-upload" type="file" accept=".xls,.xlsx,.ods,.csv" fileread="" opts="vm.gridOptions" style="display:none" />
-                </div>
-                <div ng-show="vm.gridOptions.data.length">
-                    <button type="button" class="btn btn-danger btn-block" ng-click="vm.reset()">Reset <span class="badge">{{vm.gridOptions.data.length}}</span> Grid Items</button>
-                    <button type="button" class="btn btn-primary btn-block" ng-click="AddApiInfo()">Load Mapped Columns</button>
-                    <br />
-                    <table border="1" class="table">
-                        <tr>
-                            <td ng-repeat="hdr in vm.gridOptions.columnDefs">
-                                {{mpdHdr[$index]}}
-                                <select ng-show="!mpdHdr[$index] && mpblHdr.length" style="width: inherit" title="App" class="form-control" multiselect="multiselect" data-ng-options="o.header for o in mpblHdr" data-ng-model="slctdHdr" ng-change="update($index)"></select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th ng-repeat="hdr in vm.gridOptions.columnDefs">
-                                {{hdr.field}}
-                            </th>
-                        </tr>
-                        <tr ng-repeat="vlu in vm.gridOptions.data">
-                            <td ng-repeat="hdr in vm.gridOptions.columnDefs">
-                                {{vlu[hdr.field]}}
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </tab>
-        </tabset>
-    </div>
+            </div>
+        </uib-tab>
+    </uib-tabset>
+</div>
 
 
 

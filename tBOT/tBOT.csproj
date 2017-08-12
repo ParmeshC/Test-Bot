@@ -177,6 +177,7 @@
     <Compile Include="Models\Authorization.cs">
       <DependentUpon>ModelApiTest.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Validation.cs" />
     <Compile Include="Models\DataAccess.cs" />
     <Compile Include="Models\Environment.cs">
       <DependentUpon>ModelApiTest.tt</DependentUpon>
