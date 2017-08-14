@@ -5,8 +5,6 @@ using System.Net.Http.Headers;
 using Newtonsoft.Json.Linq;
 using System.Text;
 using System.Collections.Generic;
-using Newtonsoft.Json.Schema;
-using System.Collections;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Globalization;
@@ -17,13 +15,14 @@ namespace tBOT.API
 
     public static class Request
     {
+
         private static void setMessages(JObject jsonObject, out string errorMessage, out string description)
         {
             errorMessage = null;
             description = null;
-             errorMessage = (string)jsonObject.Descendants()
-            .OfType<JProperty>()
-            .FirstOrDefault(p => p.Name == "message");
+            errorMessage = (string)jsonObject.Descendants()
+           .OfType<JProperty>()
+           .FirstOrDefault(p => p.Name == "message");
 
             if (string.IsNullOrEmpty(errorMessage))
             {
@@ -38,199 +37,112 @@ namespace tBOT.API
                     .FirstOrDefault(p => p.Name == "errorMessage");
                 }
             }
-
         }
 
-        public static ResponseData GetResponseInfo(string UserName, string Password, string AuthType, string LanguageCode, string Accept, string ContentType, string Method, string Url, string RequestBody)
+        public static RequestResponseInfo GetRequestResponse(RequestInfo requestInfo)
         {
-            var responseInfo = new ResponseData();
-
-            string responseBody=null;
-            JArray responseArray=null;
-            JObject responseObject=null;
-            bool isResponseArray= false;
-            KeyValuePair<string, IEnumerable<string>>[] responseHeaders=null;
-            int statusCode=0;
-            string responsePhrase=null;
-            string errorMessage=null;
-            string description=null;
+            RequestResponseInfo requestResponseInfo = new RequestResponseInfo();
+            string errorMessage = null;
+            string description = null;
 
             try
             {
-                
-                HttpContent requestBody = !string.IsNullOrEmpty(RequestBody) ? new StringContent(RequestBody, Encoding.UTF8, ContentType) : null;
+                HttpContent requestBody = !string.IsNullOrEmpty(requestInfo.RequestBody) ? new StringContent(requestInfo.RequestBody, Encoding.UTF8, requestInfo.ContentType) : null;
                 HttpResponseMessage Response;
 
                 using (HttpClient Client = new HttpClient())
                 {
                     Client.DefaultRequestHeaders.Accept.Clear();
-                    Client.DefaultRequestHeaders.Add("Accept", Accept);
-                    Client.DefaultRequestHeaders.AcceptLanguage.ParseAdd(LanguageCode);
-                    Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(AuthType, Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
-                    string.Format("{0}:{1}", UserName, Password))));
+                    Client.DefaultRequestHeaders.Add("Accept", requestInfo.Accept);
+                    Client.DefaultRequestHeaders.AcceptLanguage.ParseAdd(requestInfo.LanguageCode);
+                    Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(requestInfo.AuthType, Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
+                    string.Format("{0}:{1}", requestInfo.UserName, requestInfo.Password))));
 
-                    switch (Method.ToUpper())
+                    switch (requestInfo.RequestMethod.ToUpper())
                     {
                         case "GET":
-                            Response = Client.GetAsync(Url).Result;
+                            Response = Client.GetAsync(requestInfo.RequestUrl).Result;
                             break;
                         case "POST":
-                            Response = Client.PostAsync(Url, requestBody).Result;
+                            Response = Client.PostAsync(requestInfo.RequestUrl, requestBody).Result;
                             break;
                         case "PUT":
-                            Response = Client.PutAsync(Url, requestBody).Result;
+                            Response = Client.PutAsync(requestInfo.RequestUrl, requestBody).Result;
                             break;
                         default:
                             Response = null;
-                            description = Method + " Method deos not exist";
+                            description = requestInfo.RequestMethod + " Method deos not exist";
                             break;
                     }
                 }
-
-                //string json = "{\"Department\": \"Department1\",\"JobTitle\": \"JobTitle1\",\"FirstName\": \"FirstName1\",\"LastName\": \"LastName1\"}";                
+                
                 if (Response != null)
                 {
                     if (!string.IsNullOrEmpty(Response.Content.ReadAsStringAsync().Result))
                     {
-                        responseBody = Response.Content.ReadAsStringAsync().Result;
-                        var token = JToken.Parse(responseBody);
+                        requestResponseInfo.ResponseInfo.ResponseBody = Response.Content.ReadAsStringAsync().Result;
+                        var token = JToken.Parse(requestResponseInfo.ResponseInfo.ResponseBody);
+
                         if (token is JArray)
                         {
-                            isResponseArray = true;
-                            responseArray = JArray.Parse(responseBody);
-                            if (responseArray.Count > 0) responseObject = JObject.Parse(responseArray[0].ToString());
-
+                            requestResponseInfo.ResponseInfo.IsResponseArray = true;
+                            requestResponseInfo.ResponseInfo.ResponseArray = JArray.Parse(requestResponseInfo.ResponseInfo.ResponseBody);
                         }
                         else if (token is JObject)
                         {
-                            isResponseArray = false;
-                            responseObject = JObject.Parse(responseBody);
+                            requestResponseInfo.ResponseInfo.IsResponseArray = false;
+                            requestResponseInfo.ResponseInfo.ResponseArray.Add(JArray.Parse(requestResponseInfo.ResponseInfo.ResponseBody));
                         }
 
-                        if (Response.IsSuccessStatusCode) { description = "Status:OK, No Errors"; } else { setMessages(responseObject, out errorMessage, out description); }
+                        if (Response.IsSuccessStatusCode)
+                            { description = "Status:OK, No Errors"; }
+                        else
+                            { setMessages(JObject.Parse(requestResponseInfo.ResponseInfo.ResponseArray[0].ToString()), out errorMessage, out description);}
                     }
                     else
                     {
-                        description = responsePhrase + Environment.NewLine + Response.Content.Headers.ToString();
+                       description = requestResponseInfo.ResponseInfo.ResponsePhrase + Environment.NewLine + Response.Content.Headers.ToString();
                     }
-                    responseHeaders = Response.Headers.ToArray();
-                    responsePhrase = Response.ReasonPhrase;
-                    statusCode = (int)Response.StatusCode;
+                    requestResponseInfo.ResponseInfo.ResponseHeaders = Response.Headers.ToArray();
+                    requestResponseInfo.ResponseInfo.StatusCode = (int)Response.StatusCode;
                 }
+                requestResponseInfo.ResponseInfo.Description = description;
+                requestResponseInfo.ResponseInfo.ErrorMessage = errorMessage;
             }
             catch (Exception ex)
             {
                 if (ex.InnerException != null)
-                { if (ex.InnerException.Message.Split(':').Length > 0) description = ex.InnerException.Message.Split(':')[0].ToString(); }
+                { if (ex.InnerException.Message.Split(':').Length > 0) requestResponseInfo.ResponseInfo.Description = ex.InnerException.Message.Split(':')[0].ToString(); }
                 else
-                { description = ex.Message.ToString(); }
+                { requestResponseInfo.ResponseInfo.Description = ex.Message.ToString(); }
             }
-
-            responseInfo.ResponseBody = responseBody;
-            responseInfo.ResponseArray = responseArray;
-            responseInfo.ResponseObject = responseObject;
-            responseInfo.IsResponseArray = isResponseArray;
-            responseInfo.ResponseHeaders = responseHeaders;
-            responseInfo.StatusCode = statusCode;
-            responseInfo.ResponsePhrase = responsePhrase;
-            responseInfo.ErrorMessage = errorMessage;
-            responseInfo.Description = description;
-            return responseInfo;
+            return requestResponseInfo;
         }
-
-        public static string GetResponseHeaderValue(KeyValuePair<string, IEnumerable<string>>[] ResponseHeaders, string MessageType)
-        {
-            string messageTypeValue = null;
-            if (ResponseHeaders != null)
-            {
-                List<IEnumerable<string>> messageTypeHeader = (from kvp in ResponseHeaders where kvp.Key == MessageType select kvp.Value).ToList();
-                if (messageTypeHeader.Count > 0)
-                {
-                    IEnumerable<string> messageTypeValueArray = messageTypeHeader.FirstOrDefault();
-                    messageTypeValue = messageTypeValueArray.FirstOrDefault();
-                }
-            }
-            return messageTypeValue;
+            
         }
-
-        public static string GetResponseFieldValue(JArray ResponseArray, string FieldName)
-        {
-            string fieldValue = null;
-            if (ResponseArray != null)
-            {
-                if (ResponseArray.Count > 0)
-                {
-                    if (ResponseArray[0][FieldName] != null) fieldValue = ResponseArray[0][FieldName].ToString();
-                }
-            }
-            return fieldValue;
-        }
-
-        public static string GetResponseFieldValue(JObject ResponseObect, string FieldName)
-        {
-            string fieldValue = null;
-            if (ResponseObect != null)
-            {
-                if (ResponseObect[FieldName] != null) fieldValue = ResponseObect[FieldName].ToString();
-            }
-            return fieldValue;
-        }
-
-        public static void SchemaValidation(JObject jsonObject, string RawSchema, out bool isSchemaValid, out IList<string> schemaValidationErrors)
-        {
-            isSchemaValid = false;
-            IList<string> schemaErrors = new List<string>();
-            if (!string.IsNullOrEmpty(RawSchema))
-            {
-                if (jsonObject != null)
-                {
-                    if (RawSchema.StartsWith("{") && RawSchema.EndsWith("}"))
-                    {
-                        JSchema schema = JSchema.Parse(RawSchema);
-                        isSchemaValid = jsonObject.IsValid(schema, out schemaErrors);
-                    }
-                    else
-                    {
-                        schemaErrors.Add("Not a Valid Schema");
-                    }
-                }
-                else
-                {
-                    schemaErrors.Add("No Json to Validate");
-                }
-            }
-            else
-            {
-                schemaErrors.Add("No Schema to Validate");
-            }
-
-            schemaValidationErrors = schemaErrors;
-        }
-    }
-
-    public class ReponseResult
+        
+    public class RequestInfo
     {
-        public ResponseData ResponseContent { get; set; }
-        public ValidationData ValidationContent { get; set; }
-        public string Url { get; set; }
+        public string AuthType { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public string Lang { get; set; }
+        public string Accept { get; set; }
+        public string ContentType { get; set; }
+        public string LanguageCode { get; set; }
+        public string RequestMethod { get; set; }
+        public string RequestUrl { get; set; }
+        public string RequestBody { get; set; }
         public string EndPoint { get; set; }
-        public string SchemaUrl { get; set; }
-        public string Schema { get; set; }
-        public JObject SchemaValidatedJson { get; set; }
-        public string SchemaValid { get; set; }
-        public string SchemaErrors { get; set; }        
-        public string LatestVersion { get; set; }
-        public string Guid { get; set; }
-        public string GetListMessage { get; set; }
-        public string MaxPageSize { get; set; }
-        public string TotalCount { get; set; }        
-    }
+        public string RawschemaUrl { get; set; }
+        public string Version { get; set; }
 
-    public class ResponseData
+}
+
+    public class ResponseInfo
     {
         public string ResponseBody { get; set; }
         public JArray ResponseArray { get; set; }
-        public JObject ResponseObject { get; set; }
         public bool IsResponseArray { get; set; }
         public KeyValuePair<string, IEnumerable<string>>[] ResponseHeaders { get; set; }
         public int StatusCode { get; set; }
@@ -239,46 +151,14 @@ namespace tBOT.API
         public string Description { get; set; }
     }
 
-    public class ValidationData
+    public class RequestResponseInfo
     {
-        public Boolean PassStatus { get; set; }
-        public int PassCount { get; set; }
-        public int FailCount { get; set; }
-        public string ListHeaderMessage { get; set; }
-        public string ExpectedListHeaderMessage { get; set; }
-        public Boolean ListHeaderMessageValid { get; set; }
-
-        public string GuidHeaderMessage { get; set; }
-        public string ExpectedGuidHeaderMessage { get; set; }
-        public Boolean GuidHeaderMessageValid { get; set; }
-
-        public string InvalidGuidHeaderMessage { get; set; }
-        public string ExpectedInvalidGuidHeaderMessage { get; set; }
-        public Boolean InvalidGuidHeaderMessageValid { get; set; }
-
-        public string LatestVersion { get; set; }
-        public string ExpectedLatestVersion { get; set; }
-        public Boolean LatestVersionValid { get; set; }
-    }
-
-    public class RequestData
-    {
-        public string AuthType { get; set; }
-        public string UserName { get; set; }
-        public string Password { get; set; }
-        public string Lang { get; set; }
-        public string Accept { get; set; }
-        public string ContentType { get; set; }
-        public string RequestMethod { get; set; }
-        public string RequestUrl { get; set; }
-        public string RequestBody { get; set; }
-        public string EndPoint { get; set; }
-        public string RawschemaUrl { get; set; }
-        public string Version { get; set; }
+        public RequestInfo RequestInfo { get; set; }
+        public ResponseInfo ResponseInfo { get; set; }
 
     }
 
-    public class TranlsationRequestData:RequestData
+    public class TranlsationRequestData : RequestInfo
     {
         public string MessageKey { get; set; }
         public string ExpectedErrorMessage { get; set; }
@@ -296,7 +176,7 @@ namespace tBOT.API
 
         public static Status GetMessageStatus(string MessageKey, string TargetFolderPath, string ApiErrorMessage)
         {
-            Status status= Status.NoAPIMessage;
+            Status status = Status.NoAPIMessage;
             if (string.IsNullOrEmpty(ApiErrorMessage)) { return status; }
             try
             {
@@ -366,7 +246,7 @@ namespace tBOT.API
     public class LanguageSelection : INotifyPropertyChanged
     {
         private bool _IsSelected = false;
-        public bool Check { get { return _IsSelected; } set { _IsSelected = value; OnChanged("Check"); } }        
+        public bool Check { get { return _IsSelected; } set { _IsSelected = value; OnChanged("Check"); } }
         public string Region { get; set; }
         public string Code { get; set; }
         public string TargetFolder { get; set; }

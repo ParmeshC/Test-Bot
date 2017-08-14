@@ -38,6 +38,7 @@ RoutineApp.controller('RoutineCtrl', function (RoutineFactory, apiTestSharedServ
 
     //This section helps to toggle with the check box
     $scope.selectedRows = [];
+    $scope.isAllSelected = false;
     var getAllSelected = function () {
         var selectedItems = $scope.ApiInfo.filter(function (item) {
             return item.selected;
@@ -47,6 +48,7 @@ RoutineApp.controller('RoutineCtrl', function (RoutineFactory, apiTestSharedServ
     }
 
     $scope.toggleAll = function () {
+        $scope.isAllSelected = !$scope.isAllSelected;
         var toggleStatus = $scope.isAllSelected;
         angular.forEach($scope.ApiInfo, function (itm) { itm.selected = toggleStatus; });
         getAllSelected();
