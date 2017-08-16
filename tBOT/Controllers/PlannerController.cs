@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -15,6 +14,7 @@ using tBOT.Models;
 using System.Data.Entity.Design.PluralizationServices;
 using System.Globalization;
 using System.Text.RegularExpressions;
+
 using tBOT.TestConditions;
 using tBOT.API;
 
@@ -52,9 +52,13 @@ namespace tBOT.Controllers
 
         public ActionResult GetApiResponseList(List<RequestInfo> RequestData)
         {
-            var result = ApiResponseList(RequestData);
-            return Json(result, JsonRequestBehavior.AllowGet);
-            //return Content(JsonConvert.SerializeObject(ApiResponseList(RequestData)), "application/json");
+            var results = ApiResponseList(RequestData);
+
+            var retunValue_1 = Json(results, JsonRequestBehavior.AllowGet);
+            var retunValue_2 = JsonConvert.SerializeObject(results);
+            var retunValue_3 = Content(JsonConvert.SerializeObject(results), "application/json");
+
+            return retunValue_1;
 
         }
 
@@ -72,9 +76,6 @@ namespace tBOT.Controllers
 
                 Validation Val = new Validation();
                 requestResponseInfo = Val.ApiResponse(requestItem).Take();
-
-                if (requestResponseInfo.ResponseInfo.StatusCode == 200)
-                {
 
                     var LVVinfo = FactoryValidation.CreateGeneric<LatestVersionValidationInfo>();
                     ValInfo.LatestVersionValidationInfo = LVVinfo.Validate(requestResponseInfo);
@@ -103,12 +104,6 @@ namespace tBOT.Controllers
                     ValInfo.MaxPageSizeValidationInfo = MPSVinfo.Validate(requestResponseInfo);
                     ValInfo.PassCount += ValInfo.MaxPageSizeValidationInfo.Valid == true ? 1 : 0;
 
-                }
-                else
-                {
-                    ValInfo.PassStatus = false;                    
-
-                }
                 requestResponseInfo.ResponseInfo.ValidationInfo = ValInfo;
                 queue.Enqueue(requestResponseInfo);
             });

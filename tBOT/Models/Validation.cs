@@ -7,10 +7,10 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Schema;
-using System.Web;
 using tBOT.API;
 using System.Net;
 using System.Collections.Concurrent;
+using System.Runtime.Serialization;
 
 namespace tBOT.TestConditions
 {
@@ -152,13 +152,16 @@ namespace tBOT.TestConditions
         
 
     }
-    public class ValidationInfo: DynamicObject,IValidationInfo
+    //[Serializable]
+
+    [CollectionDataContract]
+    public class ValidationInfo : DynamicObject,IValidationInfo
     {
-        public Boolean PassStatus { get; set; }
+        public Boolean PassStatus {get {return PassCount == TotalCount ? true : false;}}
         public int PassCount { get; set; }
 
 
-        // The inner dictionary.
+        // The inner dictionary.        
         Dictionary<string, object> dictionary
             = new Dictionary<string, object>();
 
@@ -204,7 +207,7 @@ namespace tBOT.TestConditions
 
     public class SchemaValidation: Validation,IValidation<SchemaValidationInfo>
     {
-        private static void SchemaAgainstJSON(string RawSchema, JObject jsonObject, out bool isSchemaValid, out IList<string> schemaValidationErrors)
+        private static void SchemaAgainstJSON(string RawSchema, JObject jsonObject, out Boolean isSchemaValid, out IList<string> schemaValidationErrors)
         {
             isSchemaValid = false;
             IList<string> schemaErrors = new List<string>();
@@ -254,15 +257,16 @@ namespace tBOT.TestConditions
                 }
 
             }
-            info.SchemaValidatedJson = JObject.Parse(requestResponseInfo.ResponseInfo.ResponseArray[0].ToString());
 
-            bool IsShemaValid = false;
-            IList<string> schemaErrorList;
-            SchemaAgainstJSON(info.Schema, info.SchemaValidatedJson, out IsShemaValid, out schemaErrorList);
-
+            Boolean IsShemaValid = false;
+            if (requestResponseInfo.ResponseInfo.StatusCode == 200)
+            {
+                info.SchemaValidatedJson = JObject.Parse(requestResponseInfo.ResponseInfo.ResponseArray[0].ToString());
+                IList<string> schemaErrorList;
+                SchemaAgainstJSON(info.Schema, info.SchemaValidatedJson, out IsShemaValid, out schemaErrorList);
+                info.SchemaErrors = schemaErrorList != null ? string.Join(System.Environment.NewLine, schemaErrorList) : null;
+            }
             info.Valid = IsShemaValid;
-            info.SchemaErrors = schemaErrorList != null ? string.Join(System.Environment.NewLine, schemaErrorList) : null;
-
             return info;
         }
     }
@@ -282,8 +286,12 @@ namespace tBOT.TestConditions
         {
             ListHeaderMessageValidationInfo info = new ListHeaderMessageValidationInfo();
             info.ExpectedListHeaderMessage= "List of " + SingularizeEndPoint(requestResponseInfo.RequestInfo.EndPoint) + " resources";
-            info.ListHeaderMessage = GetResponseHeaderValue(requestResponseInfo.ResponseInfo.ResponseHeaders, "X-hedtech-message");
-            info.Valid = CheckHeaderMessage(info.ListHeaderMessage, info.ExpectedListHeaderMessage);
+            info.Valid = false;
+            if (requestResponseInfo.ResponseInfo.StatusCode == 200)
+            {
+                info.ListHeaderMessage = GetResponseHeaderValue(requestResponseInfo.ResponseInfo.ResponseHeaders, "X-hedtech-message");
+                info.Valid = CheckHeaderMessage(info.ListHeaderMessage, info.ExpectedListHeaderMessage);
+            }
             return info;
         }
     }
@@ -326,17 +334,22 @@ namespace tBOT.TestConditions
         public GuidHeaderMessageValidationInfo Validate(RequestResponseInfo requestResponseInfo)
         {
             GuidHeaderMessageValidationInfo info = new GuidHeaderMessageValidationInfo();
-            string Guid = GetResponseFieldValue(requestResponseInfo.ResponseInfo.ResponseArray, 1, "id");
-            requestResponseInfo.RequestInfo.RequestUrl= requestResponseInfo.RequestInfo.RequestUrl + @"/" + Guid;
-            info.GuidHeaderMessage= GetResponseHeaderValue(ApiResponse(requestResponseInfo.RequestInfo).Take().ResponseInfo.ResponseHeaders, "X-hedtech-message");
+            info.Valid = false;
             info.ExpectedGuidHeaderMessage = "Details for the " + SingularizeEndPoint(requestResponseInfo.RequestInfo.EndPoint) + " resource";
-            info.Valid = CheckHeaderMessage(info.GuidHeaderMessage, info.ExpectedGuidHeaderMessage);
+            if (requestResponseInfo.ResponseInfo.StatusCode == 200)
+            {
+                info.Guid = GetResponseFieldValue(requestResponseInfo.ResponseInfo.ResponseArray, 1, "id");
+                requestResponseInfo.RequestInfo.RequestUrl = requestResponseInfo.RequestInfo.RequestUrl + @"/" + info.Guid;
+                info.GuidHeaderMessage = GetResponseHeaderValue(ApiResponse(requestResponseInfo.RequestInfo).Take().ResponseInfo.ResponseHeaders, "X-hedtech-message");                
+                info.Valid = CheckHeaderMessage(info.GuidHeaderMessage, info.ExpectedGuidHeaderMessage);
+            }
             return info;
         }
 
     }
     public class GuidHeaderMessageValidationInfo
     {
+        public string Guid { get; set; }
         public string GuidHeaderMessage { get; set; }
         public string ExpectedGuidHeaderMessage { get; set; }
         public Boolean Valid { get; set; }
@@ -347,14 +360,16 @@ namespace tBOT.TestConditions
         public InvalidGuidHeaderMessageValidationInfo Validate(RequestResponseInfo requestResponseInfo)
         {
             InvalidGuidHeaderMessageValidationInfo info = new InvalidGuidHeaderMessageValidationInfo();
-            info.InvalidGuidHeaderMessage = GetResponseFieldValue(requestResponseInfo.ResponseInfo.ResponseArray, 1, "id");
-
-            string Guid = "invalid-Guid-0123";
-            requestResponseInfo.RequestInfo.RequestUrl = requestResponseInfo.RequestInfo.RequestUrl + @"/" + Guid;
-            info.InvalidGuidHeaderMessage = GetResponseHeaderValue(ApiResponse(requestResponseInfo.RequestInfo).Take().ResponseInfo.ResponseHeaders, "X-hedtech-message");
-
+            info.Valid = false;
             TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
             info.ExpectedInvalidGuidHeaderMessage = textInfo.ToTitleCase(SingularizeEndPoint(requestResponseInfo.RequestInfo.EndPoint).Replace("-", " ")) + " not found";
+            if (requestResponseInfo.ResponseInfo.StatusCode == 200)
+            {
+                info.InvalidGuidHeaderMessage = GetResponseFieldValue(requestResponseInfo.ResponseInfo.ResponseArray, 1, "id");
+                info.InvalidGuid = "invalid-Guid-0123";
+                requestResponseInfo.RequestInfo.RequestUrl = requestResponseInfo.RequestInfo.RequestUrl + @"/" + info.InvalidGuid;
+                info.InvalidGuidHeaderMessage = GetResponseHeaderValue(ApiResponse(requestResponseInfo.RequestInfo).Take().ResponseInfo.ResponseHeaders, "X-hedtech-message");
+            }
             info.Valid = CheckHeaderMessage(info.InvalidGuidHeaderMessage, info.ExpectedInvalidGuidHeaderMessage);
             return info;
         }
@@ -362,6 +377,7 @@ namespace tBOT.TestConditions
     }
     public class InvalidGuidHeaderMessageValidationInfo
     {
+        public string InvalidGuid { get; set; }
         public string InvalidGuidHeaderMessage { get; set; }
         public string ExpectedInvalidGuidHeaderMessage { get; set; }
         public Boolean Valid { get; set; }
@@ -372,8 +388,11 @@ namespace tBOT.TestConditions
         public TotalCountValidationInfo Validate(RequestResponseInfo requestResponseInfo)
         {
             TotalCountValidationInfo info = new TotalCountValidationInfo();
-            info.ApiTotalCount= int.Parse(GetResponseHeaderValue(requestResponseInfo.ResponseInfo.ResponseHeaders, "X-Total-Count"));
-
+            info.Valid = false;
+            if (requestResponseInfo.ResponseInfo.StatusCode == 200)
+            {
+                info.ApiTotalCount = int.Parse(GetResponseHeaderValue(requestResponseInfo.ResponseInfo.ResponseHeaders, "X-Total-Count"));
+            }
             return info;
         }
     }
@@ -389,10 +408,14 @@ namespace tBOT.TestConditions
         public MaxPageSizeValidationInfo Validate(RequestResponseInfo requestResponseInfo)
         {
             MaxPageSizeValidationInfo info = new MaxPageSizeValidationInfo();
-            info.MaxPageSize = int.Parse(GetResponseHeaderValue(requestResponseInfo.ResponseInfo.ResponseHeaders, "X-hedtech-pageMaxSize"));
-            JObject[] PageItems = requestResponseInfo.ResponseInfo.ResponseArray.Select(jv => (JObject)jv).ToArray();
-            info.ExpectedMaxPageSize = PageItems.Length;
-            info.Valid = info.MaxPageSize == info.ExpectedMaxPageSize;
+            info.Valid = false;
+            if (requestResponseInfo.ResponseInfo.StatusCode == 200)
+            {
+                info.MaxPageSize = int.Parse(GetResponseHeaderValue(requestResponseInfo.ResponseInfo.ResponseHeaders, "X-hedtech-pageMaxSize"));
+                JObject[] PageItems = requestResponseInfo.ResponseInfo.ResponseArray.Select(jv => (JObject)jv).ToArray();
+                info.JsonObjectsInPage = PageItems.Length;
+                info.Valid = info.MaxPageSize == info.JsonObjectsInPage;
+            }
             return info;
         }
 
@@ -400,7 +423,7 @@ namespace tBOT.TestConditions
     public class MaxPageSizeValidationInfo
     {
         public int MaxPageSize { get; set; }
-        public int ExpectedMaxPageSize { get; set; }
+        public int JsonObjectsInPage { get; set; }
         public Boolean Valid { get; set; }
     }
 
