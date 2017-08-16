@@ -43,7 +43,32 @@ namespace tBOT.TestConditions
                     return (IValidation<T>)new ListHeaderMessageValidation();
                 }
 
-                throw new InvalidOperationException();
+            if (typeof(T) == typeof(LatestVersionValidationInfo))
+            {
+                return (IValidation<T>)new LatestVersionValidation();
+            }
+
+            if (typeof(T) == typeof(GuidHeaderMessageValidationInfo))
+            {
+                return (IValidation<T>)new GuidHeaderMessageValidation();
+            }
+
+            if (typeof(T) == typeof(InvalidGuidHeaderMessageValidationInfo))
+            {
+                return (IValidation<T>)new InvalidGuidHeaderMessageValidation();
+            }
+
+            if (typeof(T) == typeof(TotalCountValidationInfo))
+            {
+                return (IValidation<T>)new TotalCountValidation();
+            }
+
+            if (typeof(T) == typeof(MaxPageSizeValidationInfo))
+            {
+                return (IValidation<T>)new MaxPageSizeValidation();
+            }
+
+            throw new InvalidOperationException();
             }
 
 
@@ -131,7 +156,6 @@ namespace tBOT.TestConditions
     {
         public Boolean PassStatus { get; set; }
         public int PassCount { get; set; }
-        public int FailCount { get; set; }
 
 
         // The inner dictionary.
@@ -140,7 +164,7 @@ namespace tBOT.TestConditions
 
         // This property returns the number of elements
         // in the inner dictionary.
-        public int Count
+        public int TotalCount
         {
             get
             {
@@ -236,7 +260,7 @@ namespace tBOT.TestConditions
             IList<string> schemaErrorList;
             SchemaAgainstJSON(info.Schema, info.SchemaValidatedJson, out IsShemaValid, out schemaErrorList);
 
-            info.SchemaValid = IsShemaValid;
+            info.Valid = IsShemaValid;
             info.SchemaErrors = schemaErrorList != null ? string.Join(System.Environment.NewLine, schemaErrorList) : null;
 
             return info;
@@ -247,7 +271,7 @@ namespace tBOT.TestConditions
         public string SchemaUrl { get; set; }
         public string Schema { get; set; }
         public JObject SchemaValidatedJson { get; set; }
-        public bool SchemaValid { get; set; }
+        public bool Valid { get; set; }
         public string SchemaErrors { get; set; }
 
     }
@@ -259,7 +283,7 @@ namespace tBOT.TestConditions
             ListHeaderMessageValidationInfo info = new ListHeaderMessageValidationInfo();
             info.ExpectedListHeaderMessage= "List of " + SingularizeEndPoint(requestResponseInfo.RequestInfo.EndPoint) + " resources";
             info.ListHeaderMessage = GetResponseHeaderValue(requestResponseInfo.ResponseInfo.ResponseHeaders, "X-hedtech-message");
-            info.ListHeaderMessageValid = CheckHeaderMessage(info.ListHeaderMessage, info.ExpectedListHeaderMessage);
+            info.Valid = CheckHeaderMessage(info.ListHeaderMessage, info.ExpectedListHeaderMessage);
             return info;
         }
     }
@@ -267,7 +291,7 @@ namespace tBOT.TestConditions
     {
         public string ListHeaderMessage { get; set; }
         public string ExpectedListHeaderMessage { get; set; }
-        public Boolean ListHeaderMessageValid { get; set; }
+        public Boolean Valid { get; set; }
     }
 
     public class LatestVersionValidation : Validation, IValidation<LatestVersionValidationInfo>
@@ -285,7 +309,7 @@ namespace tBOT.TestConditions
             LatestVersionValidationInfo info = new LatestVersionValidationInfo();   
             info.LatestVersion = GetResponseHeaderValue(requestResponseInfo.ResponseInfo.ResponseHeaders, "X-hedtech-Media-Type");
             info.ExpectedLatestVersion = requestResponseInfo.RequestInfo.Version;
-            info.LatestVersionValid = CheckLatestVersion(info.LatestVersion, info.ExpectedLatestVersion);
+            info.Valid = CheckLatestVersion(info.LatestVersion, info.ExpectedLatestVersion);
             return info;
         }
 
@@ -294,7 +318,7 @@ namespace tBOT.TestConditions
     {
         public string LatestVersion { get; set; }
         public string ExpectedLatestVersion { get; set; }
-        public Boolean LatestVersionValid { get; set; }
+        public Boolean Valid { get; set; }
     }
 
     public class GuidHeaderMessageValidation : Validation, IValidation<GuidHeaderMessageValidationInfo>
@@ -306,7 +330,7 @@ namespace tBOT.TestConditions
             requestResponseInfo.RequestInfo.RequestUrl= requestResponseInfo.RequestInfo.RequestUrl + @"/" + Guid;
             info.GuidHeaderMessage= GetResponseHeaderValue(ApiResponse(requestResponseInfo.RequestInfo).Take().ResponseInfo.ResponseHeaders, "X-hedtech-message");
             info.ExpectedGuidHeaderMessage = "Details for the " + SingularizeEndPoint(requestResponseInfo.RequestInfo.EndPoint) + " resource";
-            info.GuidHeaderMessageValid = CheckHeaderMessage(info.GuidHeaderMessage, info.ExpectedGuidHeaderMessage);
+            info.Valid = CheckHeaderMessage(info.GuidHeaderMessage, info.ExpectedGuidHeaderMessage);
             return info;
         }
 
@@ -315,7 +339,7 @@ namespace tBOT.TestConditions
     {
         public string GuidHeaderMessage { get; set; }
         public string ExpectedGuidHeaderMessage { get; set; }
-        public Boolean GuidHeaderMessageValid { get; set; }
+        public Boolean Valid { get; set; }
     }
 
     public class InvalidGuidHeaderMessageValidation : Validation, IValidation<InvalidGuidHeaderMessageValidationInfo>
@@ -331,7 +355,7 @@ namespace tBOT.TestConditions
 
             TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
             info.ExpectedInvalidGuidHeaderMessage = textInfo.ToTitleCase(SingularizeEndPoint(requestResponseInfo.RequestInfo.EndPoint).Replace("-", " ")) + " not found";
-            info.InvalidGuidHeaderMessageValid = CheckHeaderMessage(info.InvalidGuidHeaderMessage, info.ExpectedInvalidGuidHeaderMessage);
+            info.Valid = CheckHeaderMessage(info.InvalidGuidHeaderMessage, info.ExpectedInvalidGuidHeaderMessage);
             return info;
         }
 
@@ -340,7 +364,7 @@ namespace tBOT.TestConditions
     {
         public string InvalidGuidHeaderMessage { get; set; }
         public string ExpectedInvalidGuidHeaderMessage { get; set; }
-        public Boolean InvalidGuidHeaderMessageValid { get; set; }
+        public Boolean Valid { get; set; }
     }
 
     public class TotalCountValidation : Validation, IValidation<TotalCountValidationInfo>
@@ -357,7 +381,7 @@ namespace tBOT.TestConditions
     {
         public int ApiTotalCount { get; set; }
         public int DBTotalCount { get; set; }
-        public Boolean TotalCountValid { get; set; }
+        public Boolean Valid { get; set; }
     }
 
     public class MaxPageSizeValidation : Validation, IValidation<MaxPageSizeValidationInfo>
@@ -368,7 +392,7 @@ namespace tBOT.TestConditions
             info.MaxPageSize = int.Parse(GetResponseHeaderValue(requestResponseInfo.ResponseInfo.ResponseHeaders, "X-hedtech-pageMaxSize"));
             JObject[] PageItems = requestResponseInfo.ResponseInfo.ResponseArray.Select(jv => (JObject)jv).ToArray();
             info.ExpectedMaxPageSize = PageItems.Length;
-            info.MaxPageSizeValid = info.MaxPageSize == info.ExpectedMaxPageSize;
+            info.Valid = info.MaxPageSize == info.ExpectedMaxPageSize;
             return info;
         }
 
@@ -377,7 +401,7 @@ namespace tBOT.TestConditions
     {
         public int MaxPageSize { get; set; }
         public int ExpectedMaxPageSize { get; set; }
-        public Boolean MaxPageSizeValid { get; set; }
+        public Boolean Valid { get; set; }
     }
 
 

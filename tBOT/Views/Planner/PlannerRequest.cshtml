@@ -47,15 +47,15 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="responseResult in results | filter:{EndPoint:searchEndPoint} | orderBy:sortType:sortReverse" ng-class="responseResult.ResponseContent.StatusCode ==200 ?'success':'danger'">
-                            <td>{{responseResult.EndPoint}}</td>
+                            <td>{{responseResult.RequestInfo.EndPoint}}</td>
                             <td>
-                                {{responseResult.ResponseContent.StatusCode}}
+                                {{responseResult.ResponseInfo.StatusCode}}
                             </td>
                             <td>
                                 <button type="button" ng-class="responseResult.ValidationContent.PassStatus?'btn btn-success btn-block':'btn btn-danger btn-block'" ng-click="getApiInfo(responseResult)">                                
                                  <span ng-class="responseResult.ValidationContent.PassStatus?'glyphicon glyphicon-thumbs-up':'glyphicon glyphicon-thumbs-down'">&nbsp;</span>
                                  <span class="badge">
-                                  {{responseResult.ValidationContent.PassCount}}/{{responseResult.ValidationContent.FailCount+responseResult.ValidationContent.PassCount}}
+                                  {{responseResult.Validation.PassCount}}/{{responseResult.Validation.TotalCount}}
                                  </span></button>
                             </td>
                         </tr>

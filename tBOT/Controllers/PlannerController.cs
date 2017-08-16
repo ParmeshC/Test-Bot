@@ -52,19 +52,23 @@ namespace tBOT.Controllers
 
         public ActionResult GetApiResponseList(List<RequestInfo> RequestData)
         {
-            return Content(JsonConvert.SerializeObject(ApiResponseList(RequestData)), "application/json");
+            var result = ApiResponseList(RequestData);
+            return Json(result, JsonRequestBehavior.AllowGet);
+            //return Content(JsonConvert.SerializeObject(ApiResponseList(RequestData)), "application/json");
 
         }
 
 
 
-        private ConcurrentQueue<IValidationInfo> ApiResponseList(List<RequestInfo> requestData)
+        private ConcurrentQueue<RequestResponseInfo> ApiResponseList(List<RequestInfo> requestData)
         {
-            ConcurrentQueue<IValidationInfo> queue = new ConcurrentQueue<IValidationInfo>();
+            ConcurrentQueue<RequestResponseInfo> queue = new ConcurrentQueue<RequestResponseInfo>();
             Parallel.ForEach(requestData, (requestItem) =>
             {
                 RequestResponseInfo requestResponseInfo = new RequestResponseInfo();
                 dynamic ValInfo = new ValidationInfo();
+                
+                
 
                 Validation Val = new Validation();
                 requestResponseInfo = Val.ApiResponse(requestItem).Take();
@@ -74,21 +78,30 @@ namespace tBOT.Controllers
 
                     var LVVinfo = FactoryValidation.CreateGeneric<LatestVersionValidationInfo>();
                     ValInfo.LatestVersionValidationInfo = LVVinfo.Validate(requestResponseInfo);
+                    ValInfo.PassCount += ValInfo.LatestVersionValidationInfo.Valid == true ? 1 : 0;
 
                     var LHMVinfo = FactoryValidation.CreateGeneric<ListHeaderMessageValidationInfo>();
                     ValInfo.ListHeaderMessageValidationInfo = LHMVinfo.Validate(requestResponseInfo);
+                    ValInfo.PassCount += ValInfo.ListHeaderMessageValidationInfo.Valid == true ? 1 : 0;
 
 
                     var SVinfo = FactoryValidation.CreateGeneric<SchemaValidationInfo>();
                     ValInfo.SchemaValidationInfo = SVinfo.Validate(requestResponseInfo);
+                    ValInfo.PassCount += ValInfo.SchemaValidationInfo.Valid == true ? 1 : 0;
 
                     var GHMVinfo = FactoryValidation.CreateGeneric<GuidHeaderMessageValidationInfo>();
                     ValInfo.GuidHeaderMessageValidationInfo = GHMVinfo.Validate(requestResponseInfo);
+                    ValInfo.PassCount += ValInfo.GuidHeaderMessageValidationInfo.Valid == true ? 1 : 0;
 
 
                     var IGHMVinfo = FactoryValidation.CreateGeneric<InvalidGuidHeaderMessageValidationInfo>();
                     ValInfo.InvalidGuidHeaderMessageValidationInfo = IGHMVinfo.Validate(requestResponseInfo);
+                    ValInfo.PassCount += ValInfo.InvalidGuidHeaderMessageValidationInfo.Valid == true ? 1 : 0;
 
+
+                    var MPSVinfo = FactoryValidation.CreateGeneric<MaxPageSizeValidationInfo>();
+                    ValInfo.MaxPageSizeValidationInfo = MPSVinfo.Validate(requestResponseInfo);
+                    ValInfo.PassCount += ValInfo.MaxPageSizeValidationInfo.Valid == true ? 1 : 0;
 
                 }
                 else
@@ -96,8 +109,8 @@ namespace tBOT.Controllers
                     ValInfo.PassStatus = false;                    
 
                 }
-
-                queue.Enqueue(ValInfo);
+                requestResponseInfo.ResponseInfo.ValidationInfo = ValInfo;
+                queue.Enqueue(requestResponseInfo);
             });
 
             return queue;

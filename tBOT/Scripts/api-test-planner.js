@@ -46,7 +46,7 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
                 ["AuthType"]: $scope.apiAuth.Type,
                 ["UserName"]: $scope.apiAuth.UserName,
                 ["Password"]: $scope.apiAuth.Password,
-                ["Lang"]: "en-in",
+                ["LanguageCode"]: "en-in",
                 ["Accept"]: "application/json",
                 ["ContentType"]: "application/json",
                 ["RequestMethod"]: "GET",
@@ -61,6 +61,7 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
         PlannerFactory.getApiResponseList($scope).then(function (d) {
             $scope.results = d.data;
             $scope.reqestStatus = false;
+            console.log($scope.results)
             apiTestSharedService.apiResponseListBroadcast($scope.results);
         });
 

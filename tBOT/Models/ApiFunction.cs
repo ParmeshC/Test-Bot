@@ -9,6 +9,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using System.ComponentModel;
+using tBOT.TestConditions;
 
 namespace tBOT.API
 {
@@ -42,6 +43,8 @@ namespace tBOT.API
         public static RequestResponseInfo GetRequestResponse(RequestInfo requestInfo)
         {
             RequestResponseInfo requestResponseInfo = new RequestResponseInfo();
+            ResponseInfo responseInfo = new ResponseInfo();
+
             string errorMessage = null;
             string description = null;
 
@@ -80,42 +83,45 @@ namespace tBOT.API
                 {
                     if (!string.IsNullOrEmpty(Response.Content.ReadAsStringAsync().Result))
                     {
-                        requestResponseInfo.ResponseInfo.ResponseBody = Response.Content.ReadAsStringAsync().Result;
-                        var token = JToken.Parse(requestResponseInfo.ResponseInfo.ResponseBody);
+                        responseInfo.ResponseBody = Response.Content.ReadAsStringAsync().Result;
+                        var token = JToken.Parse(responseInfo.ResponseBody);
 
                         if (token is JArray)
                         {
-                            requestResponseInfo.ResponseInfo.IsResponseArray = true;
-                            requestResponseInfo.ResponseInfo.ResponseArray = JArray.Parse(requestResponseInfo.ResponseInfo.ResponseBody);
+                            responseInfo.IsResponseArray = true;
+                            responseInfo.ResponseArray = JArray.Parse(responseInfo.ResponseBody);
                         }
                         else if (token is JObject)
                         {
-                            requestResponseInfo.ResponseInfo.IsResponseArray = false;
-                            requestResponseInfo.ResponseInfo.ResponseArray.Add(JArray.Parse(requestResponseInfo.ResponseInfo.ResponseBody));
+                            responseInfo.IsResponseArray = false;
+                            responseInfo.ResponseArray.Add(JArray.Parse(responseInfo.ResponseBody));
                         }
 
                         if (Response.IsSuccessStatusCode)
                             { description = "Status:OK, No Errors"; }
                         else
-                            { setMessages(JObject.Parse(requestResponseInfo.ResponseInfo.ResponseArray[0].ToString()), out errorMessage, out description);}
+                            { setMessages(JObject.Parse(responseInfo.ResponseArray[0].ToString()), out errorMessage, out description);}
                     }
                     else
                     {
-                       description = requestResponseInfo.ResponseInfo.ResponsePhrase + Environment.NewLine + Response.Content.Headers.ToString();
+                       description = responseInfo.ResponsePhrase + Environment.NewLine + Response.Content.Headers.ToString();
                     }
-                    requestResponseInfo.ResponseInfo.ResponseHeaders = Response.Headers.ToArray();
-                    requestResponseInfo.ResponseInfo.StatusCode = (int)Response.StatusCode;
+                    responseInfo.ResponseHeaders = Response.Headers.ToArray();
+                    responseInfo.StatusCode = (int)Response.StatusCode;
                 }
-                requestResponseInfo.ResponseInfo.Description = description;
-                requestResponseInfo.ResponseInfo.ErrorMessage = errorMessage;
+                responseInfo.Description = description;
+                responseInfo.ErrorMessage = errorMessage;
             }
             catch (Exception ex)
             {
                 if (ex.InnerException != null)
-                { if (ex.InnerException.Message.Split(':').Length > 0) requestResponseInfo.ResponseInfo.Description = ex.InnerException.Message.Split(':')[0].ToString(); }
+                { if (ex.InnerException.Message.Split(':').Length > 0) responseInfo.Description = ex.InnerException.Message.Split(':')[0].ToString(); }
                 else
-                { requestResponseInfo.ResponseInfo.Description = ex.Message.ToString(); }
+                { responseInfo.Description = ex.Message.ToString(); }
             }
+            requestResponseInfo.RequestInfo = requestInfo;
+            requestResponseInfo.ResponseInfo = responseInfo;
+
             return requestResponseInfo;
         }
             
@@ -126,7 +132,6 @@ namespace tBOT.API
         public string AuthType { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
-        public string Lang { get; set; }
         public string Accept { get; set; }
         public string ContentType { get; set; }
         public string LanguageCode { get; set; }
@@ -149,6 +154,7 @@ namespace tBOT.API
         public string ResponsePhrase { get; set; }
         public string ErrorMessage { get; set; }
         public string Description { get; set; }
+        public ValidationInfo ValidationInfo { get; set; }
     }
 
     public class RequestResponseInfo
