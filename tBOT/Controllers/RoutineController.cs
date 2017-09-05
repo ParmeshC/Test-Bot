@@ -33,14 +33,13 @@ namespace tBOT.Controllers
 
         }
 
-
         public JsonResult AddApiInfo(List<Models.API> apiArrayList)
         {
             //question.Date = DateTime.Parse(DateTime.Now.ToShortTimeString());
             tbotEntities e = new tbotEntities();
             foreach (var api in apiArrayList)
             {
-                e.APIs.Add(api);
+                e.APIs.Add(api);                
                 api.SchemaUrl = @"https://git.ellucian.com:8443/projects/HEDM/repos/hedm-models/raw/schema/" 
                                 + api.EndPoint 
                                 + @".json?at=refs%2Fheads%2F" 

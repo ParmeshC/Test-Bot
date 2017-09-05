@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using tBOT.API;
+using tBOT.Models;
 
 namespace tBOT.Controllers
 {
@@ -52,6 +53,19 @@ namespace tBOT.Controllers
 
             tableDescribe = DtAcss.GetTableDescribe(tableSchemaRequest);
             return Content(JsonConvert.SerializeObject(tableDescribe), "application/json");
+        }
+
+
+        public JsonResult AddTestCases(Models.TestCase TestCase)
+        {
+            //question.Date = DateTime.Parse(DateTime.Now.ToShortTimeString());
+            tbotEntities e = new tbotEntities();
+
+                e.TestCases.Add(TestCase);
+
+            //e.APIs.Add(apiInput);            
+            e.SaveChanges();
+            return Json(new { status = "Api Input added successfully" });
         }
 
 

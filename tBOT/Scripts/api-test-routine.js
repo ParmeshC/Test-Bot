@@ -17,7 +17,7 @@ RoutineApp.controller('RoutineCtrl', function (RoutineFactory, apiTestSharedServ
         $scope.mpdHdr = {};
         $scope.mpdHdrNdata = [];
         $scope.mpblHdr = jsonData;
-    }
+    };
 
     $scope.ApiInfo;
     RoutineFactory.getApiInfo().then(function (d) {
@@ -27,7 +27,7 @@ RoutineApp.controller('RoutineCtrl', function (RoutineFactory, apiTestSharedServ
 
     $scope.AddApiInfo = function () {
         RoutineFactory.addApiInfoToDB($scope.mpdHdrNdata);
-    }
+    };
 
 
     $scope.sortType = 'Id'; // set the default sort type
@@ -44,25 +44,25 @@ RoutineApp.controller('RoutineCtrl', function (RoutineFactory, apiTestSharedServ
             return item.selected;
         });
         $scope.selectedRows = selectedItems;
-        apiTestSharedService.apiRequestListBroadcast($scope.selectedRows);        
-    }
+        apiTestSharedService.apiRequestListBroadcast($scope.selectedRows);
+    };
 
     $scope.toggleAll = function () {
         $scope.isAllSelected = !$scope.isAllSelected;
         var toggleStatus = $scope.isAllSelected;
         angular.forEach($scope.ApiInfo, function (itm) { itm.selected = toggleStatus; });
         getAllSelected();
-    }
+    };
 
     $scope.optionToggled = function () {
-        $scope.isAllSelected = $scope.ApiInfo.every(function (itm) { return itm.selected; })
+        $scope.isAllSelected = $scope.ApiInfo.every(function (itm) { return itm.selected; });
         getAllSelected();
-    }
+    };
     //*****************
 
     
     $scope.update = function (clmIndx) {
-        if (this.slctdHdr != undefined) {
+        if (this.slctdHdr !== undefined) {
             var index = this.slctdHdr['id'];
             $scope.mpdHdr[clmIndx] = this.slctdHdr['header'];
             $scope.mpblHdr = $scope.mpblHdr.filter(function (hdr) {
@@ -78,8 +78,8 @@ RoutineApp.controller('RoutineCtrl', function (RoutineFactory, apiTestSharedServ
 
         for (var row = 0; row < dataArray.length; row++) {
             for (var clmn = 0; clmn < dataArray.length; clmn++) {
-                if (clmn == clmnIndx) {
-                    if (dataArray[row][colmnHeader[clmn].field] != undefined) {
+                if (clmn === clmnIndx) {
+                    if (dataArray[row][colmnHeader[clmn].field] !== undefined) {
                         if (hasRows) {
                             mpdHdrNdata[row][hdrNm] = dataArray[row][colmnHeader[clmn].field];
                         }

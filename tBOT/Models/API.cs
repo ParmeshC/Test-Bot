@@ -16,9 +16,9 @@ namespace tBOT.Models
     {
         public int Id { get; set; }
         public string APP { get; set; }
-        public string Version { get; set; }
-        public string EndPoint { get; set; }
         public string Connector { get; set; }
+        public string EndPoint { get; set; }
+        public string Version { get; set; }
         public string SchemaUrl { get; set; }
     }
 }

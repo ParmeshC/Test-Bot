@@ -2,21 +2,17 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using tBOT.Models;
-using System.Data.Entity.Design.PluralizationServices;
-using System.Globalization;
-using System.Text.RegularExpressions;
+using tBOT.Services.API.Test;
+using tBOT.Services.API.RESTful;
+using Newtonsoft.Json.Linq;
+//using System.Web.Http;
 
-using tBOT.TestConditions;
-using tBOT.API;
+
+
 
 namespace tBOT.Controllers
 {
@@ -50,69 +46,33 @@ namespace tBOT.Controllers
 
         }
 
-        public ActionResult GetApiResponseList(List<RequestInfo> RequestData)
+        public JsonResult GetAllTestCases()
         {
-            var results = ApiResponseList(RequestData);
-
-            var retunValue_1 = Json(results, JsonRequestBehavior.AllowGet);
-            var retunValue_2 = JsonConvert.SerializeObject(results);
-            var retunValue_3 = Content(JsonConvert.SerializeObject(results), "application/json");
-
-            return retunValue_1;
-
+            tbotEntities e = new tbotEntities();
+            var result = e.TestCases.ToList();
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
 
-
-        private ConcurrentQueue<RequestResponseInfo> ApiResponseList(List<RequestInfo> requestData)
+        public ActionResult GetAllTestTemplates()
         {
-            ConcurrentQueue<RequestResponseInfo> queue = new ConcurrentQueue<RequestResponseInfo>();
-            Parallel.ForEach(requestData, (requestItem) =>
-            {
-                RequestResponseInfo requestResponseInfo = new RequestResponseInfo();
-                dynamic ValInfo = new ValidationInfo();
-                
-                
-
-                Validation Val = new Validation();
-                requestResponseInfo = Val.ApiResponse(requestItem).Take();
-
-                    var LVVinfo = FactoryValidation.CreateGeneric<LatestVersionValidationInfo>();
-                    ValInfo.LatestVersionValidationInfo = LVVinfo.Validate(requestResponseInfo);
-                    ValInfo.PassCount += ValInfo.LatestVersionValidationInfo.Valid == true ? 1 : 0;
-
-                    var LHMVinfo = FactoryValidation.CreateGeneric<ListHeaderMessageValidationInfo>();
-                    ValInfo.ListHeaderMessageValidationInfo = LHMVinfo.Validate(requestResponseInfo);
-                    ValInfo.PassCount += ValInfo.ListHeaderMessageValidationInfo.Valid == true ? 1 : 0;
-
-
-                    var SVinfo = FactoryValidation.CreateGeneric<SchemaValidationInfo>();
-                    ValInfo.SchemaValidationInfo = SVinfo.Validate(requestResponseInfo);
-                    ValInfo.PassCount += ValInfo.SchemaValidationInfo.Valid == true ? 1 : 0;
-
-                    var GHMVinfo = FactoryValidation.CreateGeneric<GuidHeaderMessageValidationInfo>();
-                    ValInfo.GuidHeaderMessageValidationInfo = GHMVinfo.Validate(requestResponseInfo);
-                    ValInfo.PassCount += ValInfo.GuidHeaderMessageValidationInfo.Valid == true ? 1 : 0;
-
-
-                    var IGHMVinfo = FactoryValidation.CreateGeneric<InvalidGuidHeaderMessageValidationInfo>();
-                    ValInfo.InvalidGuidHeaderMessageValidationInfo = IGHMVinfo.Validate(requestResponseInfo);
-                    ValInfo.PassCount += ValInfo.InvalidGuidHeaderMessageValidationInfo.Valid == true ? 1 : 0;
-
-
-                    var MPSVinfo = FactoryValidation.CreateGeneric<MaxPageSizeValidationInfo>();
-                    ValInfo.MaxPageSizeValidationInfo = MPSVinfo.Validate(requestResponseInfo);
-                    ValInfo.PassCount += ValInfo.MaxPageSizeValidationInfo.Valid == true ? 1 : 0;
-
-                requestResponseInfo.ResponseInfo.ValidationInfo = ValInfo;
-                queue.Enqueue(requestResponseInfo);
-            });
-
-            return queue;
+            var ListofTestCaseConditions = TestCaseTemplate.GetListofTestCaseConditions();              
+            //var result = Content(JsonConvert.SerializeObject(ListofTestCaseConditions), "application/json");
+            var result = Json(ListofTestCaseConditions, JsonRequestBehavior.AllowGet);
+            return result;
 
         }
+        
 
 
+        [HttpPost]
+        public ActionResult GetApiResponseList(List<TestRequest> TestRequest)
+        {
+            var results = TestCaseTemplate.GetRequestResponse(TestRequest);
+            var retunValue = Json(results, JsonRequestBehavior.AllowGet);
+
+            return retunValue;
+        }
 
     }
 }

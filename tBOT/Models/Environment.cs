@@ -15,6 +15,11 @@ namespace tBOT.Models
     public partial class Environment
     {
         public int Id { get; set; }
-        public string Server { get; set; }
+        public string AppServer { get; set; }
+        public string DBHostName { get; set; }
+        public Nullable<int> DBPortNumber { get; set; }
+        public string DBServiceName { get; set; }
+        public string DBUserId { get; set; }
+        public string DBPassword { get; set; }
     }
 }

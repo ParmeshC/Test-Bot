@@ -1,0 +1,26 @@
+﻿<div ng-controller="DesignTestCaseCtrl" class="container-fluid">
+    <h4 class="text-center">Design Test Case from Test Case Template</h4>
+    <div class="form-inline" >
+        <div class="input-group">
+            <span class="input-group-addon">Test Case Template</span>
+
+            <select class="form-control" ng-model="TestCaseTemplate" ng-change="TestCaseTemplateChange()">
+                <option value="{{testTemplatekey}}"
+                        ng-repeat="(testTemplatekey,testTemplateValue) in TestCaseTemplatesList">
+                    {{testTemplatekey}}
+                </option>
+            </select>
+        </div>
+        <div class="input-group" >
+            <span class="input-group-addon">TestCase Name</span>
+            <input style="padding-left:0px; padding-right:0px;" type="text" class="form-control" ng-model="TestCaseTemplateName"/>
+        </div>
+        <button type="button" ng-show="TestCaseTemplate!=null" ng-click="AddTestCase()" class="btn btn-primary btn-sm">Save</button>
+        <button type="button" ng-show="TestCaseTemplate!=null" ng-click="TestCaseClear()" class="btn btn-primary btn-sm">Clear</button>
+    </div>
+    <angular-jsoneditor ng-show="TestCaseTemplate!=null" ng-model="TestCaseCondition" options="tree" style="width: 100%;"></angular-jsoneditor>
+    @*<pre>{{TestCaseCondition|json}}</pre>*@
+</div>
+
+
+

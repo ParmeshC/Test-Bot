@@ -4,10 +4,13 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="d62e43e9d7644435a377f3561b04f8a0" Name="Diagram1">
-        <EntityTypeShape EntityType="tbotModel.API" Width="1.5" PointX="0.875" PointY="0.875" IsExpanded="true" />
+      <Diagram DiagramId="38b1d05c165343e9a4b12890fec610b5" Name="Diagram1">
+        <EntityTypeShape EntityType="tbotModel.API" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.ApiGroup" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="tbotModel.Authorization" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="tbotModel.Environment" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.TestCase" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.TestSuite" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

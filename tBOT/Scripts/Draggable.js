@@ -8,7 +8,10 @@
                 $scope.ApiResponseInfoObject = $scope.ApiResponseInfo.ResponseContent.IsResponseArray ? $scope.ApiResponseInfo.ResponseContent.ResponseArray : $scope.ApiResponseInfo.ResponseContent.ResponseObject;
             }
         });
-        
+
+        $scope.$on('handleDesignTestTemplateBroadcast', function () {
+            $scope.DesignTestTemplate = apiTestSharedService.designTestTemplate;
+        });
 
 
     $scope.$watch('models.dropzones', function (model) {
