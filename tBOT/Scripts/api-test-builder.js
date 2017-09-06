@@ -17,11 +17,11 @@ BuilderApp.controller('BuilderCtrl', function (BuilderFactory, apiTestSharedServ
 
     $scope.oneAtATime = true;
     $scope.collapse = function myfunction(item) {
-        $scope.ValidationInfo.List[item]['isOpen'] = $scope.ValidationInfo.List[item]['isOpen'] === undefined ? true : !$scope.ValidationInfo.List[item]['isOpen'];
-        if (this.oneAtATime && $scope.ValidationInfo.List[item]['isOpen'] === true) {
+        $scope.RequestResponse.TestCasesList[item]['isOpen'] = $scope.RequestResponse.TestCasesList[item]['isOpen'] === undefined ? true : !$scope.RequestResponse.TestCasesList[item]['isOpen'];
+        if (this.oneAtATime && $scope.RequestResponse.TestCasesList[item]['isOpen'] === true) {
             var prop;
-            for (prop in $scope.ValidationInfo.List) {
-                $scope.ValidationInfo.List[prop]['isOpen'] = prop !== item ? false : true;
+            for (prop in $scope.RequestResponse.TestCasesList) {
+                $scope.RequestResponse.TestCasesList[prop]['isOpen'] = prop !== item ? false : true;
             }
         }
     };

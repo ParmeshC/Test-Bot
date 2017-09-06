@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using Newtonsoft.Json.Linq;
 using System.Text;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace tBOT.Services.API.RESTful
 {
@@ -107,30 +108,39 @@ namespace tBOT.Services.API.RESTful
                     if (!string.IsNullOrEmpty(httpResponse.Content.ReadAsStringAsync().Result))
                     {
                         responseBody = httpResponse.Content.ReadAsStringAsync().Result;
-                        var token = JToken.Parse(responseBody);
 
+                        var token = JToken.Parse(responseBody);
                         if (token is JArray)
                         {
                             response.IsResponseArray = true;
                             response.ResponseArray = JArray.Parse(responseBody);
+
                         }
                         else if (token is JObject)
                         {
-                            response.IsResponseArray = false;
-                            response.ResponseArray.Add(JArray.Parse(responseBody));
+                            //response.IsResponseArray = false;
+                            //JArray JAry = new JArray();
+                            //JAry.Add(JObject.Parse(responseBody));
+                            //response.ResponseArray = JAry;
+
+                            response.ResponseArray = new JArray() { responseBody };
                         }
 
                         if (httpResponse.IsSuccessStatusCode)
                             { description = "Status:OK, No Errors"; }
                         else
-                            { setMessages(JObject.Parse(response.ResponseArray[0].ToString()), out errorMessage, out description);}
+                        {
+                            setMessages(JObject.Parse(response.ResponseArray.Count == 0 ? "" : response.ResponseArray[0].ToString()), out errorMessage, out description);
+                        }
                     }
                     else
                     {
-                       description = response.ResponsePhrase + Environment.NewLine + httpResponse.Content.Headers.ToString();
+                       description = httpResponse.ReasonPhrase + Environment.NewLine + httpResponse.Content.Headers.ToString();
                     }
                     response.ResponseHeaders = httpResponse.Headers.ToArray();
                     response.StatusCode = (int)httpResponse.StatusCode;
+                    response.ResponsePhrase = httpResponse.ReasonPhrase;
+
                 }
                 response.Description = description;
                 response.ErrorMessage = errorMessage;

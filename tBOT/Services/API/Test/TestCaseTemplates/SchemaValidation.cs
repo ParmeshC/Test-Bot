@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using tBOT.Services.API.RESTful;
+using tBOT.Services.ExtentionMethods;
 
 namespace tBOT.Services.API.Test
 {
@@ -63,11 +64,13 @@ namespace tBOT.Services.API.Test
                 }
 
             }
-
             Boolean IsShemaValid = false;
-            if (result.Response.StatusCode == 200)
+            if (result.Response.StatusCode == 200 )
             {
-                result.SchemaValidatedJson = JObject.Parse(result.Response.ResponseArray[0].ToString());
+
+                result.SchemaValidatedJson = result.Response.ResponseArray.Count != 0 ? result.Response.ResponseArray[0] as JObject : null;
+ 
+
                 IList<string> schemaErrorList;
                 SchemaAgainstJSON(result.Schema, result.SchemaValidatedJson, out IsShemaValid, out schemaErrorList);
                 result.SchemaErrors = schemaErrorList != null ? string.Join(System.Environment.NewLine, schemaErrorList) : null;
@@ -86,7 +89,7 @@ namespace tBOT.Services.API.Test
         public string SchemaErrors { get; set; }
 
     }
-    public class SchemaValidationContion:ITestCaseCondition
+    public class SchemaValidationContion: ITestCaseCondition
     {
         public RESTfulRequest Request{ get; set; }
         public string RawschemaUrl { get; set; }

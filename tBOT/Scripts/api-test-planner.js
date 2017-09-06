@@ -63,7 +63,7 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
     };
 
     $scope.toggleAll = function () {
-        $scope.isAllSelected = !$scope.isAllSelected; //this line of code is needed if it is an array
+        //$scope.isAllSelected = !$scope.isAllSelected; //this line of code is needed if it is an array
         var toggleStatus = $scope.isAllSelected;
         angular.forEach($scope.TestCasesList, function (itm) { itm.selected = toggleStatus; });
         getAllSelected();

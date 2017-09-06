@@ -236,6 +236,7 @@
     <Compile Include="Services\API\Test\TestCaseTemplates\Translation.cs" />
     <Compile Include="Services\API\Test\TestRequest.cs" />
     <Compile Include="Services\API\Test\TestResponse.cs" />
+    <Compile Include="Services\ExtentionMethods\JsonExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\api-test.css" />

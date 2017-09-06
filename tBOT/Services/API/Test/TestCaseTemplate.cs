@@ -10,6 +10,7 @@ using System.Collections;
 using tBOT.Services.API.RESTful;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using tBOT.Services.ExtentionMethods;
 
 namespace tBOT.Services.API.Test
 {
@@ -159,7 +160,18 @@ namespace tBOT.Services.API.Test
             {
                 if (ResponseArray.Count > ArrayIndex && ArrayIndex > -1)
                 {
-                    if (ResponseArray[ArrayIndex][FieldName] != null) fieldValue = ResponseArray[ArrayIndex][FieldName].ToString();
+                    //if (ResponseArray[ArrayIndex][FieldName] != null) fieldValue = ResponseArray[ArrayIndex][FieldName].ToString();
+
+                    JToken token = ResponseArray[ArrayIndex];
+                    if (token.HasValues)
+                    {                        
+                        fieldValue = token[FieldName]!=null?ResponseArray[ArrayIndex][FieldName].ToString():null;
+                    }
+
+                    //if (JsonExtensions.IsNullOrEmpty(ResponseArray[ArrayIndex]))
+                    //{
+                    //    fieldValue = ResponseArray[ArrayIndex][FieldName].ToString();
+                    //}
                 }
             }
             return fieldValue;

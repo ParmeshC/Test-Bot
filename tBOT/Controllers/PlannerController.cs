@@ -9,6 +9,7 @@ using tBOT.Models;
 using tBOT.Services.API.Test;
 using tBOT.Services.API.RESTful;
 using Newtonsoft.Json.Linq;
+using System.Web.Script.Serialization;
 //using System.Web.Http;
 
 
@@ -69,9 +70,10 @@ namespace tBOT.Controllers
         public ActionResult GetApiResponseList(List<TestRequest> TestRequest)
         {
             var results = TestCaseTemplate.GetRequestResponse(TestRequest);
-            var retunValue = Json(results, JsonRequestBehavior.AllowGet);
+            var jsonResult = Json(results, JsonRequestBehavior.AllowGet);
+            jsonResult.MaxJsonLength = int.MaxValue;
+            return jsonResult;
 
-            return retunValue;
         }
 
     }
