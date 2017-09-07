@@ -13,7 +13,7 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
     $scope.ClearResponse = function () {
         $scope.RequestResponseList = [];
         apiTestSharedService.apiResponseInfoBroadcast(null);
-    }
+    };
 
         
      PlannerFactory.getTestTemplates().then(function (d) {

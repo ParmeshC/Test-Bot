@@ -71,6 +71,9 @@ namespace tBOT.Controllers
             var results = TestCaseTemplate.GetRequestResponse(TestRequest);
             var jsonResult = Json(results, JsonRequestBehavior.AllowGet);
             jsonResult.MaxJsonLength = int.MaxValue;
+            
+                //TypeNameHandling = TypeNameHandling.All
+
             return jsonResult;
 
         }

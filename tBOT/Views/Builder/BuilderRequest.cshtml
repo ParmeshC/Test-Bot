@@ -64,13 +64,7 @@
                             </div>
                         </uib-accordion-heading>
                             <uib-tabset>
-                                <uib-tab heading="Test Case Condition">
-                                    
-                                    <pre>{{item.TestCaseCondition| json}}</pre>
-
-                                </uib-tab>
-
-                                <uib-tab heading="Test Case Result">
+                                <uib-tab heading="Result">
                                     <ol style="padding-top:10px;">
                                         <li ng-repeat="(Name, Value)  in item.TestCaseResult" ng-if="Name!='Status' && Name!='isOpen' && Name!='Response'">
                                             <div ui-tree-handle>
@@ -78,12 +72,42 @@
                                             </div>
                                         </li>
                                     </ol>
-
                                 </uib-tab>
-
-                                <uib-tab heading="Response Content">
-
-                                    <pre>{{item.TestCaseResult.Response| json}}</pre>
+                                <uib-tab heading="Condition">                                    
+                                    <pre>{{item.TestCaseCondition| json}}</pre>
+                                </uib-tab>
+                                <uib-tab heading="Body">
+                                    <pre>{{item.TestCaseResult.Response.ResponseBody| json}}</pre>
+                                </uib-tab>
+                                <uib-tab heading="Headers">
+                                    <div ng-repeat="header in item.TestCaseResult.Response.ResponseHeaders">
+                                        <h5>
+                                            {{header.Key}}:-
+                                            <span style="font-size:small; overflow-wrap: break-word;" ng-repeat="value in header.Value">
+                                               {{value}}
+                                            </span>
+                                        </h5>
+                                    </div>
+                                </uib-tab>
+                                <uib-tab heading="Status">
+                                    <h5>
+                                        StatusCode:-
+                                        <span style="font-size:small; overflow-wrap: break-word;">
+                                            {{item.TestCaseResult.Response.StatusCode}}
+                                        </span>
+                                    </h5>
+                                    <h5>
+                                        ErrorMessage:-
+                                        <span style="font-size:small; overflow-wrap: break-word;">
+                                            {{item.TestCaseResult.Response.ErrorMessage}}
+                                        </span>
+                                    </h5>
+                                    <h5>
+                                        Description:-
+                                        <span style="font-size:small; overflow-wrap: break-word;">
+                                            {{item.TestCaseResult.Response.Description}}
+                                        </span>
+                                    </h5>
                                 </uib-tab>
 
                             </uib-tabset>

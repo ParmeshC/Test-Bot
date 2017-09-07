@@ -7,6 +7,7 @@ using System.Text;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 
 namespace tBOT.Services.API.RESTful
 {
@@ -93,7 +94,7 @@ namespace tBOT.Services.API.RESTful
             HttpResponseMessage httpResponse = null;
             string errorMessage = null;
             string description = null;
-            string responseBody = null;
+            string responseContent = null;
 
             try
             {
@@ -108,33 +109,12 @@ namespace tBOT.Services.API.RESTful
                 {
                     if (!string.IsNullOrEmpty(httpResponse.Content.ReadAsStringAsync().Result))
                     {
-                        responseBody = httpResponse.Content.ReadAsStringAsync().Result;                        
-
-                        var token = JToken.Parse(responseBody);                        
-                        
-                        //JavaScriptSerializer serializer = new JavaScriptSerializer();
-                        //response.Response = serializer.Deserialize<dynamic>(responseBody.ToString());
-
-                        response.ResponseArray = new JavaScriptSerializer().Deserialize<dynamic>(responseBody.ToString());
-
-                        response.IsResponseArray = token is JArray ? true : false;
-
-                        if (token is JArray)
-                        {
-                            response.IsResponseArray = true;
-                            //response.ResponseArray = JArray.Parse(responseBody);
+                        responseContent = httpResponse.Content.ReadAsStringAsync().Result;
 
 
-                        }
-                        else if (token is JObject)
-                        {
-                            //response.ResponseArray = new JArray() { responseBody };
+                        response.ResponseBody = new JavaScriptSerializer().Deserialize<dynamic>(responseContent);
 
-                            Type type = response.ResponseArray.Gettype();
-
-                            //response.ResponseArray =new List<type> { response.ResponseArray };
-
-                        }
+                        response.ResponseArray = JToken.Parse(responseContent) is JArray ? JArray.Parse(responseContent) : new JArray() { responseContent };
 
                         if (httpResponse.IsSuccessStatusCode)
                             { description = "Status:OK, No Errors"; }
