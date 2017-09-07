@@ -10,7 +10,6 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
         };
 
 
-
     $scope.ClearResponse = function () {
         $scope.RequestResponseList = [];
         apiTestSharedService.apiResponseInfoBroadcast(null);
@@ -86,10 +85,10 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
 
 
     $scope.reqestStatus = false;
-    $scope.results = [];
-    $scope.requestData = [];
-    var GlobalSettings = {};
     $scope.GetResponseRequest = function () {
+        $scope.requestData = [];
+        $scope.requestData = [];
+        var GlobalSettings = {};
         //$scope.requestData.splice(0, $scope.requestData.length);//deletes all the items in the array
         $scope.reqestStatus = true;
         apiTestSharedService.apiResponseListBroadcast(null);

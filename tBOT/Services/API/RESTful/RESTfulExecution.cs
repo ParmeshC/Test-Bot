@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using System.Text;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Web.Script.Serialization;
 
 namespace tBOT.Services.API.RESTful
 {
@@ -107,23 +108,32 @@ namespace tBOT.Services.API.RESTful
                 {
                     if (!string.IsNullOrEmpty(httpResponse.Content.ReadAsStringAsync().Result))
                     {
-                        responseBody = httpResponse.Content.ReadAsStringAsync().Result;
+                        responseBody = httpResponse.Content.ReadAsStringAsync().Result;                        
 
-                        var token = JToken.Parse(responseBody);
+                        var token = JToken.Parse(responseBody);                        
+                        
+                        //JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        //response.Response = serializer.Deserialize<dynamic>(responseBody.ToString());
+
+                        response.ResponseArray = new JavaScriptSerializer().Deserialize<dynamic>(responseBody.ToString());
+
+                        response.IsResponseArray = token is JArray ? true : false;
+
                         if (token is JArray)
                         {
                             response.IsResponseArray = true;
-                            response.ResponseArray = JArray.Parse(responseBody);
+                            //response.ResponseArray = JArray.Parse(responseBody);
+
 
                         }
                         else if (token is JObject)
                         {
-                            //response.IsResponseArray = false;
-                            //JArray JAry = new JArray();
-                            //JAry.Add(JObject.Parse(responseBody));
-                            //response.ResponseArray = JAry;
+                            //response.ResponseArray = new JArray() { responseBody };
 
-                            response.ResponseArray = new JArray() { responseBody };
+                            Type type = response.ResponseArray.Gettype();
+
+                            //response.ResponseArray =new List<type> { response.ResponseArray };
+
                         }
 
                         if (httpResponse.IsSuccessStatusCode)

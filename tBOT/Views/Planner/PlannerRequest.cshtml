@@ -17,7 +17,7 @@
 
 
                     <input ng-show="selectedTestCases.length>0 && !RequestResponseList.length>0" type="submit" value="Submit" ng-click="GetResponseRequest()" class="btn btn-primary btn-sm">
-                    <input ng-show="RequestResponseList.length>0" type="submit" value="Clear Response" ng-click="ClearResponse()" class="btn btn-primary btn-sm">
+                    
                 </div>
 
                 <div ng-show="!RequestResponseList.length>0">
@@ -60,6 +60,7 @@
             </div>
         </div>
         <div ng-show="RequestResponseList.length>0">
+            <input type="submit" value="Clear Response" ng-click="ClearResponse()" class="btn btn-primary btn-sm">
                 <input type="text" class="form-control" placeholder="Filter EndPoint..." ng-model="searchEndPoint">
                 <div class="form-inline">
                     <table class="table table-bordered table-hover">
