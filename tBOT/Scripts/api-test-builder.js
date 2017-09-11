@@ -14,20 +14,14 @@ BuilderApp.controller('BuilderCtrl', function (BuilderFactory, apiTestSharedServ
     $scope.sortType = "TestCaseResult.Status";
     $scope.sortReverse = true;
 
+    $scope.oneAtATime = false;
+    $scope.openStatus = true;
 
-    $scope.oneAtATime = true;
-    $scope.collapse = function myfunction(item) {
-        $scope.RequestResponse.TestCasesList[item]['isOpen'] = $scope.RequestResponse.TestCasesList[item]['isOpen'] === undefined ? true : !$scope.RequestResponse.TestCasesList[item]['isOpen'];
-        if (this.oneAtATime && $scope.RequestResponse.TestCasesList[item]['isOpen'] === true) {
-            var prop;
-            for (prop in $scope.RequestResponse.TestCasesList) {
-                $scope.RequestResponse.TestCasesList[prop]['isOpen'] = prop !== item ? false : true;
-            }
-        }
-    };
+    $scope.checkStatus = function () {
+        $scope.openStatus = !$scope.oneAtATime;
+    }
 
 });
-
 
 BuilderApp.factory('BuilderFactory', function ($http) {
     return {

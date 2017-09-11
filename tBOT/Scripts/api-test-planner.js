@@ -1,5 +1,5 @@
 ﻿var PlannerApp = angular.module('api.test.planner', []);
-PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedService, $scope) {    
+PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedService, $scope, $q) {    
 
     $scope.$on('handleApiRequestListBroadcast', function () {
         $scope.ApiRequestList = apiTestSharedService.apiRequestList;
@@ -10,7 +10,7 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
         };
 
 
-    $scope.ClearResponse = function () {
+    $scope.ClearResult = function () {
         $scope.RequestResponseList = [];
         apiTestSharedService.apiResponseInfoBroadcast(null);
     };
@@ -81,21 +81,17 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
 
     };
 
+    $scope.CancelRequest= function () {
+        $scope.canceler.resolve("http call aborted");
+        $scope.resolved = false;
+    };
 
 
-
-    $scope.reqestStatus = false;
-    $scope.GetResponseRequest = function () {
-        $scope.requestData = [];
-        $scope.requestData = [];
-        var GlobalSettings = {};
-        //$scope.requestData.splice(0, $scope.requestData.length);//deletes all the items in the array
-        $scope.reqestStatus = true;
-        apiTestSharedService.apiResponseListBroadcast(null);
-        apiTestSharedService.apiResponseInfoBroadcast(null);
+    var GetResponseRequestHelper = function ()
+    {
         angular.forEach($scope.ApiRequestList, function (info) {
 
-            angular.forEach($scope.selectedTestCases, function (TestCaseSelected) {  
+            angular.forEach($scope.selectedTestCases, function (TestCaseSelected) {
 
                 GlobalSettings = {
                     "Request": {
@@ -126,30 +122,59 @@ PlannerApp.controller('PlannerCtrl', function (PlannerFactory, apiTestSharedServ
                     },
                     "RawschemaUrl": info.SchemaUrl,
                     "Version": info.Version,
-                    "TotalCountQuery":""
+                    "TotalCountQuery": ""
                 };
 
                 var testCondtion = JSON.parse(TestCaseSelected.Condition, (key, value) =>
-                     value = typeof value === 'string' ? value.startsWith("GlobalSettings") ? eval(value) : value : value
-                 );
+                    value = typeof value === 'string' ? value.startsWith("GlobalSettings") ? eval(value) : value : value
+                );
 
                 $scope.requestData.push({
                     "ApiEndPoint": GlobalSettings.Request.EndPoint,
-                     "TestCaseTemplateName":TestCaseSelected.Template,
-                     "TestCaseCondition": JSON.stringify(testCondtion),
-                     "TestCaseName": TestCaseSelected.Name
-                 });
+                    "TestCaseTemplateName": TestCaseSelected.Template,
+                    "TestCaseCondition": JSON.stringify(testCondtion),
+                    "TestCaseName": TestCaseSelected.Name
+                });
             });
-            
 
         });
+    }
 
-        //$scope.results.splice(0, $scope.results.length);//deletes all the items in the array
-        PlannerFactory.getApiResponseList($scope).then(function (d) {
-            $scope.RequestResponseList = d.data;
-            $scope.reqestStatus = false;
-            console.log($scope.RequestResponseList);
+    $scope.resolved = false;
+    $scope.GetResponseRequest = function () {
+
+        $scope.canceler = $q.defer();
+        $scope.resolved = true;
+
+        $scope.requestData = [];
+        $scope.requestData = [];
+        var GlobalSettings = {};
+
+        apiTestSharedService.apiResponseListBroadcast(null);
+        apiTestSharedService.apiResponseInfoBroadcast(null);
+
+        GetResponseRequestHelper();
+
+        //PlannerFactory.getApiResponseList($scope).then(function (d) {
+        //    $scope.RequestResponseList = d.data;
+        //    $scope.resolved = false;
+        //});
+
+
+
+        PlannerFactory.getApiResponseList($scope).then(function (value) {
+            $scope.RequestResponseList = value.data;
+            $scope.resolved = false;
+            console.log(value); // "Success!"
+            return Promise.reject('oh, no!');
+        }).catch(function (e) {
+            console.log(e); // "oh, no!"
+        }).then(function () {
+            console.log('after a catch the chain is restored');
+        }, function () {
+            console.log('Not fired due to the catch');
         });
+
     };
 
 
@@ -159,9 +184,12 @@ PlannerApp.factory('PlannerFactory', function ($http) {
     return {
 
         getApiResponseList: function (scp) { 
-            //var config = {headers: {'Content-Type': 'text/plain;'}}
-            console.log(scp.requestData);
-            return $http.post("/Planner/GetApiResponseList", scp.requestData/*, config*/);
+            var config =
+                {
+                    //headers: 'Content-Type': 'text/plain;'
+                    timeout: scp.canceler.promise
+                }
+            return $http.post("/Planner/GetApiResponseList", scp.requestData, config);
         },
 
         getTestTemplates: function (scp) {

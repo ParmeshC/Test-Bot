@@ -15,9 +15,8 @@
 
                     <a>EndPoint Selected<span class="badge">{{ApiRequestList.length}}</span></a>
 
-
-                    <input ng-show="selectedTestCases.length>0 && !RequestResponseList.length>0" type="submit" value="Submit" ng-click="GetResponseRequest()" class="btn btn-primary btn-sm">
-                    
+                        <input ng-show="selectedTestCases.length>0 && !RequestResponseList.length>0 && !resolved"  type="submit" value="Submit" ng-click="GetResponseRequest()" class="btn btn-primary btn-sm">
+                        <input ng-show="resolved" type="submit" value="Cancel" ng-click="CancelRequest()" class="btn btn-danger btn-sm">
                 </div>
 
                 <div ng-show="!RequestResponseList.length>0">
@@ -48,7 +47,6 @@
                         </thead>
 
                         <tbody>
-                            @*<tr ng-repeat="testCase in TestCases.List | orderBy:TestCasesSortType:TestCasesSortReverse">*@
                             <tr ng-repeat="testCase in TestCasesList | orderBy:TestCasesSortType:TestCasesSortReverse">
                                 <td><input type="checkbox" ng-model="testCase.selected" ng-change="optionToggled()"></td>
                                 <td>{{testCase.Name}}</td>
@@ -59,47 +57,52 @@
 
             </div>
         </div>
-        <div ng-show="RequestResponseList.length>0">
-            <input type="submit" value="Clear Response" ng-click="ClearResponse()" class="btn btn-primary btn-sm">
-                <input type="text" class="form-control" placeholder="Filter EndPoint..." ng-model="searchEndPoint">
-                <div class="form-inline">
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <td>
-                                    <a href="" ng-click="sortType = 'EndPoint'; sortReverse = !sortReverse">
-                                        EndPoint
-                                        <span ng-show="sortType == 'EndPoint' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
-                                        <span ng-show="sortType == 'EndPoint' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="" ng-click="sortType = 'PassCount/TotalCount'; sortReverse = !sortReverse">
-                                        Result
-                                        <span ng-show="sortType == 'PassCount/TotalCount == 0 ?1/TotalCount:PassCount/TotalCount' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
-                                        <span ng-show="sortType == 'PassCount/TotalCount == 0 ?1/TotalCount:PassCount/TotalCount' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
-                                    </a>
-                                </td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="RequestResponse in RequestResponseList | filter:{EndPoint:searchEndPoint} | orderBy:sortType:sortReverse" @*ng-class="RequestResponse.ResponseInfo.StatusCode ==200 ?'success':'danger'"*@ ng-click="getApiInfo(RequestResponse)">
-                                <td>{{RequestResponse.EndPoint}}</td>
-                                <td>
-                                    <button type="button" ng-class="RequestResponse.PassStatus?'btn btn-success btn-block':'btn btn-danger btn-block'" ng-click="getApiInfo(RequestResponse)">
-                                        <span ng-class="RequestResponse.PassStatus?'glyphicon glyphicon-thumbs-up':'glyphicon glyphicon-thumbs-down'">&nbsp;</span>
-                                        <span class="badge">
-                                            {{RequestResponse.PassCount}}/{{RequestResponse.TotalCount}}
-                                        </span>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="input-group-addon" ng-show="RequestResponseList.length>0">
+                        <div style=" padding-bottom:5px;">
+                            <div style="float:left;">
+                                <input type="text" class="form-control" placeholder="Filter EndPoint..." ng-model="searchEndPoint">
+                            </div>
 
-                </div>
-            </div>
-            <img ng-show="reqestStatus" id="spinner" ng-src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" style="display:inline-block; text-align:center">
+                            <div class="text-right">
+                                <input type="submit" value="Clear Result" ng-click="ClearResult()" class="btn btn-warning">
+                            </div>
+                        </div>
+
+                            <table class="table table-bordered table-hover" style="text-align:left">
+                                <thead>
+                                    <tr>
+                                        <td>
+                                            <a href="" ng-click="sortType = 'EndPoint'; sortReverse = !sortReverse">
+                                                EndPoint
+                                                <span ng-show="sortType == 'EndPoint' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                                <span ng-show="sortType == 'EndPoint' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="" ng-click="sortType = 'PassCount/TotalCount == 0 ?1/TotalCount:PassCount/TotalCount'; sortReverse = !sortReverse">
+                                                Result
+                                                <span ng-show="sortType == 'PassCount/TotalCount == 0 ?1/TotalCount:PassCount/TotalCount' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                                <span ng-show="sortType == 'PassCount/TotalCount == 0 ?1/TotalCount:PassCount/TotalCount' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="RequestResponse in RequestResponseList | filter:{EndPoint:searchEndPoint} | orderBy:sortType:sortReverse" @*ng-class="RequestResponse.ResponseInfo.StatusCode ==200 ?'success':'danger'"*@ ng-click="getApiInfo(RequestResponse)">
+                                        <td>{{RequestResponse.EndPoint}}</td>
+                                        <td>
+                                            <button type="button" ng-class="RequestResponse.PassStatus?'btn btn-success btn-block':'btn btn-danger btn-block'" ng-click="getApiInfo(RequestResponse)">
+                                                <span ng-class="RequestResponse.PassStatus?'glyphicon glyphicon-thumbs-up':'glyphicon glyphicon-thumbs-down'">&nbsp;</span>
+                                                <span class="badge">
+                                                    {{RequestResponse.PassCount}}/{{RequestResponse.TotalCount}}
+                                                </span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+            <img ng-show="resolved" id="spinner" ng-src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" style="display:inline-block; text-align:center">
 
         </div>
 

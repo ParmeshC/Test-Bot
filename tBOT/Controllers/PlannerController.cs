@@ -61,8 +61,7 @@ namespace tBOT.Controllers
             var result = Json(ListofTestCaseConditions, JsonRequestBehavior.AllowGet);
             return result;
 
-        }
-        
+        }       
 
 
         [HttpPost]
