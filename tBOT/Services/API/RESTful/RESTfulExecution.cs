@@ -57,8 +57,8 @@ namespace tBOT.Services.API.RESTful
                     Client.DefaultRequestHeaders.Accept.Clear();
                     Client.DefaultRequestHeaders.Add("Accept", request.Accept);
                     Client.DefaultRequestHeaders.AcceptLanguage.ParseAdd(request.LanguageCode);
-                    Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(request.Authorization.AuthType, Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
-                    string.Format("{0}:{1}", request.Authorization.UserName, request.Authorization.Password))));
+                    Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(request.AuthType, Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
+                    string.Format("{0}:{1}", request.UserName, request.Password))));
 
                     switch (request.RequestMethod.ToUpper())
                     {

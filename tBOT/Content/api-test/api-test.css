@@ -1,0 +1,184 @@
+/*Make sure that the '*,' is commented or removed from one of the the @media print properties
+    in bootstrap.css file, because it is hiding the connector dots on the tables of the Query builder component
+    example below
+*/
+
+
+/*Start NestedList Display Styling Block*/
+
+.box {
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+
+.box > h3 {
+    color: #333;
+    border-color: #ddd;
+    border-bottom: 1px solid transparent;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    background-repeat: repeat-x;
+    display: block;
+    font-size: 16px;
+    padding: 10px 15px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.box-padding {
+    padding: 15px;
+}
+
+.box-padding > h3 {
+    margin: -15px;
+    margin-bottom: 15px;
+}
+
+.box-grey {
+    border-color: #ddd;
+}
+
+.box-grey > h3 {
+    background-color: #f5f5f5;
+    background-image: -webkit-linear-gradient(top,#f5f5f5 0,#e8e8e8 100%);
+    background-image: linear-gradient(to bottom,#f5f5f5 0,#e8e8e8 100%);
+}
+
+.box-blue {
+    border-color: #bce8f1;
+}
+
+.box-blue > h3 {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    background-image: -webkit-linear-gradient(top,#d9edf7 0,#c4e3f3 100%);
+    background-image: linear-gradient(to bottom,#d9edf7 0,#c4e3f3 100%);
+}
+
+.box-yellow {
+    border-color: #faebcc;
+}
+
+.box-yellow > h3 {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+    background-image: -webkit-linear-gradient(top,#fcf8e3 0,#faf2cc 100%);
+    background-image: linear-gradient(to bottom,#fcf8e3 0,#faf2cc 100%);
+}
+/*End NestedList Display Styling Block*/
+
+/*Start Rounded and Square sliders  Display Styling Block*/
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 47px;
+    height: 21px;
+}
+
+    .switch input {
+        display: none;
+    }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 15px;
+        width: 15px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+/*End Rounded and Square sliders  Display Styling Block*/
+
+
+/* ace editor */
+#editor .ace_content * {
+    font-family: monospace, monospace;}
+/* ace editor */
+
+
+/* angular-jsoneditor */
+div.jsoneditor {
+    border: 0px !important;
+}
+div.jsoneditor-outer {
+    height: 300px !important;
+}
+/* angular-jsoneditor */
+
+
+/*This Id is used for 'a' tag where button click feel is needed*/
+#clickAlert:active {
+    font-weight:bold;
+}
+
+#clickAlert:hover {
+    background-color: lightgrey;
+}
+
+/**************/
+
+
+/*Animate alertMessage*/
+#alertMessage.ng-hide-add-active {
+    display: block !important;
+    -webkit-transition: 0.5s linear all;
+    transition: 0.5s linear all;
+}
+
+#alertmessage.ng-hide-remove-active {
+    display: block !important;
+    -webkit-transition: 0.5s linear all;
+    transition: 0.5s linear all;
+    -webkit-transition-delay: 0.0s;
+    transition-delay: 0s;
+}
+
+#alertMessage.ng-hide {
+    opacity: 0;
+}
+/*Animate alertMessage*/

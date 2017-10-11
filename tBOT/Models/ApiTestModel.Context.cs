@@ -12,6 +12,8 @@ namespace tBOT.Models
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class tbotEntities : DbContext
     {
@@ -25,11 +27,373 @@ namespace tBOT.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<API> APIs { get; set; }
-        public virtual DbSet<ApiGroup> ApiGroups { get; set; }
         public virtual DbSet<Authorization> Authorizations { get; set; }
+        public virtual DbSet<EndPoint> EndPoints { get; set; }
+        public virtual DbSet<EndPointComponent> EndPointComponents { get; set; }
+        public virtual DbSet<EndPointObject> EndPointObjects { get; set; }
+        public virtual DbSet<EndPointObjectComponent> EndPointObjectComponents { get; set; }
+        public virtual DbSet<EndPointObjectGroup> EndPointObjectGroups { get; set; }
         public virtual DbSet<Environment> Environments { get; set; }
+        public virtual DbSet<Instance> Instances { get; set; }
+        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<TestCase> TestCases { get; set; }
         public virtual DbSet<TestSuite> TestSuites { get; set; }
+        public virtual DbSet<View_EndPointComponent> View_EndPointComponent { get; set; }
+        public virtual DbSet<View_EndPointObject_By_Count> View_EndPointObject_By_Count { get; set; }
+        public virtual DbSet<View_EndPointObjectComponent_By_EndPointObjectGroupIdWise> View_EndPointObjectComponent_By_EndPointObjectGroupIdWise { get; set; }
+        public virtual DbSet<View_EndPointObjectComponent_By_EndPointObjectIdWise> View_EndPointObjectComponent_By_EndPointObjectIdWise { get; set; }
+        public virtual DbSet<View_EndPointObjectGroup_By_Count> View_EndPointObjectGroup_By_Count { get; set; }
+        public virtual DbSet<View_EndPointObjectGroup_Distinct> View_EndPointObjectGroup_Distinct { get; set; }
+    
+        [DbFunction("tbotEntities", "Get_EndPointComponent_For_EndPointComponentId")]
+        public virtual IQueryable<Get_EndPointComponent_For_EndPointComponentId_Result> Get_EndPointComponent_For_EndPointComponentId(Nullable<int> endPointComponentId)
+        {
+            var endPointComponentIdParameter = endPointComponentId.HasValue ?
+                new ObjectParameter("EndPointComponentId", endPointComponentId) :
+                new ObjectParameter("EndPointComponentId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<Get_EndPointComponent_For_EndPointComponentId_Result>("[tbotEntities].[Get_EndPointComponent_For_EndPointComponentId](@EndPointComponentId)", endPointComponentIdParameter);
+        }
+    
+        [DbFunction("tbotEntities", "Get_EndPointObject_EndPoint_For_EndPointObjectGroupSection")]
+        public virtual IQueryable<Get_EndPointObject_EndPoint_For_EndPointObjectGroupSection_Result> Get_EndPointObject_EndPoint_For_EndPointObjectGroupSection(string endPointObjectGroupSection)
+        {
+            var endPointObjectGroupSectionParameter = endPointObjectGroupSection != null ?
+                new ObjectParameter("EndPointObjectGroupSection", endPointObjectGroupSection) :
+                new ObjectParameter("EndPointObjectGroupSection", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<Get_EndPointObject_EndPoint_For_EndPointObjectGroupSection_Result>("[tbotEntities].[Get_EndPointObject_EndPoint_For_EndPointObjectGroupSection](@EndPointObjectGroupSection)", endPointObjectGroupSectionParameter);
+        }
+    
+        [DbFunction("tbotEntities", "Get_EndPointObjectComponent_For_EndPointObjectComponentId")]
+        public virtual IQueryable<Get_EndPointObjectComponent_For_EndPointObjectComponentId_Result> Get_EndPointObjectComponent_For_EndPointObjectComponentId(Nullable<int> endPointObjectComponentId)
+        {
+            var endPointObjectComponentIdParameter = endPointObjectComponentId.HasValue ?
+                new ObjectParameter("EndPointObjectComponentId", endPointObjectComponentId) :
+                new ObjectParameter("EndPointObjectComponentId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<Get_EndPointObjectComponent_For_EndPointObjectComponentId_Result>("[tbotEntities].[Get_EndPointObjectComponent_For_EndPointObjectComponentId](@EndPointObjectComponentId)", endPointObjectComponentIdParameter);
+        }
+    
+        [DbFunction("tbotEntities", "Get_EndPointObjectComponentCount_GroupedInCount_By_EndPointObject_For_EndPointId")]
+        public virtual IQueryable<Get_EndPointObjectComponentCount_GroupedInCount_By_EndPointObject_For_EndPointId_Result> Get_EndPointObjectComponentCount_GroupedInCount_By_EndPointObject_For_EndPointId(Nullable<int> endPointId)
+        {
+            var endPointIdParameter = endPointId.HasValue ?
+                new ObjectParameter("EndPointId", endPointId) :
+                new ObjectParameter("EndPointId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<Get_EndPointObjectComponentCount_GroupedInCount_By_EndPointObject_For_EndPointId_Result>("[tbotEntities].[Get_EndPointObjectComponentCount_GroupedInCount_By_EndPointObject_For_EndPointId](@EndPointId)", endPointIdParameter);
+        }
+    
+        [DbFunction("tbotEntities", "Get_EndPointObjectComponents_For_EndPointObjectGroupSection")]
+        public virtual IQueryable<Get_EndPointObjectComponents_For_EndPointObjectGroupSection_Result> Get_EndPointObjectComponents_For_EndPointObjectGroupSection(string endPointObjectGroupSection)
+        {
+            var endPointObjectGroupSectionParameter = endPointObjectGroupSection != null ?
+                new ObjectParameter("EndPointObjectGroupSection", endPointObjectGroupSection) :
+                new ObjectParameter("EndPointObjectGroupSection", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<Get_EndPointObjectComponents_For_EndPointObjectGroupSection_Result>("[tbotEntities].[Get_EndPointObjectComponents_For_EndPointObjectGroupSection](@EndPointObjectGroupSection)", endPointObjectGroupSectionParameter);
+        }
+    
+        [DbFunction("tbotEntities", "Get_EndPointObjectComponents_For_EndPointObjectId")]
+        public virtual IQueryable<Get_EndPointObjectComponents_For_EndPointObjectId_Result> Get_EndPointObjectComponents_For_EndPointObjectId(Nullable<int> endPointObjectId)
+        {
+            var endPointObjectIdParameter = endPointObjectId.HasValue ?
+                new ObjectParameter("EndPointObjectId", endPointObjectId) :
+                new ObjectParameter("EndPointObjectId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<Get_EndPointObjectComponents_For_EndPointObjectId_Result>("[tbotEntities].[Get_EndPointObjectComponents_For_EndPointObjectId](@EndPointObjectId)", endPointObjectIdParameter);
+        }
+    
+        [DbFunction("tbotEntities", "Get_EndPointObjectGroups_For_EndPointObjectId")]
+        public virtual IQueryable<Get_EndPointObjectGroups_For_EndPointObjectId_Result> Get_EndPointObjectGroups_For_EndPointObjectId(Nullable<int> endPointObjectId)
+        {
+            var endPointObjectIdParameter = endPointObjectId.HasValue ?
+                new ObjectParameter("EndPointObjectId", endPointObjectId) :
+                new ObjectParameter("EndPointObjectId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<Get_EndPointObjectGroups_For_EndPointObjectId_Result>("[tbotEntities].[Get_EndPointObjectGroups_For_EndPointObjectId](@EndPointObjectId)", endPointObjectIdParameter);
+        }
+    
+        [DbFunction("tbotEntities", "Get_EndPoints_For_InstanceId")]
+        public virtual IQueryable<Get_EndPoints_For_InstanceId_Result> Get_EndPoints_For_InstanceId(Nullable<int> instanceId)
+        {
+            var instanceIdParameter = instanceId.HasValue ?
+                new ObjectParameter("InstanceId", instanceId) :
+                new ObjectParameter("InstanceId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<Get_EndPoints_For_InstanceId_Result>("[tbotEntities].[Get_EndPoints_For_InstanceId](@InstanceId)", instanceIdParameter);
+        }
+    
+        public virtual ObjectResult<Add_EndPoint_For_InstanceId_Result> Add_EndPoint_For_InstanceId(Nullable<int> instanceId, string endPointName)
+        {
+            var instanceIdParameter = instanceId.HasValue ?
+                new ObjectParameter("InstanceId", instanceId) :
+                new ObjectParameter("InstanceId", typeof(int));
+    
+            var endPointNameParameter = endPointName != null ?
+                new ObjectParameter("EndPointName", endPointName) :
+                new ObjectParameter("EndPointName", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Add_EndPoint_For_InstanceId_Result>("Add_EndPoint_For_InstanceId", instanceIdParameter, endPointNameParameter);
+        }
+    
+        public virtual ObjectResult<Add_EndPointComponent_For_InstanceId_Result> Add_EndPointComponent_For_InstanceId(Nullable<int> instanceId, string componentName)
+        {
+            var instanceIdParameter = instanceId.HasValue ?
+                new ObjectParameter("InstanceId", instanceId) :
+                new ObjectParameter("InstanceId", typeof(int));
+    
+            var componentNameParameter = componentName != null ?
+                new ObjectParameter("ComponentName", componentName) :
+                new ObjectParameter("ComponentName", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Add_EndPointComponent_For_InstanceId_Result>("Add_EndPointComponent_For_InstanceId", instanceIdParameter, componentNameParameter);
+        }
+    
+        public virtual ObjectResult<Add_EndPointObject_For_EndPointId_Result> Add_EndPointObject_For_EndPointId(Nullable<int> endPointId)
+        {
+            var endPointIdParameter = endPointId.HasValue ?
+                new ObjectParameter("EndPointId", endPointId) :
+                new ObjectParameter("EndPointId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Add_EndPointObject_For_EndPointId_Result>("Add_EndPointObject_For_EndPointId", endPointIdParameter);
+        }
+    
+        public virtual ObjectResult<Add_EndPointObjectComponent_For_EndPointObjectId_Result> Add_EndPointObjectComponent_For_EndPointObjectId(Nullable<int> endPointObjectId, string endPointObjectComponentName)
+        {
+            var endPointObjectIdParameter = endPointObjectId.HasValue ?
+                new ObjectParameter("EndPointObjectId", endPointObjectId) :
+                new ObjectParameter("EndPointObjectId", typeof(int));
+    
+            var endPointObjectComponentNameParameter = endPointObjectComponentName != null ?
+                new ObjectParameter("EndPointObjectComponentName", endPointObjectComponentName) :
+                new ObjectParameter("EndPointObjectComponentName", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Add_EndPointObjectComponent_For_EndPointObjectId_Result>("Add_EndPointObjectComponent_For_EndPointObjectId", endPointObjectIdParameter, endPointObjectComponentNameParameter);
+        }
+    
+        public virtual ObjectResult<Add_Instance_Result> Add_Instance(string instaneName)
+        {
+            var instaneNameParameter = instaneName != null ?
+                new ObjectParameter("InstaneName", instaneName) :
+                new ObjectParameter("InstaneName", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Add_Instance_Result>("Add_Instance", instaneNameParameter);
+        }
+    
+        public virtual ObjectResult<Edit_EndPointComponentValue_For_EndPointComponentId_Result> Edit_EndPointComponentValue_For_EndPointComponentId(Nullable<int> endPointComponentId, string endPointComponentValue)
+        {
+            var endPointComponentIdParameter = endPointComponentId.HasValue ?
+                new ObjectParameter("EndPointComponentId", endPointComponentId) :
+                new ObjectParameter("EndPointComponentId", typeof(int));
+    
+            var endPointComponentValueParameter = endPointComponentValue != null ?
+                new ObjectParameter("EndPointComponentValue", endPointComponentValue) :
+                new ObjectParameter("EndPointComponentValue", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Edit_EndPointComponentValue_For_EndPointComponentId_Result>("Edit_EndPointComponentValue_For_EndPointComponentId", endPointComponentIdParameter, endPointComponentValueParameter);
+        }
+    
+        public virtual ObjectResult<Edit_EndPointObjectComponentValue_For_EndPointObjectComponentId_Result> Edit_EndPointObjectComponentValue_For_EndPointObjectComponentId(Nullable<int> endPointObjectComponentId, string endPointObjectComponentValue)
+        {
+            var endPointObjectComponentIdParameter = endPointObjectComponentId.HasValue ?
+                new ObjectParameter("EndPointObjectComponentId", endPointObjectComponentId) :
+                new ObjectParameter("EndPointObjectComponentId", typeof(int));
+    
+            var endPointObjectComponentValueParameter = endPointObjectComponentValue != null ?
+                new ObjectParameter("EndPointObjectComponentValue", endPointObjectComponentValue) :
+                new ObjectParameter("EndPointObjectComponentValue", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Edit_EndPointObjectComponentValue_For_EndPointObjectComponentId_Result>("Edit_EndPointObjectComponentValue_For_EndPointObjectComponentId", endPointObjectComponentIdParameter, endPointObjectComponentValueParameter);
+        }
+    
+        public virtual ObjectResult<Group_EndPointObject_By_EndPointObjectId_Result> Group_EndPointObject_By_EndPointObjectId(Nullable<int> endPointObjectId, string section)
+        {
+            var endPointObjectIdParameter = endPointObjectId.HasValue ?
+                new ObjectParameter("EndPointObjectId", endPointObjectId) :
+                new ObjectParameter("EndPointObjectId", typeof(int));
+    
+            var sectionParameter = section != null ?
+                new ObjectParameter("Section", section) :
+                new ObjectParameter("Section", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Group_EndPointObject_By_EndPointObjectId_Result>("Group_EndPointObject_By_EndPointObjectId", endPointObjectIdParameter, sectionParameter);
+        }
+    
+        public virtual int Pivoted_EndPointObjectComponent_For_EndPointObjectGroupSection(string endPointObjectGroupSection)
+        {
+            var endPointObjectGroupSectionParameter = endPointObjectGroupSection != null ?
+                new ObjectParameter("EndPointObjectGroupSection", endPointObjectGroupSection) :
+                new ObjectParameter("EndPointObjectGroupSection", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("Pivoted_EndPointObjectComponent_For_EndPointObjectGroupSection", endPointObjectGroupSectionParameter);
+        }
+    
+        public virtual int Pivoted_EndPointObjectComponent_For_EndPointObjectId(Nullable<int> endPointObjectId)
+        {
+            var endPointObjectIdParameter = endPointObjectId.HasValue ?
+                new ObjectParameter("EndPointObjectId", endPointObjectId) :
+                new ObjectParameter("EndPointObjectId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("Pivoted_EndPointObjectComponent_For_EndPointObjectId", endPointObjectIdParameter);
+        }
+    
+        public virtual ObjectResult<Remove_EndPoint_By_EndPointId_Result> Remove_EndPoint_By_EndPointId(Nullable<int> endPointId)
+        {
+            var endPointIdParameter = endPointId.HasValue ?
+                new ObjectParameter("EndPointId", endPointId) :
+                new ObjectParameter("EndPointId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Remove_EndPoint_By_EndPointId_Result>("Remove_EndPoint_By_EndPointId", endPointIdParameter);
+        }
+    
+        public virtual int Remove_EndPointComponent_By_EndPointComponentId(Nullable<int> endPointComponentId)
+        {
+            var endPointComponentIdParameter = endPointComponentId.HasValue ?
+                new ObjectParameter("EndPointComponentId", endPointComponentId) :
+                new ObjectParameter("EndPointComponentId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("Remove_EndPointComponent_By_EndPointComponentId", endPointComponentIdParameter);
+        }
+    
+        public virtual ObjectResult<Remove_EndPointObject_By_EndPointObjectId_Result> Remove_EndPointObject_By_EndPointObjectId(Nullable<int> endPointObjectId)
+        {
+            var endPointObjectIdParameter = endPointObjectId.HasValue ?
+                new ObjectParameter("EndPointObjectId", endPointObjectId) :
+                new ObjectParameter("EndPointObjectId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Remove_EndPointObject_By_EndPointObjectId_Result>("Remove_EndPointObject_By_EndPointObjectId", endPointObjectIdParameter);
+        }
+    
+        public virtual ObjectResult<Remove_EndPointObjectComponent_By_EndPointObjectComponentId_Result> Remove_EndPointObjectComponent_By_EndPointObjectComponentId(Nullable<int> endPointObjectComponentId)
+        {
+            var endPointObjectComponentIdParameter = endPointObjectComponentId.HasValue ?
+                new ObjectParameter("EndPointObjectComponentId", endPointObjectComponentId) :
+                new ObjectParameter("EndPointObjectComponentId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Remove_EndPointObjectComponent_By_EndPointObjectComponentId_Result>("Remove_EndPointObjectComponent_By_EndPointObjectComponentId", endPointObjectComponentIdParameter);
+        }
+    
+        public virtual ObjectResult<Remove_Instace_For_InstanceId_Result> Remove_Instace_For_InstanceId(Nullable<int> instanceId)
+        {
+            var instanceIdParameter = instanceId.HasValue ?
+                new ObjectParameter("InstanceId", instanceId) :
+                new ObjectParameter("InstanceId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Remove_Instace_For_InstanceId_Result>("Remove_Instace_For_InstanceId", instanceIdParameter);
+        }
+    
+        public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            var versionParameter = version.HasValue ?
+                new ObjectParameter("version", version) :
+                new ObjectParameter("version", typeof(int));
+    
+            var definitionParameter = definition != null ?
+                new ObjectParameter("definition", definition) :
+                new ObjectParameter("definition", typeof(byte[]));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_alterdiagram", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
+        }
+    
+        public virtual int sp_creatediagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            var versionParameter = version.HasValue ?
+                new ObjectParameter("version", version) :
+                new ObjectParameter("version", typeof(int));
+    
+            var definitionParameter = definition != null ?
+                new ObjectParameter("definition", definition) :
+                new ObjectParameter("definition", typeof(byte[]));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_creatediagram", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
+        }
+    
+        public virtual int sp_dropdiagram(string diagramname, Nullable<int> owner_id)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_dropdiagram", diagramnameParameter, owner_idParameter);
+        }
+    
+        public virtual ObjectResult<sp_helpdiagramdefinition_Result> sp_helpdiagramdefinition(string diagramname, Nullable<int> owner_id)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_helpdiagramdefinition_Result>("sp_helpdiagramdefinition", diagramnameParameter, owner_idParameter);
+        }
+    
+        public virtual ObjectResult<sp_helpdiagrams_Result> sp_helpdiagrams(string diagramname, Nullable<int> owner_id)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_helpdiagrams_Result>("sp_helpdiagrams", diagramnameParameter, owner_idParameter);
+        }
+    
+        public virtual int sp_renamediagram(string diagramname, Nullable<int> owner_id, string new_diagramname)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            var new_diagramnameParameter = new_diagramname != null ?
+                new ObjectParameter("new_diagramname", new_diagramname) :
+                new ObjectParameter("new_diagramname", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_renamediagram", diagramnameParameter, owner_idParameter, new_diagramnameParameter);
+        }
+    
+        public virtual int sp_upgraddiagrams()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
+        }
+    
+        public virtual ObjectResult<UnGroup_EndPointObject_By_EndPointObjectGroupId_Result> UnGroup_EndPointObject_By_EndPointObjectGroupId(Nullable<int> endPointObjectGroupId)
+        {
+            var endPointObjectGroupIdParameter = endPointObjectGroupId.HasValue ?
+                new ObjectParameter("EndPointObjectGroupId", endPointObjectGroupId) :
+                new ObjectParameter("EndPointObjectGroupId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<UnGroup_EndPointObject_By_EndPointObjectGroupId_Result>("UnGroup_EndPointObject_By_EndPointObjectGroupId", endPointObjectGroupIdParameter);
+        }
     }
 }

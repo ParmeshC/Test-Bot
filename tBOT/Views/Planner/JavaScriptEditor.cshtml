@@ -1,0 +1,21 @@
+﻿<div ng-show="EditableComponent!=undefined" ng-controller="JavaScriptEditorCtrl">    
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading" style="padding:5px">
+            <ul class="pager" style="margin:0px;">
+                <li style="float:left;">{{EditableComponent.ComponentName}}</li>
+                <li class="next"><a href="" ng-click="AddJson()"><span class="glyphicon glyphicon-plus"></span> JSON</a></li>
+                <li class="next"><a href="" ng-click="AddSql()"><span class="glyphicon glyphicon-plus"></span> SQL</a></li>
+            </ul>
+        </div>
+        <pre style="height:300px;margin-bottom:0px;border:0px;" id="editor" ui-ace="{mode: 'javascript'}"></pre>
+        <div class="panel-footer">
+            <a href="" class="btn btn-sm btn-info" ng-click="EvaluteCode()">Evaluate Code</a>
+            <div class="pull-right">
+                <a href="" class="btn btn-sm btn-primary" ng-click="ExecuteCode()">Save</a>
+            </div>
+        </div>
+        <pre ng-show="ExecutionOutPut!=null" style="border:0px; border-radius:0px; margin:0px;">{{ExecutionOutPut|json}}</pre>
+    </div>    
+</div>
+

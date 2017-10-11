@@ -1,0 +1,112 @@
+﻿<div ng-controller="GroupCreateEditCtrl">
+    <div ng-show="EndPointObjectForEndPointObjectGroupSection==undefined">
+        <div class="input-group">
+            <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+            <input type="text" class="form-control" placeholder="Search" ng-model="searchEndPointObjectGroup">
+        </div>
+        <table style="text-align:center;" class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <td>
+                        <a href="" ng-click="sortType = 'EndPointObjectGroupSection'; sortReverse = !sortReverse">
+                            GroupName
+                            <span ng-show="sortType == 'EndPointObjectGroupSection' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                            <span ng-show="sortType == 'EndPointObjectGroupSection' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="" ng-click="sortType = 'EndPointObjectGroupSectionCount'; sortReverse = !sortReverse">
+                            Count
+                            <span ng-show="sortType == 'EndPointObjectGroupSectionCount' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                            <span ng-show="sortType == 'EndPointObjectGroupSectionCount' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                        </a>
+                    </td>
+                    <td>
+                        Action
+                    </td>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr ng-repeat="EndPointObjectGroup in EndPointObjectGroupCount | orderBy:sortType:sortReverse | filter:searchEndPointObjectGroup track by EndPointObjectGroup.EndPointObjectGroupSection ">
+                    <td style="text-align:left">{{EndPointObjectGroup.EndPointObjectGroupSection}}</td>
+                    <td>
+                        <ul class="pager" style="margin:0px;">
+                            <li>
+                                <a style="padding:2px 20px 2px 20px;border-color:cornflowerblue;" id="clickAlert" href="" ng-click="GetEndPointObjectGroup(EndPointObjectGroup.EndPointObjectGroupSection)">
+                                    {{EndPointObjectGroup.EndPointObjectGroupSectionCount}}
+                                </a>
+                            </li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul class="pager" style="margin:0px">
+                            <li>
+                                <a style="border-color:cornflowerblue; padding:2px 16px 2px 16px;margin:2px" id="clickAlert" href="" ng-click="ExecuteEndPointObjectGroupSection(EndPointObjectGroup.EndPointObjectGroupSection)">
+                                    Execute
+                                </a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div ng-show="EndPointObjectForEndPointObjectGroupSection!=undefined">
+
+
+        <nav class="navbar navbar-light" style="background-color: #e3f2fd; margin-bottom:0px">
+            <ul class="pager" style="margin:8px">
+                <li class="previous"><a href="" id="clickAlert" ng-click="PreviousClick()"><span aria-hidden="true">&laquo;</span></a></li>
+                <li>{{EndPointObjectGroupSection}}</li>
+            </ul>
+        </nav>
+
+        <table style="text-align:center;" class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <td>
+                        <nobr>
+                            <a href="" ng-click="sortType = 'EndPointObjectId'; sortReverse = !sortReverse">
+                                Object Id
+                                <span ng-show="sortType == 'EndPointObjectId' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                <span ng-show="sortType == 'EndPointObjectId' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                            </a>
+                        </nobr>
+                    </td>
+                    <td>
+                        <a href="" ng-click="sortType = 'EndPoint'; sortReverse = !sortReverse">
+                            EndPoint
+                            <span ng-show="sortType == 'EndPoint' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                            <span ng-show="sortType == 'EndPoint' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                        </a>
+                    </td>
+                    <td>
+                        Action
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="EndPointObject in EndPointObjectForEndPointObjectGroupSection | orderBy:sortType:sortReverse | filter:searchEndPoint track by EndPointObject.EndPointObjectGroupId ">
+                    <td>{{EndPointObject.EndPointObjectId}}</td>
+                    <td style="text-align:left">{{EndPointObject.EndPoint}}</td>                    
+                    <td style="padding:1px; width:30%; vertical-align:middle;">
+                        <ul class="pager" style="margin:0px">
+                            <li>
+                                <a style="border-color:tomato; padding:2px 10px 2px 10px; margin:1px" id="clickAlert" href="" ng-click="UnGroupEndPointObject(EndPointObject.EndPointObjectGroupId)">
+                                    UnGroup
+                                </a>
+                                <a style="border-color:cornflowerblue; padding:2px 12px 2px 12px;margin:1px" id="clickAlert" href="" ng-click="ExecuteEndPointObjectId(EndPointObject.EndPointObjectId)">
+                                    Execute
+                                </a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+   </div>
+
+    </div>

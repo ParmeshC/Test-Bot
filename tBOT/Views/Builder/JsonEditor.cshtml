@@ -1,0 +1,18 @@
+﻿<div ng-show="ShowJsonEditor==true" ng-controller="JsonEditorCtrl" class="container-fluid">
+    <div class="panel panel-default" style="border-radius:0px;">
+        <div class="panel-heading" style="padding:2px">
+            <ul class="pager" style="margin:0px;">
+                <li class="next"><a style="padding:5px 7px 4px 7px;" href="" ng-click="CloseJsonEditor()"><span style="color:#c9302c" class="glyphicon glyphicon-remove"></span></a></li>
+            </ul>
+        </div>
+        <angular-jsoneditor ng-model="jsonData" options="tree" style="height:400px; width: 100%;"></angular-jsoneditor>
+        <div class="panel-footer">
+            <button disabled type="button" class="btn btn-sm btn-info" ng-click="EvaluateSchema()">Evaluate Schema</button>         
+            <div class="pull-right">
+                <button type="button" class="btn btn-sm btn-primary" ng-click="InsertJsonData(jsonData)">Insert</button>
+            </div>
+        </div>
+        <pre ng-show="jsonData!=null" style="border:0px; border-radius:0px; margin:0px;">{{jsonData|json}}</pre>
+    </div>
+</div>
+

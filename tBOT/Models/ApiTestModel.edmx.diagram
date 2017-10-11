@@ -4,13 +4,27 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="38b1d05c165343e9a4b12890fec610b5" Name="Diagram1">
-        <EntityTypeShape EntityType="tbotModel.API" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="tbotModel.ApiGroup" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="tbotModel.Authorization" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="tbotModel.Environment" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="tbotModel.TestCase" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="tbotModel.TestSuite" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
+      <Diagram DiagramId="41c45cf07e594be39cdd475165450358" Name="Diagram1">
+        <EntityTypeShape EntityType="tbotModel.Authorization" Width="1.5" PointX="0.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.EndPoint" Width="1.5" PointX="0.75" PointY="2.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.EndPointComponent" Width="1.5" PointX="2.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.EndPointObject" Width="1.5" PointX="3" PointY="2.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.EndPointObjectComponent" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.EndPointObjectGroup" Width="1.5" PointX="5.25" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.Environment" Width="1.5" PointX="4.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.Instance" Width="1.5" PointX="6.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.sysdiagram" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.TestCase" Width="1.5" PointX="7.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.TestSuite" Width="1.5" PointX="8.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.View_EndPointComponent" Width="1.5" PointX="9.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.View_EndPointObject_By_Count" Width="1.5" PointX="0.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.View_EndPointObjectComponent_By_EndPointObjectGroupIdWise" Width="1.5" PointX="6.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.View_EndPointObjectComponent_By_EndPointObjectIdWise" Width="1.5" PointX="8.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.View_EndPointObjectGroup_By_Count" Width="1.5" PointX="9.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="tbotModel.View_EndPointObjectGroup_Distinct" Width="1.5" PointX="2.75" PointY="10.75" IsExpanded="true" />
+        <AssociationConnector Association="tbotModel.FK_EndPointObject_EndPoint" ManuallyRouted="false" />
+        <AssociationConnector Association="tbotModel.FK_EndPointObjectComponent_EndPointObject" ManuallyRouted="false" />
+        <AssociationConnector Association="tbotModel.FK_EndPointObjectGroup_EndPointObject" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

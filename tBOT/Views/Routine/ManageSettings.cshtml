@@ -1,0 +1,71 @@
+﻿<div ng-controller="ManageSettingsCtrl">
+    <div ng-show="settingType==undefined">
+        <ul class="list-group">
+            <li ng-click="ChooseSettings(setting.type)" class="list-group-item" ng-repeat="setting in ManageSettings"><a href=""><span class="pull-right glyphicon glyphicon-wrench"></span>{{setting.type}}</a></li>
+        </ul>
+    </div>
+    <div ng-show="settingType!=undefined">
+        <nav class="navbar navbar-light" style="background-color: #e3f2fd; margin-bottom:1px">
+            <ul class="pager" style="margin:8px">
+                <li class="previous"><a href="" id="clickAlert" ng-click="ChooseSettings()"><span aria-hidden="true">&laquo;</span></a></li>
+                <li style="font-size:x-large;font-weight:600;">{{settingType}}</li>
+            </ul>
+        </nav>
+    </div>
+
+    <div ng-if="settingType=='Manage Instances'">
+        <div class="input-group" style="float:left;padding-left:10px;padding-Top:10px;padding-bottom:5px;   padding-right:10px;">
+            <a href="" ng-click="sortType = 'Name'; sortReverse = !sortReverse">
+                <span ng-class="sortType=='Name' && !sortReverse?'glyphicon glyphicon-sort-by-attributes':
+                                    sortType=='Name' && sortReverse?'glyphicon glyphicon-sort-by-attributes-alt':
+                                    'glyphicon glyphicon-sort'">
+                </span>
+            </a>
+        </div>
+        <div class="text-right">
+            <div class="input-group" data-toggle="tooltip" data-placement="top" title="valid characters are A-Z a-z">
+                <input ng-trim="false" ng-pattern="/^[a-zA-Z]*$/" type="text" class="form-control" ng-model="NewInstance.Value" placeholder="Add Instance..." />
+                <span class="input-group-btn">
+                    <button ng-click="AddInstance(NewInstance.Value)" ng-disabled="ValidInstance.status?false:true" class="btn btn-secondary"><span class="glyphicon glyphicon-plus-sign" style="padding-left:25px" ng-style="ValidInstance.status?{'color': '#449d44'}:{'color':'#c9302c'}"></span></button>
+                </span>
+            </div>
+        </div>
+        <div class="list-group">
+            <button type="button" ng-click="EditInstance(instance)" class="list-group-item list-group-item-action" ng-repeat="instance in Instances| orderBy:sortType:sortReverse">
+                {{instance.InstanceName}}
+                <i class="pull-right glyphicon glyphicon-edit"></i>
+            </button>
+        </div>
+    </div>
+
+    <div ng-if="settingType=='Manage Components'">
+        <div class="input-group" style="float:left;padding-left:10px;padding-Top:10px;padding-bottom:5px;   padding-right:10px;">
+            <a href="" ng-click="sortType = 'Name'; sortReverse = !sortReverse">
+                <span ng-class="sortType=='Name' && !sortReverse?'glyphicon glyphicon-sort-by-attributes':
+                                    sortType=='Name' && sortReverse?'glyphicon glyphicon-sort-by-attributes-alt':
+                                    'glyphicon glyphicon-sort'">
+                </span>
+            </a>
+        </div>
+        <div class="text-right">
+            <div class="input-group" data-toggle="tooltip" data-placement="top" title="valid characters are A-Z a-z">
+                <input ng-trim="false" ng-pattern="/^[a-zA-Z]*$/" type="text" class="form-control" ng-model="NewComponent.Value" placeholder="Add Component..." />
+                <span class="input-group-btn">
+                    <button ng-click="AddEndPointComponent(NewComponent.Value)" ng-disabled="ValidComponent.status?false:true" class="btn btn-secondary"><span class="glyphicon glyphicon-plus-sign" style="padding-left:25px" ng-style="ValidComponent.status?{'color': '#449d44'}:{'color':'#c9302c'}"></span></button>
+                </span>
+            </div>
+        </div>
+        <div class="list-group">
+            <button type="button" ng-click="EditEndPointComponent(EndPointComponent.EndPointComponentId)" class="list-group-item list-group-item-action" ng-repeat="EndPointComponent in EndPointComponents| orderBy:sortType:sortReverse track by EndPointComponent.EndPointComponentId">
+                {{EndPointComponent.ComponentName}}
+                <i class="pull-right glyphicon glyphicon-edit"></i>
+            </button>
+        </div>
+    </div>
+
+    <div ng-if="settingType=='Import Components'">
+    
+        @RenderPage("~/Views/Routine/ImportComponents.cshtml")
+    
+    </div>
+    </div>

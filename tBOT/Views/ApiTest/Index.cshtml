@@ -1,112 +1,81 @@
-﻿
-@{
-    Layout = null;
-}
-
+﻿@{Layout = null;}
 <!DOCTYPE html>
 <html>
-<head>
-    <meta name="viewport" content="width=device-width" />
+    <head>
+      <meta name="viewport" content="width=device-width" />
+      <title>tBOT</title>
 
-    <link rel="stylesheet" href="~/Content/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="~/Content/api-test-ui-layout.css" type="text/css" />
-    <link rel="stylesheet" href="~/Content/api-test-query-builder.css" type="text/css" />
-    <link rel="stylesheet" href="~/Content/api-test.css">
-    <link rel="stylesheet" href="~/Content/nested.css">
+        <link rel="stylesheet" href="~/Content/bootstrap.min.css" type="text/css" />
+        <link rel="stylesheet" href="~/Content/api-test/api-test-ui-layout.css" type="text/css" />
+        <link rel="stylesheet" href="~/Content/api-test/api-test-query-builder.css" type="text/css" />
+        <link rel="stylesheet" href="~/Content/api-test/api-test.css">
+        <link rel="stylesheet" href="~/Content/nested.css">
     
-    @*<script src="~/Scripts/angular.js"></script>*@    
-    @*<script src="~/Scripts/ui-bootstrap-tpls-0.6.0.js"></script>*@
+        <script src="~/Scripts/angular.min.js"></script>
+        <script src="~/Scripts/angular-route.min.js"></script>
+        <script src="~/Scripts/ui-bootstrap-tpls.min.js"></script>
+        <script src="~/Scripts/angular-animate.min.js"></script>
+        <script src="~/Scripts/angular-drag-and-drop-lists.min.js"></script>
+        <script src="~/Scripts/angular-jsoneditor.js"></script>
 
+        <script src="~/Scripts/ngFlowchart.js"></script>
+        <script src="~/Scripts/Draggable.js"></script>
+        <script src="~/Scripts/xlsx.full.min.js"></script>
 
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular-route.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular-animate.min.js"></script>
-
-    <script src="~/Scripts/angular-drag-and-drop-lists.min.js"></script>
-
-
-    @*<script src="https://unpkg.com/angular-jsoneditor@0.0.1/dist/angular-jsoneditor.js"></script>*@    
-
-
-    <script src="~/Scripts/angular-jsoneditor.js"></script>
-    <script src="~/Scripts/FlowChart.js"></script>
-    <script src="~/Scripts/ngFlowchart.js"></script> 
-    <script src="~/Scripts/Draggable.js"></script> 
+        <script src="~/Scripts/ace/ace.js"></script>
+        <script src="~/Scripts/ace/ext-language_tools.js"></script>
+        <script src="~/Scripts/ace/ui-ace.js"></script>     
     
+        <script src="~/Scripts/app.js"></script>
+
+        <script src="~/Scripts/api-test/api-test-ui-layout.js"></script>
+        <script src="~/Scripts/api-test/api-test-routine.js"></script>
+        <script src="~/Scripts/api-test/api-test-planner.js"></script>
+        <script src="~/Scripts/api-test/api-test-builder.js"></script>
+        <script src="~/Scripts/api-test/api-test-request-response.js"></script>
+        <script src="~/Scripts/api-test/api-test-design-execution.js"></script>
+        <script src="~/Scripts/api-test/api-test-endpoint-create-edit.js"></script>
+        <script src="~/Scripts/api-test/api-test-import-components.js"></script>
+        <script src="~/Scripts/api-test/api-test-manage-settings.js"></script>
+        <script src="~/Scripts/api-test/api-test-group-create-edit.js"></script>
+        
+        
+
+        <script src="~/Scripts/api-test/api-test-design-testcase.js"></script>
     
-    <script src="~/Scripts/api-test-ui-layout.js"></script>
-    <script src="~/Scripts/api-test-routine.js"></script>
-    <script src="~/Scripts/api-test-planner.js"></script>
-    <script src="~/Scripts/api-test-builder.js"></script>
-    <script src="~/Scripts/app.js"></script>
-    <script src="~/Scripts/xlsx.full.min.js"></script>    
-    <script src="~/Scripts/api-test-design-testcase.js"></script>
+        <script src="~/Scripts/api-test/api-test-json-editor.js"></script>
+        <script src="~/Scripts/api-test/api-test-sql-editor.js"></script>
+        <script src="~/Scripts/api-test/api-test-javascript-editor.js"></script>
 
-    <script src="~/Scripts/api-test.js"></script>
-
- <title>tBOT</title>
-</head>
-<body ng-app="api.test" ng-cloak>
-                <nav class="navbar navbar-inverse">
-                    <div class="container-fluid">
-                        <ul class="nav navbar-nav">
-                            <li><a style="padding-left:0px; padding-top:10px;" href="/Home"><span style="font-size: 20px" class="glyphicon glyphicon-arrow-left"></span></a></li>                            
-                        </ul>
-                        <ul class="nav navbar-nav navbar-right">
-                            @*<li><a><span class="username"></span>Hello, @MyHelpers.UserFullName()</a></li>*@
-                            <li><a><span class="username"></span>Hello, @User.Identity.Name</a></li>
-
-                        </ul>
-                    </div>
-                </nav>
-            <div ui-layout="{flow : 'column'}">
-                <div ui-layout-container>
-                    <div class="ui-layout-header">
-                        @*<h5>Routine</h5>
-                        <hr>*@
-                    </div>
-                    @RenderPage("~/Views/Routine/RoutineRequest.cshtml")
-                </div>
-
-                <div rotn-split>
-                    <a><span class="ui-splitbar-icon"></span></a>
-                </div>
-
-                <div ui-layout-container>
-                    <div class="ui-layout-header">
-                        @*<h5>Planner</h5>
-                        <hr>*@
-                    </div>
-                    @RenderPage("~/Views/Planner/PlannerRequest.cshtml")
-                </div>
-
-                <div plan-split>
-                    <a><span class="ui-splitbar-icon"></span></a>
-                </div>
-
-                <div ui-layout-container>
-                    <div class="ui-layout-header">
-                        @*<h5>Builder</h5>
-                        <hr>*@
-                    </div>
-                        @RenderPage("~/Views/Builder/BuilderRequest.cshtml")                        
-                </div>
+        <script src="~/Scripts/api-test/api-test.js"></script>
+    </head>
+    <body ng-app="api.test" ng-cloak>
+        <div class="ui-layout-header">
+            <div class="container-fluid">
+                @*<div style="float:right;">Hello, @MyHelpers.UserFullName()</div>*@
+                <div style="float:right;">Hello, @User.Identity.Name</div>
+            </div>
+        </div>
+        <div ui-layout="{flow : 'column'}">
+            <div ui-layout-container>
+                @RenderPage("~/Views/Routine/Routine.cshtml")
             </div>
 
-</body>
+            <div rotn-split>
+                <a><span class="ui-splitbar-icon"></span></a>
+            </div>
+
+            <div ui-layout-container>
+                @RenderPage("~/Views/Planner/Planner.cshtml")
+            </div>
+
+            <div plan-split>
+                <a><span class="ui-splitbar-icon"></span></a>
+            </div>
+
+            <div ui-layout-container>
+                @RenderPage("~/Views/Builder/Builder.cshtml")                        
+            </div>
+        </div>
+    </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-

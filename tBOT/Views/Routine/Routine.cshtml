@@ -1,0 +1,19 @@
+﻿<p></p>
+<div ng-controller="RoutineCtrl">
+        <uib-tabset ng-click="">
+            <uib-tab heading="EndPoint" select="tabSelected('EndPoint')">
+                @RenderPage("~/Views/Routine/EndPointCreateEdit.cshtml")
+            </uib-tab>
+            <uib-tab heading="Group" select="tabSelected('Group')">
+                @RenderPage("~/Views/Routine/GroupCreateEdit.cshtml")
+            </uib-tab>
+            <uib-tab heading="Settings" select="tabSelected('Settings')">
+                @RenderPage("~/Views/Routine/ManageSettings.cshtml")
+            </uib-tab>
+        </uib-tabset>
+</div>
+
+
+
+
+

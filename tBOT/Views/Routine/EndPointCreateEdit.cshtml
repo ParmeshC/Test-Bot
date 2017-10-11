@@ -1,0 +1,186 @@
+﻿<div ng-app="api.test.endpoint.create.edit">
+    <div ng-controller="EndPointCreateEditCtrl">
+        <div ng-show="EndPointObjects==undefined">
+            <div>
+                <div class="input-group" data-toggle="tooltip" data-placement="top" title="valid characters are A-Z a-z -">
+                    <input ng-trim="false" ng-pattern="/^[a-zA-Z-]*$/" type="text" class="form-control" ng-model="NewEndPoint.Value" placeholder="Add EndPoint..." />
+                    <span class="input-group-btn">
+                        <button ng-click="AddEndPoint(NewEndPoint.Value)" ng-disabled="ValidEndPoint.status?false:true" class="btn btn-secondary"><span class="glyphicon glyphicon-plus-sign" style="padding-left:25px" ng-style="ValidEndPoint.status?{'color': '#449d44'}:{'color':'#c9302c'}"></span></button>
+                    </span>
+                </div>
+            </div>
+            <div class="input-group">
+                <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
+                <input type="text" class="form-control" placeholder="Search EndPoint..." ng-model="searchEndPoint">
+            </div>
+            <table style="text-align:center;" class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <td>
+                            <nobr>
+                                <a href="" ng-click="sortType = 'EndPoint'; sortReverse = !sortReverse">
+                                    EndPoint
+                                    <span ng-show="sortType == 'EndPoint' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                    <span ng-show="sortType == 'EndPoint' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                                </a>
+                            </nobr>
+                        </td>
+                        <td>
+                            <nobr>
+                                <a href="" ng-click="sortType = 'Object'; sortReverse = !sortReverse">
+                                    Object
+                                    <span ng-show="sortType == 'Object' && !sortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                    <span ng-show="sortType == 'Object' && sortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                                </a>
+                            </nobr>
+                        </td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr ng-repeat="GroupedEndPoint in EndPointObjectCount | orderBy:sortType:sortReverse | filter:searchEndPoint track by GroupedEndPoint.EndPointId">
+                        <td style="text-align:left">{{GroupedEndPoint.EndPoint}}</td>
+                        <td  style="padding:1px;width:38%">
+                            <ul class="pager" style="margin:0px;">
+                                <li>
+                                    <a style="padding:2px 24px 2px 24px;border-color:cornflowerblue;" id="clickAlert" href="" ng-click="GetEndPointObjects(GroupedEndPoint.EndPointId,GroupedEndPoint.EndPoint)">
+                                        {{GroupedEndPoint.Object}}
+                                    </a>
+                                    <a style="border-color:tomato; padding:2px 8px 2px 8px; margin:1px" ng-show="GroupedEndPoint.Object==0" id="clickAlert" href="" ng-click="RemoveEndPoint(GroupedEndPoint.EndPointId)">
+                                        Delete
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div ng-show="EndPointObjects!=undefined">
+            <nav class="navbar navbar-light" style="background-color: #e3f2fd; margin-bottom:0px">
+                <ul class="pager" style="margin:8px">
+                    <li class="previous"><a href="" id="clickAlert" ng-click="PreviousClick()"><span aria-hidden="true">&laquo;</span></a></li>
+                    <li ng-show="Object.EndPointObjectId!=undefined">{{SelectedGroupedEndPoint}} &rarr; Object ID: {{Object.EndPointObjectId}}</li>
+                    <li ng-show="Object.EndPointObjectId==undefined">{{SelectedGroupedEndPoint}}</li>
+                </ul>
+            </nav>
+
+            <div class="list-group" ng-show="EndPointObjectComponents==undefined && EndPointObjectGroups==undefined">
+                <ul class="pager" style="margin:0px; padding:2px;">
+                    <li class="pull-right">
+                        <a id="clickAlert" href="" ng-click="AddEndPointObject()">
+                            <span class="glyphicon glyphicon-plus-sign"></span>
+                            Object
+                        </a>
+                    </li>
+                    <li class="pull-left"><p id="alertMessage" ng-hide="show">{{ObjectStatus}}</p></li>
+                </ul>
+
+                <div style="padding:0px; margin-bottom:2px; border:0px" class="list-group-item list-group-item-action" ng-repeat="EndPointObject in EndPointObjects| orderBy:sortType:sortReverse">
+                    <table style="margin:0px; text-align:center; background-color:whitesmoke" class="table">
+                        <tbody>
+                            <tr>
+                                <td style="padding:1px;">
+                                    <nobr>Object ID</nobr>
+                                </td>
+                                <td style="padding:1px;">
+                                    <nobr>Grouped-In</nobr>
+                                </td>
+                                <td style="padding:1px;">
+                                    Components
+                                </td>
+                                <td rowspan="2" style="padding:1px; width:20%; vertical-align:middle;">
+                                    <ul class="pager" style="margin:0px">
+                                        <li>
+                                            <a style="border-color:tomato; padding:2px 20px 2px 20px; margin:2px" ng-show="EndPointObject.ComponentCount==0 && EndPointObject.EndPointObjectGroupCount==0" id="clickAlert" href="" ng-click="RemoveEndPointObject(EndPointObject.EndPointObjectId)">
+                                                Delete
+                                            </a>
+                                            <a style="border-color:cornflowerblue; padding:2px 16px 2px 16px;margin:2px" id="clickAlert" href="" ng-click="ExecuteEndPointObjectId(EndPointObject.EndPointObjectId)">
+                                                Execute
+                                            </a>
+
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding:1px;">{{EndPointObject.EndPointObjectId}}</td>
+                                <td style="padding:1px;">
+                                    <ul class="pager" style="margin:0px;">
+                                        <li>
+                                            <a style="padding:2px 20px 2px 20px;border-color:cornflowerblue;" id="clickAlert" href="" ng-click="GetEndPointObjectGroups(EndPointObject.EndPointObjectId)">
+                                                {{EndPointObject.EndPointObjectGroupCount}}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </td>
+                                <td style="padding:1px;">
+                                    <ul class="pager" style="margin:0px;">
+                                        <li>
+                                            <a style="padding:2px 20px 2px 20px;border-color:cornflowerblue;" id="clickAlert" href="" ng-click="GetEndPointObjectComponents(EndPointObject.EndPointObjectId)">
+                                                {{EndPointObject.ComponentCount}}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div><!-- /list-group -->
+
+            <div class="list-group" ng-show="EndPointObjectComponents!=undefined && EndPointObjectGroups==undefined">
+                <div class="input-group">
+                    <span class="input-group-addon">Component</span>
+                    <select title="App" class="form-control" multiselect="multiselect" data-ng-options="Comp.ComponentName for Comp in EndPointComponents" data-ng-model="SelectedEndPointComponent"></select>
+                    <span id="clickAlert" style="padding-Top:0px;padding-bottom:0px;" class="input-group-addon" ng-click="AddEndPointObjectComponent()"><a href=""><span style="font-size:25px" class="glyphicon glyphicon-plus-sign"></span></a></span>
+                </div>
+
+                <div ng-if="EndPointObjectComponent.EndPointObjectComponentId!=null" style="padding:5px;" class="list-group-item list-group-item-action" ng-repeat="EndPointObjectComponent in EndPointObjectComponents| orderBy:sortType:sortReverse track by EndPointObjectComponent.EndPointObjectComponentId">
+                    <ul class="pager" style="margin:0px;">
+                        <li class="pull-left">{{EndPointObjectComponent.ComponentName}}
+                        <li>
+                        <li class="pull-right">
+                            <a style="border-color:tomato; padding:2px 16px 2px 16px;" id="clickAlert" href="" ng-click="RemoveEndPoitObjectComponent(EndPointObjectComponent.EndPointObjectComponentId)">
+                                Delete
+                            </a>
+
+                            <a style="border-color:cornflowerblue; padding:2px 16px 2px 16px;" id="clickAlert" href="" ng-click="EditEndPointObjectComponent(EndPointObjectComponent.EndPointObjectComponentId)">
+                                Edit
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div><!-- /list-group -->
+
+
+            <div class="list-group" ng-show="EndPointObjectGroups!=undefined">
+                <div class="input-group" data-toggle="tooltip" data-placement="top" title="valid characters are A-Z a-z 0-9 . -">
+                    <input ng-trim="false" ng-pattern="/^[A-Za-z0-9.-]*$/" type="text" class="form-control" ng-model="NewEndPointObjectGroup.Value" placeholder="New Group..." />
+                    <span class="input-group-btn">
+                        <button ng-click="AddEndPointObjectGroup(NewEndPointObjectGroup.Value)" ng-disabled="ValidEndPointObjectGroup.status?false:true" class="btn btn-secondary"><span class="glyphicon glyphicon-plus-sign" style="padding-left:25px" ng-style="ValidEndPointObjectGroup.status?{'color': '#449d44'}:{'color':'#c9302c'}"></span></button>
+                    </span>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">Group-In</span>
+                    <select title="App" class="form-control" multiselect="multiselect" data-ng-options="Grp.Section for Grp in FilteredEndPointObjectGroupList" data-ng-model="SelectedEndPointObjectGroup"></select>
+                    <span id="clickAlert" style="padding-Top:0px;padding-bottom:0px;" class="input-group-addon" ng-click="GroupEndPointObject()"><a href=""><span style="font-size:25px" class="glyphicon glyphicon-plus-sign"></span></a></span>
+                </div>
+
+                <div style="padding:5px;" class="list-group-item list-group-item-action" ng-repeat="Group in EndPointObjectGroups| orderBy:sortType:sortReverse">
+                    <ul class="pager" style="margin:0px;">
+                        <li class="pull-left">{{Group.EndPointObjectGroupSection}}
+                        <li>
+                        <li class="pull-right">
+                            <a style="border-color:tomato; padding:2px 16px 2px 16px;" id="clickAlert" href="" ng-click="UnGroupEndPointObject(Group.EndPointObjectGroupId)">
+                                UnGroup
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div><!-- /list-group -->
+        </div>
+    </div>
+</div>

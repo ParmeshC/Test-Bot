@@ -5,25 +5,6 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
       <Schema Namespace="tbotModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="API">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="APP" Type="nvarchar" MaxLength="50" />
-          <Property Name="Connector" Type="nvarchar" MaxLength="50" />
-          <Property Name="EndPoint" Type="nvarchar" MaxLength="200" />
-          <Property Name="Version" Type="nvarchar" MaxLength="50" />
-          <Property Name="SchemaUrl" Type="nvarchar(max)" />
-        </EntityType>
-        <EntityType Name="ApiGroup">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" MaxLength="100" />
-          <Property Name="ApiId" Type="int" />
-        </EntityType>
         <EntityType Name="Authorization">
           <Key>
             <PropertyRef Name="Id" />
@@ -33,17 +14,76 @@
           <Property Name="Password" Type="nvarchar" MaxLength="50" />
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="EndPoint">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="InstanceId" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="1000" />
+        </EntityType>
+        <EntityType Name="EndPointComponent">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="InstanceId" Type="int" Nullable="false" />
+          <Property Name="EndPointComponentName" Type="nvarchar" MaxLength="200" />
+          <Property Name="Value" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="EndPointObject">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EndPointId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EndPointObjectComponent">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Value" Type="nvarchar(max)" />
+          <Property Name="EndPointObjectId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EndPointObjectGroup">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EndPointObjectId" Type="int" Nullable="false" />
+          <Property Name="Section" Type="nvarchar" MaxLength="200" Nullable="false" />
+        </EntityType>
         <EntityType Name="Environment">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AppServer" Type="nvarchar" MaxLength="100" />
+          <Property Name="AppPort" Type="int" />
           <Property Name="DBHostName" Type="nvarchar" MaxLength="100" />
           <Property Name="DBPortNumber" Type="int" />
           <Property Name="DBServiceName" Type="nvarchar" MaxLength="100" />
           <Property Name="DBUserId" Type="nvarchar" MaxLength="100" />
           <Property Name="DBPassword" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Instance">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="InstanceName" Type="nvarchar" MaxLength="200" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
         <EntityType Name="TestCase">
           <Key>
@@ -62,38 +102,443 @@
           <Property Name="Name" Type="nvarchar" MaxLength="100" />
           <Property Name="TestCaseId" Type="int" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'tbot.dbo.View_EndPointComponent' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="View_EndPointComponent">
+          <Key>
+            <PropertyRef Name="EndPointComponentId" />
+          </Key>
+          <Property Name="EndPointComponentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ComponentName" Type="nvarchar" MaxLength="200" />
+          <Property Name="ComponentValue" Type="nvarchar(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'tbot.dbo.View_EndPointObject_By_Count' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="View_EndPointObject_By_Count">
+          <Key>
+            <PropertyRef Name="InstanceId" />
+            <PropertyRef Name="EndPointId" />
+            <PropertyRef Name="Instance" />
+          </Key>
+          <Property Name="InstanceId" Type="int" Nullable="false" />
+          <Property Name="EndPointId" Type="int" Nullable="false" />
+          <Property Name="Instance" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="EndPoint" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Object" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'tbot.dbo.View_EndPointObjectComponent_By_EndPointObjectGroupIdWise' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="View_EndPointObjectComponent_By_EndPointObjectGroupIdWise">
+          <Key>
+            <PropertyRef Name="EndPointObjectGroupId" />
+            <PropertyRef Name="EndPointObjectGroupSection" />
+          </Key>
+          <Property Name="EndPointObjectGroupId" Type="int" Nullable="false" />
+          <Property Name="EndPointObjectGroupSection" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="InstanceId" Type="int" />
+          <Property Name="EndPointObjectId" Type="int" />
+          <Property Name="EndPointId" Type="int" />
+          <Property Name="Instance" Type="nvarchar" MaxLength="200" />
+          <Property Name="EndPoint" Type="nvarchar" MaxLength="1000" />
+          <Property Name="EndPointObjectComponentId" Type="int" />
+          <Property Name="EndPointObjectComponentName" Type="nvarchar" MaxLength="200" />
+          <Property Name="EndPointObjectComponentValue" Type="nvarchar(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'tbot.dbo.View_EndPointObjectComponent_By_EndPointObjectIdWise' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="View_EndPointObjectComponent_By_EndPointObjectIdWise">
+          <Key>
+            <PropertyRef Name="EndPointObjectId" />
+            <PropertyRef Name="InstanceId" />
+            <PropertyRef Name="Instance" />
+            <PropertyRef Name="EndPointId" />
+          </Key>
+          <Property Name="EndPointObjectId" Type="int" Nullable="false" />
+          <Property Name="InstanceId" Type="int" Nullable="false" />
+          <Property Name="Instance" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="EndPointId" Type="int" Nullable="false" />
+          <Property Name="EndPoint" Type="nvarchar" MaxLength="1000" />
+          <Property Name="EndPointObjectComponentId" Type="int" />
+          <Property Name="EndPointObjectComponentName" Type="nvarchar" MaxLength="200" />
+          <Property Name="EndPointObjectComponentValue" Type="nvarchar(max)" />
+          <Property Name="EndPointObjectGroupCount" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'tbot.dbo.View_EndPointObjectGroup_By_Count' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="View_EndPointObjectGroup_By_Count">
+          <Key>
+            <PropertyRef Name="EndPointObjectGroupSection" />
+          </Key>
+          <Property Name="EndPointObjectGroupSection" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="EndPointObjectGroupSectionCount" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'tbot.dbo.View_EndPointObjectGroup_Distinct' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="View_EndPointObjectGroup_Distinct">
+          <Key>
+            <PropertyRef Name="Section" />
+          </Key>
+          <Property Name="Section" Type="nvarchar" MaxLength="200" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_EndPointObject_EndPoint">
+          <End Role="EndPoint" Type="Self.EndPoint" Multiplicity="1" />
+          <End Role="EndPointObject" Type="Self.EndPointObject" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EndPoint">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EndPointObject">
+              <PropertyRef Name="EndPointId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EndPointObjectComponent_EndPointObject">
+          <End Role="EndPointObject" Type="Self.EndPointObject" Multiplicity="1" />
+          <End Role="EndPointObjectComponent" Type="Self.EndPointObjectComponent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EndPointObject">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EndPointObjectComponent">
+              <PropertyRef Name="EndPointObjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EndPointObjectGroup_EndPointObject">
+          <End Role="EndPointObject" Type="Self.EndPointObject" Multiplicity="1" />
+          <End Role="EndPointObjectGroup" Type="Self.EndPointObjectGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EndPointObject">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EndPointObjectGroup">
+              <PropertyRef Name="EndPointObjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="Add_EndPoint_For_InstanceId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="InstanceId" Type="int" Mode="In" />
+          <Parameter Name="EndPointName" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="Add_EndPointComponent_For_InstanceId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="InstanceId" Type="int" Mode="In" />
+          <Parameter Name="ComponentName" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="Add_EndPointObject_For_EndPointId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Add_EndPointObjectComponent_For_EndPointObjectId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointObjectId" Type="int" Mode="In" />
+          <Parameter Name="EndPointObjectComponentName" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="Add_Instance" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="InstaneName" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="Edit_EndPointComponentValue_For_EndPointComponentId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointComponentId" Type="int" Mode="In" />
+          <Parameter Name="EndPointComponentValue" Type="nvarchar(max)" Mode="In" />
+        </Function>
+        <Function Name="Edit_EndPointObjectComponentValue_For_EndPointObjectComponentId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointObjectComponentId" Type="int" Mode="In" />
+          <Parameter Name="EndPointObjectComponentValue" Type="nvarchar(max)" Mode="In" />
+        </Function>
+        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="Get_EndPointComponent_For_EndPointComponentId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointComponentId" Type="int" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="EndPointComponentId" Type="int" Nullable="false" />
+                <Property Name="ComponentName" Type="nvarchar" MaxLength="200" />
+                <Property Name="ComponentValue" Type="nvarchar(max)" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="Get_EndPointObject_EndPoint_For_EndPointObjectGroupSection" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointObjectGroupSection" Type="nvarchar" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="EndPointObjectGroupSection" Type="nvarchar" MaxLength="200" Nullable="false" />
+                <Property Name="EndPoint" Type="nvarchar" MaxLength="1000" />
+                <Property Name="EndPointObjectId" Type="int" Nullable="false" />
+                <Property Name="EndPointId" Type="int" Nullable="false" />
+                <Property Name="EndPointObjectGroupId" Type="int" Nullable="false" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="Get_EndPointObjectComponent_For_EndPointObjectComponentId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointObjectComponentId" Type="int" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="EndPointObjectComponentId" Type="int" />
+                <Property Name="ComponentName" Type="nvarchar" MaxLength="200" />
+                <Property Name="ComponentValue" Type="nvarchar(max)" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="Get_EndPointObjectComponentCount_GroupedInCount_By_EndPointObject_For_EndPointId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointId" Type="int" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="EndPointId" Type="int" Nullable="false" />
+                <Property Name="EndPoint" Type="nvarchar" MaxLength="1000" />
+                <Property Name="EndPointObjectId" Type="int" Nullable="false" />
+                <Property Name="ComponentCount" Type="int" />
+                <Property Name="EndPointObjectGroupCount" Type="int" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="Get_EndPointObjectComponents_For_EndPointObjectGroupSection" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointObjectGroupSection" Type="nvarchar" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="EndPoint" Type="nvarchar" MaxLength="1000" />
+                <Property Name="EndPointObjectId" Type="int" />
+                <Property Name="EndPointObjectComponentId" Type="int" />
+                <Property Name="ComponentName" Type="nvarchar" MaxLength="200" />
+                <Property Name="ComponentValue" Type="nvarchar(max)" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="Get_EndPointObjectComponents_For_EndPointObjectId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointObjectId" Type="int" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="EndPoint" Type="nvarchar" MaxLength="1000" />
+                <Property Name="EndPointObjectId" Type="int" Nullable="false" />
+                <Property Name="EndPointObjectComponentId" Type="int" />
+                <Property Name="ComponentName" Type="nvarchar" MaxLength="200" />
+                <Property Name="ComponentValue" Type="nvarchar(max)" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="Get_EndPointObjectGroups_For_EndPointObjectId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointObjectId" Type="int" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="EndPointObjectGroupId" Type="int" Nullable="false" />
+                <Property Name="EndPointObjectGroupSection" Type="nvarchar" MaxLength="200" Nullable="false" />
+                <Property Name="EndPointObjectId" Type="int" />
+                <Property Name="EndPointId" Type="int" />
+                <Property Name="EndPoint" Type="nvarchar" MaxLength="1000" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="Get_EndPoints_For_InstanceId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="InstanceId" Type="int" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="EndPointId" Type="int" Nullable="false" />
+                <Property Name="EndPoint" Type="nvarchar" MaxLength="1000" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="Group_EndPointObject_By_EndPointObjectId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointObjectId" Type="int" Mode="In" />
+          <Parameter Name="Section" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="Pivoted_EndPointObjectComponent_For_EndPointObjectGroupSection" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointObjectGroupSection" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="Pivoted_EndPointObjectComponent_For_EndPointObjectId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointObjectId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Remove_EndPoint_By_EndPointId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Remove_EndPointComponent_By_EndPointComponentId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointComponentId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Remove_EndPointObject_By_EndPointObjectId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointObjectId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Remove_EndPointObjectComponent_By_EndPointObjectComponentId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointObjectComponentId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Remove_Instace_For_InstanceId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="InstanceId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="UnGroup_EndPointObject_By_EndPointObjectGroupId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EndPointObjectGroupId" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="tbotModelStoreContainer">
-          <EntitySet Name="API" EntityType="Self.API" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ApiGroup" EntityType="Self.ApiGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Authorization" EntityType="Self.Authorization" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EndPoint" EntityType="Self.EndPoint" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EndPointComponent" EntityType="Self.EndPointComponent" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EndPointObject" EntityType="Self.EndPointObject" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EndPointObjectComponent" EntityType="Self.EndPointObjectComponent" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EndPointObjectGroup" EntityType="Self.EndPointObjectGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Environment" EntityType="Self.Environment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Instance" EntityType="Self.Instance" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TestCase" EntityType="Self.TestCase" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TestSuite" EntityType="Self.TestSuite" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="View_EndPointComponent" EntityType="Self.View_EndPointComponent" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [View_EndPointComponent].[EndPointComponentId] AS [EndPointComponentId], 
+    [View_EndPointComponent].[ComponentName] AS [ComponentName], 
+    [View_EndPointComponent].[ComponentValue] AS [ComponentValue]
+    FROM [dbo].[View_EndPointComponent] AS [View_EndPointComponent]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="View_EndPointObject_By_Count" EntityType="Self.View_EndPointObject_By_Count" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [View_EndPointObject_By_Count].[InstanceId] AS [InstanceId], 
+    [View_EndPointObject_By_Count].[EndPointId] AS [EndPointId], 
+    [View_EndPointObject_By_Count].[Instance] AS [Instance], 
+    [View_EndPointObject_By_Count].[EndPoint] AS [EndPoint], 
+    [View_EndPointObject_By_Count].[Object] AS [Object]
+    FROM [dbo].[View_EndPointObject_By_Count] AS [View_EndPointObject_By_Count]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="View_EndPointObjectComponent_By_EndPointObjectGroupIdWise" EntityType="Self.View_EndPointObjectComponent_By_EndPointObjectGroupIdWise" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [View_EndPointObjectComponent_By_EndPointObjectGroupIdWise].[EndPointObjectGroupId] AS [EndPointObjectGroupId], 
+    [View_EndPointObjectComponent_By_EndPointObjectGroupIdWise].[EndPointObjectGroupSection] AS [EndPointObjectGroupSection], 
+    [View_EndPointObjectComponent_By_EndPointObjectGroupIdWise].[InstanceId] AS [InstanceId], 
+    [View_EndPointObjectComponent_By_EndPointObjectGroupIdWise].[EndPointObjectId] AS [EndPointObjectId], 
+    [View_EndPointObjectComponent_By_EndPointObjectGroupIdWise].[EndPointId] AS [EndPointId], 
+    [View_EndPointObjectComponent_By_EndPointObjectGroupIdWise].[Instance] AS [Instance], 
+    [View_EndPointObjectComponent_By_EndPointObjectGroupIdWise].[EndPoint] AS [EndPoint], 
+    [View_EndPointObjectComponent_By_EndPointObjectGroupIdWise].[EndPointObjectComponentId] AS [EndPointObjectComponentId], 
+    [View_EndPointObjectComponent_By_EndPointObjectGroupIdWise].[EndPointObjectComponentName] AS [EndPointObjectComponentName], 
+    [View_EndPointObjectComponent_By_EndPointObjectGroupIdWise].[EndPointObjectComponentValue] AS [EndPointObjectComponentValue]
+    FROM [dbo].[View_EndPointObjectComponent_By_EndPointObjectGroupIdWise] AS [View_EndPointObjectComponent_By_EndPointObjectGroupIdWise]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="View_EndPointObjectComponent_By_EndPointObjectIdWise" EntityType="Self.View_EndPointObjectComponent_By_EndPointObjectIdWise" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [View_EndPointObjectComponent_By_EndPointObjectIdWise].[EndPointObjectId] AS [EndPointObjectId], 
+    [View_EndPointObjectComponent_By_EndPointObjectIdWise].[InstanceId] AS [InstanceId], 
+    [View_EndPointObjectComponent_By_EndPointObjectIdWise].[Instance] AS [Instance], 
+    [View_EndPointObjectComponent_By_EndPointObjectIdWise].[EndPointId] AS [EndPointId], 
+    [View_EndPointObjectComponent_By_EndPointObjectIdWise].[EndPoint] AS [EndPoint], 
+    [View_EndPointObjectComponent_By_EndPointObjectIdWise].[EndPointObjectComponentId] AS [EndPointObjectComponentId], 
+    [View_EndPointObjectComponent_By_EndPointObjectIdWise].[EndPointObjectComponentName] AS [EndPointObjectComponentName], 
+    [View_EndPointObjectComponent_By_EndPointObjectIdWise].[EndPointObjectComponentValue] AS [EndPointObjectComponentValue], 
+    [View_EndPointObjectComponent_By_EndPointObjectIdWise].[EndPointObjectGroupCount] AS [EndPointObjectGroupCount]
+    FROM [dbo].[View_EndPointObjectComponent_By_EndPointObjectIdWise] AS [View_EndPointObjectComponent_By_EndPointObjectIdWise]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="View_EndPointObjectGroup_By_Count" EntityType="Self.View_EndPointObjectGroup_By_Count" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [View_EndPointObjectGroup_By_Count].[EndPointObjectGroupSection] AS [EndPointObjectGroupSection], 
+    [View_EndPointObjectGroup_By_Count].[EndPointObjectGroupSectionCount] AS [EndPointObjectGroupSectionCount]
+    FROM [dbo].[View_EndPointObjectGroup_By_Count] AS [View_EndPointObjectGroup_By_Count]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="View_EndPointObjectGroup_Distinct" EntityType="Self.View_EndPointObjectGroup_Distinct" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [View_EndPointObjectGroup_Distinct].[Section] AS [Section]
+    FROM [dbo].[View_EndPointObjectGroup_Distinct] AS [View_EndPointObjectGroup_Distinct]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_EndPointObject_EndPoint" Association="Self.FK_EndPointObject_EndPoint">
+            <End Role="EndPoint" EntitySet="EndPoint" />
+            <End Role="EndPointObject" EntitySet="EndPointObject" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EndPointObjectComponent_EndPointObject" Association="Self.FK_EndPointObjectComponent_EndPointObject">
+            <End Role="EndPointObject" EntitySet="EndPointObject" />
+            <End Role="EndPointObjectComponent" EntitySet="EndPointObjectComponent" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EndPointObjectGroup_EndPointObject" Association="Self.FK_EndPointObjectGroup_EndPointObject">
+            <End Role="EndPointObject" EntitySet="EndPointObject" />
+            <End Role="EndPointObjectGroup" EntitySet="EndPointObjectGroup" />
+          </AssociationSet>
         </EntityContainer>
       </Schema>
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="tbotModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="API">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="APP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Connector" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EndPoint" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="Version" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="SchemaUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="ApiGroup">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="ApiId" Type="Int32" />
-        </EntityType>
+        <ComplexType Name="Get_EndPointComponent_For_EndPointComponentId_Result">
+          <Property Name="EndPointComponentId" Type="Int32" Nullable="false" />
+          <Property Name="ComponentName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ComponentValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </ComplexType>
+        <ComplexType Name="Get_EndPointObject_EndPoint_For_EndPointObjectGroupSection_Result">
+          <Property Name="EndPointObjectGroupSection" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="EndPoint" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="EndPointObjectId" Type="Int32" Nullable="false" />
+          <Property Name="EndPointId" Type="Int32" Nullable="false" />
+          <Property Name="EndPointObjectGroupId" Type="Int32" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="Get_EndPointObjectComponent_For_EndPointObjectComponentId_Result">
+          <Property Name="EndPointObjectComponentId" Type="Int32" />
+          <Property Name="ComponentName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ComponentValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </ComplexType>
+        <ComplexType Name="Get_EndPointObjectComponentCount_GroupedInCount_By_EndPointObject_For_EndPointId_Result">
+          <Property Name="EndPointId" Type="Int32" Nullable="false" />
+          <Property Name="EndPoint" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="EndPointObjectId" Type="Int32" Nullable="false" />
+          <Property Name="ComponentCount" Type="Int32" />
+          <Property Name="EndPointObjectGroupCount" Type="Int32" />
+        </ComplexType>
+        <ComplexType Name="Get_EndPointObjectComponents_For_EndPointObjectGroupSection_Result">
+          <Property Name="EndPoint" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="EndPointObjectId" Type="Int32" />
+          <Property Name="EndPointObjectComponentId" Type="Int32" />
+          <Property Name="ComponentName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ComponentValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </ComplexType>
+        <ComplexType Name="Get_EndPointObjectComponents_For_EndPointObjectId_Result">
+          <Property Name="EndPoint" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="EndPointObjectId" Type="Int32" Nullable="false" />
+          <Property Name="EndPointObjectComponentId" Type="Int32" />
+          <Property Name="ComponentName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ComponentValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </ComplexType>
+        <ComplexType Name="Get_EndPointObjectGroups_For_EndPointObjectId_Result">
+          <Property Name="EndPointObjectGroupId" Type="Int32" Nullable="false" />
+          <Property Name="EndPointObjectGroupSection" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="EndPointObjectId" Type="Int32" />
+          <Property Name="EndPointId" Type="Int32" />
+          <Property Name="EndPoint" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+        </ComplexType>
+        <ComplexType Name="Get_EndPoints_For_InstanceId_Result">
+          <Property Name="EndPointId" Type="Int32" Nullable="false" />
+          <Property Name="EndPoint" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+        </ComplexType>
         <EntityType Name="Authorization">
           <Key>
             <PropertyRef Name="Id" />
@@ -103,17 +548,82 @@
           <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="EndPoint">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="InstanceId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="EndPointObjects" Relationship="Self.FK_EndPointObject_EndPoint" FromRole="EndPoint" ToRole="EndPointObject" />
+        </EntityType>
+        <EntityType Name="EndPointComponent">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="InstanceId" Type="Int32" Nullable="false" />
+          <Property Name="EndPointComponentName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="EndPointObject">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EndPointId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EndPoint" Relationship="Self.FK_EndPointObject_EndPoint" FromRole="EndPointObject" ToRole="EndPoint" />
+          <NavigationProperty Name="EndPointObjectComponents" Relationship="Self.FK_EndPointObjectComponent_EndPointObject" FromRole="EndPointObject" ToRole="EndPointObjectComponent" />
+          <NavigationProperty Name="EndPointObjectGroups" Relationship="Self.FK_EndPointObjectGroup_EndPointObject" FromRole="EndPointObject" ToRole="EndPointObjectGroup" />
+        </EntityType>
+        <EntityType Name="EndPointObjectComponent">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Value" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EndPointObjectId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EndPointObject" Relationship="Self.FK_EndPointObjectComponent_EndPointObject" FromRole="EndPointObjectComponent" ToRole="EndPointObject" />
+        </EntityType>
+        <EntityType Name="EndPointObjectGroup">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EndPointObjectId" Type="Int32" Nullable="false" />
+          <Property Name="Section" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="EndPointObject" Relationship="Self.FK_EndPointObjectGroup_EndPointObject" FromRole="EndPointObjectGroup" ToRole="EndPointObject" />
+        </EntityType>
         <EntityType Name="Environment">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="AppServer" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AppPort" Type="Int32" />
           <Property Name="DBHostName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="DBPortNumber" Type="Int32" />
           <Property Name="DBServiceName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="DBUserId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="DBPassword" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Instance">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="InstanceName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <EntityType Name="TestCase">
           <Key>
@@ -132,41 +642,330 @@
           <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="TestCaseId" Type="Int32" />
         </EntityType>
+        <EntityType Name="View_EndPointComponent">
+          <Key>
+            <PropertyRef Name="EndPointComponentId" />
+          </Key>
+          <Property Name="EndPointComponentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ComponentName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ComponentValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="View_EndPointObject_By_Count">
+          <Key>
+            <PropertyRef Name="InstanceId" />
+            <PropertyRef Name="EndPointId" />
+            <PropertyRef Name="Instance" />
+          </Key>
+          <Property Name="InstanceId" Type="Int32" Nullable="false" />
+          <Property Name="EndPointId" Type="Int32" Nullable="false" />
+          <Property Name="Instance" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="EndPoint" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Object" Type="Int32" />
+        </EntityType>
+        <EntityType Name="View_EndPointObjectComponent_By_EndPointObjectGroupIdWise">
+          <Key>
+            <PropertyRef Name="EndPointObjectGroupId" />
+            <PropertyRef Name="EndPointObjectGroupSection" />
+          </Key>
+          <Property Name="EndPointObjectGroupId" Type="Int32" Nullable="false" />
+          <Property Name="EndPointObjectGroupSection" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="InstanceId" Type="Int32" />
+          <Property Name="EndPointObjectId" Type="Int32" />
+          <Property Name="EndPointId" Type="Int32" />
+          <Property Name="Instance" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="EndPoint" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="EndPointObjectComponentId" Type="Int32" />
+          <Property Name="EndPointObjectComponentName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="EndPointObjectComponentValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="View_EndPointObjectComponent_By_EndPointObjectIdWise">
+          <Key>
+            <PropertyRef Name="EndPointObjectId" />
+            <PropertyRef Name="InstanceId" />
+            <PropertyRef Name="Instance" />
+            <PropertyRef Name="EndPointId" />
+          </Key>
+          <Property Name="EndPointObjectId" Type="Int32" Nullable="false" />
+          <Property Name="InstanceId" Type="Int32" Nullable="false" />
+          <Property Name="Instance" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="EndPointId" Type="Int32" Nullable="false" />
+          <Property Name="EndPoint" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="EndPointObjectComponentId" Type="Int32" />
+          <Property Name="EndPointObjectComponentName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="EndPointObjectComponentValue" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EndPointObjectGroupCount" Type="Int32" />
+        </EntityType>
+        <EntityType Name="View_EndPointObjectGroup_By_Count">
+          <Key>
+            <PropertyRef Name="EndPointObjectGroupSection" />
+          </Key>
+          <Property Name="EndPointObjectGroupSection" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="EndPointObjectGroupSectionCount" Type="Int32" />
+        </EntityType>
+        <EntityType Name="View_EndPointObjectGroup_Distinct">
+          <Key>
+            <PropertyRef Name="Section" />
+          </Key>
+          <Property Name="Section" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_EndPointObject_EndPoint">
+          <End Role="EndPoint" Type="Self.EndPoint" Multiplicity="1" />
+          <End Role="EndPointObject" Type="Self.EndPointObject" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EndPoint">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EndPointObject">
+              <PropertyRef Name="EndPointId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EndPointObjectComponent_EndPointObject">
+          <End Role="EndPointObject" Type="Self.EndPointObject" Multiplicity="1" />
+          <End Role="EndPointObjectComponent" Type="Self.EndPointObjectComponent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EndPointObject">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EndPointObjectComponent">
+              <PropertyRef Name="EndPointObjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EndPointObjectGroup_EndPointObject">
+          <End Role="EndPointObject" Type="Self.EndPointObject" Multiplicity="1" />
+          <End Role="EndPointObjectGroup" Type="Self.EndPointObjectGroup" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EndPointObject">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EndPointObjectGroup">
+              <PropertyRef Name="EndPointObjectId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="tbotEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="APIs" EntityType="Self.API" />
-          <EntitySet Name="ApiGroups" EntityType="Self.ApiGroup" />
           <EntitySet Name="Authorizations" EntityType="Self.Authorization" />
+          <EntitySet Name="EndPoints" EntityType="Self.EndPoint" />
+          <EntitySet Name="EndPointComponents" EntityType="Self.EndPointComponent" />
+          <EntitySet Name="EndPointObjects" EntityType="Self.EndPointObject" />
+          <EntitySet Name="EndPointObjectComponents" EntityType="Self.EndPointObjectComponent" />
+          <EntitySet Name="EndPointObjectGroups" EntityType="Self.EndPointObjectGroup" />
           <EntitySet Name="Environments" EntityType="Self.Environment" />
+          <EntitySet Name="Instances" EntityType="Self.Instance" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="TestCases" EntityType="Self.TestCase" />
           <EntitySet Name="TestSuites" EntityType="Self.TestSuite" />
+          <EntitySet Name="View_EndPointComponent" EntityType="Self.View_EndPointComponent" />
+          <EntitySet Name="View_EndPointObject_By_Count" EntityType="Self.View_EndPointObject_By_Count" />
+          <EntitySet Name="View_EndPointObjectComponent_By_EndPointObjectGroupIdWise" EntityType="Self.View_EndPointObjectComponent_By_EndPointObjectGroupIdWise" />
+          <EntitySet Name="View_EndPointObjectComponent_By_EndPointObjectIdWise" EntityType="Self.View_EndPointObjectComponent_By_EndPointObjectIdWise" />
+          <EntitySet Name="View_EndPointObjectGroup_By_Count" EntityType="Self.View_EndPointObjectGroup_By_Count" />
+          <EntitySet Name="View_EndPointObjectGroup_Distinct" EntityType="Self.View_EndPointObjectGroup_Distinct" />
+          <AssociationSet Name="FK_EndPointObject_EndPoint" Association="Self.FK_EndPointObject_EndPoint">
+            <End Role="EndPoint" EntitySet="EndPoints" />
+            <End Role="EndPointObject" EntitySet="EndPointObjects" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EndPointObjectComponent_EndPointObject" Association="Self.FK_EndPointObjectComponent_EndPointObject">
+            <End Role="EndPointObject" EntitySet="EndPointObjects" />
+            <End Role="EndPointObjectComponent" EntitySet="EndPointObjectComponents" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EndPointObjectGroup_EndPointObject" Association="Self.FK_EndPointObjectGroup_EndPointObject">
+            <End Role="EndPointObject" EntitySet="EndPointObjects" />
+            <End Role="EndPointObjectGroup" EntitySet="EndPointObjectGroups" />
+          </AssociationSet>
+          <FunctionImport Name="Get_EndPointComponent_For_EndPointComponentId" IsComposable="true" ReturnType="Collection(tbotModel.Get_EndPointComponent_For_EndPointComponentId_Result)">
+            <Parameter Name="EndPointComponentId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Get_EndPointObject_EndPoint_For_EndPointObjectGroupSection" IsComposable="true" ReturnType="Collection(tbotModel.Get_EndPointObject_EndPoint_For_EndPointObjectGroupSection_Result)">
+            <Parameter Name="EndPointObjectGroupSection" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Get_EndPointObjectComponent_For_EndPointObjectComponentId" IsComposable="true" ReturnType="Collection(tbotModel.Get_EndPointObjectComponent_For_EndPointObjectComponentId_Result)">
+            <Parameter Name="EndPointObjectComponentId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Get_EndPointObjectComponentCount_GroupedInCount_By_EndPointObject_For_EndPointId" IsComposable="true" ReturnType="Collection(tbotModel.Get_EndPointObjectComponentCount_GroupedInCount_By_EndPointObject_For_EndPointId_Result)">
+            <Parameter Name="EndPointId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Get_EndPointObjectComponents_For_EndPointObjectGroupSection" IsComposable="true" ReturnType="Collection(tbotModel.Get_EndPointObjectComponents_For_EndPointObjectGroupSection_Result)">
+            <Parameter Name="EndPointObjectGroupSection" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Get_EndPointObjectComponents_For_EndPointObjectId" IsComposable="true" ReturnType="Collection(tbotModel.Get_EndPointObjectComponents_For_EndPointObjectId_Result)">
+            <Parameter Name="EndPointObjectId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Get_EndPointObjectGroups_For_EndPointObjectId" IsComposable="true" ReturnType="Collection(tbotModel.Get_EndPointObjectGroups_For_EndPointObjectId_Result)">
+            <Parameter Name="EndPointObjectId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Get_EndPoints_For_InstanceId" IsComposable="true" ReturnType="Collection(tbotModel.Get_EndPoints_For_InstanceId_Result)">
+            <Parameter Name="InstanceId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Add_EndPoint_For_InstanceId" ReturnType="Collection(tbotModel.Add_EndPoint_For_InstanceId_Result)">
+            <Parameter Name="InstanceId" Mode="In" Type="Int32" />
+            <Parameter Name="EndPointName" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Add_EndPointComponent_For_InstanceId" ReturnType="Collection(tbotModel.Add_EndPointComponent_For_InstanceId_Result)">
+            <Parameter Name="InstanceId" Mode="In" Type="Int32" />
+            <Parameter Name="ComponentName" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Add_EndPointObject_For_EndPointId" ReturnType="Collection(tbotModel.Add_EndPointObject_For_EndPointId_Result)">
+            <Parameter Name="EndPointId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Add_EndPointObjectComponent_For_EndPointObjectId" ReturnType="Collection(tbotModel.Add_EndPointObjectComponent_For_EndPointObjectId_Result)">
+            <Parameter Name="EndPointObjectId" Mode="In" Type="Int32" />
+            <Parameter Name="EndPointObjectComponentName" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Add_Instance" ReturnType="Collection(tbotModel.Add_Instance_Result)">
+            <Parameter Name="InstaneName" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Edit_EndPointComponentValue_For_EndPointComponentId" ReturnType="Collection(tbotModel.Edit_EndPointComponentValue_For_EndPointComponentId_Result)">
+            <Parameter Name="EndPointComponentId" Mode="In" Type="Int32" />
+            <Parameter Name="EndPointComponentValue" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Edit_EndPointObjectComponentValue_For_EndPointObjectComponentId" ReturnType="Collection(tbotModel.Edit_EndPointObjectComponentValue_For_EndPointObjectComponentId_Result)">
+            <Parameter Name="EndPointObjectComponentId" Mode="In" Type="Int32" />
+            <Parameter Name="EndPointObjectComponentValue" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Group_EndPointObject_By_EndPointObjectId" ReturnType="Collection(tbotModel.Group_EndPointObject_By_EndPointObjectId_Result)">
+            <Parameter Name="EndPointObjectId" Mode="In" Type="Int32" />
+            <Parameter Name="Section" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Pivoted_EndPointObjectComponent_For_EndPointObjectGroupSection">
+            <Parameter Name="EndPointObjectGroupSection" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Pivoted_EndPointObjectComponent_For_EndPointObjectId">
+            <Parameter Name="EndPointObjectId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Remove_EndPoint_By_EndPointId" ReturnType="Collection(tbotModel.Remove_EndPoint_By_EndPointId_Result)">
+            <Parameter Name="EndPointId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Remove_EndPointComponent_By_EndPointComponentId">
+            <Parameter Name="EndPointComponentId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Remove_EndPointObject_By_EndPointObjectId" ReturnType="Collection(tbotModel.Remove_EndPointObject_By_EndPointObjectId_Result)">
+            <Parameter Name="EndPointObjectId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Remove_EndPointObjectComponent_By_EndPointObjectComponentId" ReturnType="Collection(tbotModel.Remove_EndPointObjectComponent_By_EndPointObjectComponentId_Result)">
+            <Parameter Name="EndPointObjectComponentId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Remove_Instace_For_InstanceId" ReturnType="Collection(tbotModel.Remove_Instace_For_InstanceId_Result)">
+            <Parameter Name="InstanceId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_alterdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_creatediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(tbotModel.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(tbotModel.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_upgraddiagrams" />
+          <FunctionImport Name="UnGroup_EndPointObject_By_EndPointObjectGroupId" ReturnType="Collection(tbotModel.UnGroup_EndPointObject_By_EndPointObjectGroupId_Result)">
+            <Parameter Name="EndPointObjectGroupId" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
+        <ComplexType Name="Add_EndPoint_For_InstanceId_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="Int32" Name="InstanceId" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="1000" />
+        </ComplexType>
+        <ComplexType Name="Add_EndPointComponent_For_InstanceId_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="Int32" Name="InstanceId" Nullable="false" />
+          <Property Type="String" Name="EndPointComponentName" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="Value" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Add_EndPointObject_For_EndPointId_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="Int32" Name="EndPointId" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="Add_EndPointObjectComponent_For_EndPointObjectId_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="200" />
+          <Property Type="Int32" Name="EndPointObjectId" Nullable="false" />
+          <Property Type="String" Name="Value" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Add_Instance_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="InstanceName" Nullable="false" MaxLength="200" />
+        </ComplexType>
+        <ComplexType Name="Edit_EndPointComponentValue_For_EndPointComponentId_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="Int32" Name="InstanceId" Nullable="false" />
+          <Property Type="String" Name="EndPointComponentName" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="Value" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Edit_EndPointObjectComponentValue_For_EndPointObjectComponentId_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="200" />
+          <Property Type="Int32" Name="EndPointObjectId" Nullable="false" />
+          <Property Type="String" Name="Value" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Group_EndPointObject_By_EndPointObjectId_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="Int32" Name="EndPointObjectId" Nullable="false" />
+          <Property Type="String" Name="Section" Nullable="false" MaxLength="200" />
+        </ComplexType>
+        <ComplexType Name="Remove_EndPoint_By_EndPointId_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="Int32" Name="InstanceId" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="1000" />
+        </ComplexType>
+        <ComplexType Name="Remove_EndPointObject_By_EndPointObjectId_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="Int32" Name="EndPointId" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="Remove_EndPointObjectComponent_By_EndPointObjectComponentId_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="Int32" Name="EndPointObjectId" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="200" />
+          <Property Type="String" Name="Value" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Remove_Instace_For_InstanceId_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="InstanceName" Nullable="false" MaxLength="200" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="UnGroup_EndPointObject_By_EndPointObjectGroupId_Result">
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="Int32" Name="EndPointObjectId" Nullable="false" />
+          <Property Type="String" Name="Section" Nullable="false" MaxLength="200" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="tbotModelStoreContainer" CdmEntityContainer="tbotEntities">
-          <EntitySetMapping Name="APIs">
-            <EntityTypeMapping TypeName="tbotModel.API">
-              <MappingFragment StoreEntitySet="API">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="APP" ColumnName="APP" />
-                <ScalarProperty Name="Connector" ColumnName="Connector" />
-                <ScalarProperty Name="EndPoint" ColumnName="EndPoint" />
-                <ScalarProperty Name="Version" ColumnName="Version" />
-                <ScalarProperty Name="SchemaUrl" ColumnName="SchemaUrl" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ApiGroups">
-            <EntityTypeMapping TypeName="tbotModel.ApiGroup">
-              <MappingFragment StoreEntitySet="ApiGroup">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ApiId" ColumnName="ApiId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Authorizations">
             <EntityTypeMapping TypeName="tbotModel.Authorization">
               <MappingFragment StoreEntitySet="Authorization">
@@ -177,16 +976,82 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="EndPoints">
+            <EntityTypeMapping TypeName="tbotModel.EndPoint">
+              <MappingFragment StoreEntitySet="EndPoint">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="InstanceId" ColumnName="InstanceId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EndPointComponents">
+            <EntityTypeMapping TypeName="tbotModel.EndPointComponent">
+              <MappingFragment StoreEntitySet="EndPointComponent">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="InstanceId" ColumnName="InstanceId" />
+                <ScalarProperty Name="EndPointComponentName" ColumnName="EndPointComponentName" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EndPointObjects">
+            <EntityTypeMapping TypeName="tbotModel.EndPointObject">
+              <MappingFragment StoreEntitySet="EndPointObject">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EndPointId" ColumnName="EndPointId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EndPointObjectComponents">
+            <EntityTypeMapping TypeName="tbotModel.EndPointObjectComponent">
+              <MappingFragment StoreEntitySet="EndPointObjectComponent">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="EndPointObjectId" ColumnName="EndPointObjectId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EndPointObjectGroups">
+            <EntityTypeMapping TypeName="tbotModel.EndPointObjectGroup">
+              <MappingFragment StoreEntitySet="EndPointObjectGroup">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EndPointObjectId" ColumnName="EndPointObjectId" />
+                <ScalarProperty Name="Section" ColumnName="Section" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Environments">
             <EntityTypeMapping TypeName="tbotModel.Environment">
               <MappingFragment StoreEntitySet="Environment">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="AppServer" ColumnName="AppServer" />
+                <ScalarProperty Name="AppPort" ColumnName="AppPort" />
                 <ScalarProperty Name="DBHostName" ColumnName="DBHostName" />
                 <ScalarProperty Name="DBPortNumber" ColumnName="DBPortNumber" />
                 <ScalarProperty Name="DBServiceName" ColumnName="DBServiceName" />
                 <ScalarProperty Name="DBUserId" ColumnName="DBUserId" />
                 <ScalarProperty Name="DBPassword" ColumnName="DBPassword" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Instances">
+            <EntityTypeMapping TypeName="tbotModel.Instance">
+              <MappingFragment StoreEntitySet="Instance">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="InstanceName" ColumnName="InstanceName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="tbotModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -209,6 +1074,298 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="View_EndPointComponent">
+            <EntityTypeMapping TypeName="tbotModel.View_EndPointComponent">
+              <MappingFragment StoreEntitySet="View_EndPointComponent">
+                <ScalarProperty Name="EndPointComponentId" ColumnName="EndPointComponentId" />
+                <ScalarProperty Name="ComponentName" ColumnName="ComponentName" />
+                <ScalarProperty Name="ComponentValue" ColumnName="ComponentValue" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="View_EndPointObject_By_Count">
+            <EntityTypeMapping TypeName="tbotModel.View_EndPointObject_By_Count">
+              <MappingFragment StoreEntitySet="View_EndPointObject_By_Count">
+                <ScalarProperty Name="InstanceId" ColumnName="InstanceId" />
+                <ScalarProperty Name="EndPointId" ColumnName="EndPointId" />
+                <ScalarProperty Name="Instance" ColumnName="Instance" />
+                <ScalarProperty Name="EndPoint" ColumnName="EndPoint" />
+                <ScalarProperty Name="Object" ColumnName="Object" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="View_EndPointObjectComponent_By_EndPointObjectGroupIdWise">
+            <EntityTypeMapping TypeName="tbotModel.View_EndPointObjectComponent_By_EndPointObjectGroupIdWise">
+              <MappingFragment StoreEntitySet="View_EndPointObjectComponent_By_EndPointObjectGroupIdWise">
+                <ScalarProperty Name="EndPointObjectGroupId" ColumnName="EndPointObjectGroupId" />
+                <ScalarProperty Name="EndPointObjectGroupSection" ColumnName="EndPointObjectGroupSection" />
+                <ScalarProperty Name="InstanceId" ColumnName="InstanceId" />
+                <ScalarProperty Name="EndPointObjectId" ColumnName="EndPointObjectId" />
+                <ScalarProperty Name="EndPointId" ColumnName="EndPointId" />
+                <ScalarProperty Name="Instance" ColumnName="Instance" />
+                <ScalarProperty Name="EndPoint" ColumnName="EndPoint" />
+                <ScalarProperty Name="EndPointObjectComponentId" ColumnName="EndPointObjectComponentId" />
+                <ScalarProperty Name="EndPointObjectComponentName" ColumnName="EndPointObjectComponentName" />
+                <ScalarProperty Name="EndPointObjectComponentValue" ColumnName="EndPointObjectComponentValue" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="View_EndPointObjectComponent_By_EndPointObjectIdWise">
+            <EntityTypeMapping TypeName="tbotModel.View_EndPointObjectComponent_By_EndPointObjectIdWise">
+              <MappingFragment StoreEntitySet="View_EndPointObjectComponent_By_EndPointObjectIdWise">
+                <ScalarProperty Name="EndPointObjectId" ColumnName="EndPointObjectId" />
+                <ScalarProperty Name="InstanceId" ColumnName="InstanceId" />
+                <ScalarProperty Name="Instance" ColumnName="Instance" />
+                <ScalarProperty Name="EndPointId" ColumnName="EndPointId" />
+                <ScalarProperty Name="EndPoint" ColumnName="EndPoint" />
+                <ScalarProperty Name="EndPointObjectComponentId" ColumnName="EndPointObjectComponentId" />
+                <ScalarProperty Name="EndPointObjectComponentName" ColumnName="EndPointObjectComponentName" />
+                <ScalarProperty Name="EndPointObjectComponentValue" ColumnName="EndPointObjectComponentValue" />
+                <ScalarProperty Name="EndPointObjectGroupCount" ColumnName="EndPointObjectGroupCount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="View_EndPointObjectGroup_By_Count">
+            <EntityTypeMapping TypeName="tbotModel.View_EndPointObjectGroup_By_Count">
+              <MappingFragment StoreEntitySet="View_EndPointObjectGroup_By_Count">
+                <ScalarProperty Name="EndPointObjectGroupSection" ColumnName="EndPointObjectGroupSection" />
+                <ScalarProperty Name="EndPointObjectGroupSectionCount" ColumnName="EndPointObjectGroupSectionCount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="View_EndPointObjectGroup_Distinct">
+            <EntityTypeMapping TypeName="tbotModel.View_EndPointObjectGroup_Distinct">
+              <MappingFragment StoreEntitySet="View_EndPointObjectGroup_Distinct">
+                <ScalarProperty Name="Section" ColumnName="Section" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionName="tbotModel.Store.Get_EndPointComponent_For_EndPointComponentId" FunctionImportName="Get_EndPointComponent_For_EndPointComponentId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Get_EndPointComponent_For_EndPointComponentId_Result">
+                <ScalarProperty Name="EndPointComponentId" ColumnName="EndPointComponentId" />
+                <ScalarProperty Name="ComponentName" ColumnName="ComponentName" />
+                <ScalarProperty Name="ComponentValue" ColumnName="ComponentValue" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionName="tbotModel.Store.Get_EndPointObject_EndPoint_For_EndPointObjectGroupSection" FunctionImportName="Get_EndPointObject_EndPoint_For_EndPointObjectGroupSection">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Get_EndPointObject_EndPoint_For_EndPointObjectGroupSection_Result">
+                <ScalarProperty Name="EndPointObjectGroupSection" ColumnName="EndPointObjectGroupSection" />
+                <ScalarProperty Name="EndPoint" ColumnName="EndPoint" />
+                <ScalarProperty Name="EndPointObjectId" ColumnName="EndPointObjectId" />
+                <ScalarProperty Name="EndPointId" ColumnName="EndPointId" />
+                <ScalarProperty Name="EndPointObjectGroupId" ColumnName="EndPointObjectGroupId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionName="tbotModel.Store.Get_EndPointObjectComponent_For_EndPointObjectComponentId" FunctionImportName="Get_EndPointObjectComponent_For_EndPointObjectComponentId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Get_EndPointObjectComponent_For_EndPointObjectComponentId_Result">
+                <ScalarProperty Name="EndPointObjectComponentId" ColumnName="EndPointObjectComponentId" />
+                <ScalarProperty Name="ComponentName" ColumnName="ComponentName" />
+                <ScalarProperty Name="ComponentValue" ColumnName="ComponentValue" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionName="tbotModel.Store.Get_EndPointObjectComponentCount_GroupedInCount_By_EndPointObject_For_EndPointId" FunctionImportName="Get_EndPointObjectComponentCount_GroupedInCount_By_EndPointObject_For_EndPointId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Get_EndPointObjectComponentCount_GroupedInCount_By_EndPointObject_For_EndPointId_Result">
+                <ScalarProperty Name="EndPointId" ColumnName="EndPointId" />
+                <ScalarProperty Name="EndPoint" ColumnName="EndPoint" />
+                <ScalarProperty Name="EndPointObjectId" ColumnName="EndPointObjectId" />
+                <ScalarProperty Name="ComponentCount" ColumnName="ComponentCount" />
+                <ScalarProperty Name="EndPointObjectGroupCount" ColumnName="EndPointObjectGroupCount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionName="tbotModel.Store.Get_EndPointObjectComponents_For_EndPointObjectGroupSection" FunctionImportName="Get_EndPointObjectComponents_For_EndPointObjectGroupSection">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Get_EndPointObjectComponents_For_EndPointObjectGroupSection_Result">
+                <ScalarProperty Name="EndPoint" ColumnName="EndPoint" />
+                <ScalarProperty Name="EndPointObjectId" ColumnName="EndPointObjectId" />
+                <ScalarProperty Name="EndPointObjectComponentId" ColumnName="EndPointObjectComponentId" />
+                <ScalarProperty Name="ComponentName" ColumnName="ComponentName" />
+                <ScalarProperty Name="ComponentValue" ColumnName="ComponentValue" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionName="tbotModel.Store.Get_EndPointObjectComponents_For_EndPointObjectId" FunctionImportName="Get_EndPointObjectComponents_For_EndPointObjectId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Get_EndPointObjectComponents_For_EndPointObjectId_Result">
+                <ScalarProperty Name="EndPoint" ColumnName="EndPoint" />
+                <ScalarProperty Name="EndPointObjectId" ColumnName="EndPointObjectId" />
+                <ScalarProperty Name="EndPointObjectComponentId" ColumnName="EndPointObjectComponentId" />
+                <ScalarProperty Name="ComponentName" ColumnName="ComponentName" />
+                <ScalarProperty Name="ComponentValue" ColumnName="ComponentValue" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionName="tbotModel.Store.Get_EndPointObjectGroups_For_EndPointObjectId" FunctionImportName="Get_EndPointObjectGroups_For_EndPointObjectId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Get_EndPointObjectGroups_For_EndPointObjectId_Result">
+                <ScalarProperty Name="EndPointObjectGroupId" ColumnName="EndPointObjectGroupId" />
+                <ScalarProperty Name="EndPointObjectGroupSection" ColumnName="EndPointObjectGroupSection" />
+                <ScalarProperty Name="EndPointObjectId" ColumnName="EndPointObjectId" />
+                <ScalarProperty Name="EndPointId" ColumnName="EndPointId" />
+                <ScalarProperty Name="EndPoint" ColumnName="EndPoint" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionName="tbotModel.Store.Get_EndPoints_For_InstanceId" FunctionImportName="Get_EndPoints_For_InstanceId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Get_EndPoints_For_InstanceId_Result">
+                <ScalarProperty Name="EndPointId" ColumnName="EndPointId" />
+                <ScalarProperty Name="EndPoint" ColumnName="EndPoint" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Add_EndPoint_For_InstanceId" FunctionName="tbotModel.Store.Add_EndPoint_For_InstanceId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Add_EndPoint_For_InstanceId_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="InstanceId" ColumnName="InstanceId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Add_EndPointComponent_For_InstanceId" FunctionName="tbotModel.Store.Add_EndPointComponent_For_InstanceId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Add_EndPointComponent_For_InstanceId_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="InstanceId" ColumnName="InstanceId" />
+                <ScalarProperty Name="EndPointComponentName" ColumnName="EndPointComponentName" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Add_EndPointObject_For_EndPointId" FunctionName="tbotModel.Store.Add_EndPointObject_For_EndPointId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Add_EndPointObject_For_EndPointId_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EndPointId" ColumnName="EndPointId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Add_EndPointObjectComponent_For_EndPointObjectId" FunctionName="tbotModel.Store.Add_EndPointObjectComponent_For_EndPointObjectId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Add_EndPointObjectComponent_For_EndPointObjectId_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="EndPointObjectId" ColumnName="EndPointObjectId" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Add_Instance" FunctionName="tbotModel.Store.Add_Instance">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Add_Instance_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="InstanceName" ColumnName="InstanceName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Edit_EndPointComponentValue_For_EndPointComponentId" FunctionName="tbotModel.Store.Edit_EndPointComponentValue_For_EndPointComponentId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Edit_EndPointComponentValue_For_EndPointComponentId_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="InstanceId" ColumnName="InstanceId" />
+                <ScalarProperty Name="EndPointComponentName" ColumnName="EndPointComponentName" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Edit_EndPointObjectComponentValue_For_EndPointObjectComponentId" FunctionName="tbotModel.Store.Edit_EndPointObjectComponentValue_For_EndPointObjectComponentId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Edit_EndPointObjectComponentValue_For_EndPointObjectComponentId_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="EndPointObjectId" ColumnName="EndPointObjectId" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Group_EndPointObject_By_EndPointObjectId" FunctionName="tbotModel.Store.Group_EndPointObject_By_EndPointObjectId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Group_EndPointObject_By_EndPointObjectId_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EndPointObjectId" ColumnName="EndPointObjectId" />
+                <ScalarProperty Name="Section" ColumnName="Section" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Pivoted_EndPointObjectComponent_For_EndPointObjectGroupSection" FunctionName="tbotModel.Store.Pivoted_EndPointObjectComponent_For_EndPointObjectGroupSection" />
+          <FunctionImportMapping FunctionImportName="Pivoted_EndPointObjectComponent_For_EndPointObjectId" FunctionName="tbotModel.Store.Pivoted_EndPointObjectComponent_For_EndPointObjectId" />
+          <FunctionImportMapping FunctionImportName="Remove_EndPoint_By_EndPointId" FunctionName="tbotModel.Store.Remove_EndPoint_By_EndPointId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Remove_EndPoint_By_EndPointId_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="InstanceId" ColumnName="InstanceId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Remove_EndPointComponent_By_EndPointComponentId" FunctionName="tbotModel.Store.Remove_EndPointComponent_By_EndPointComponentId" />
+          <FunctionImportMapping FunctionImportName="Remove_EndPointObject_By_EndPointObjectId" FunctionName="tbotModel.Store.Remove_EndPointObject_By_EndPointObjectId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Remove_EndPointObject_By_EndPointObjectId_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EndPointId" ColumnName="EndPointId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Remove_EndPointObjectComponent_By_EndPointObjectComponentId" FunctionName="tbotModel.Store.Remove_EndPointObjectComponent_By_EndPointObjectComponentId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Remove_EndPointObjectComponent_By_EndPointObjectComponentId_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EndPointObjectId" ColumnName="EndPointObjectId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Remove_Instace_For_InstanceId" FunctionName="tbotModel.Store.Remove_Instace_For_InstanceId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.Remove_Instace_For_InstanceId_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="InstanceName" ColumnName="InstanceName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="tbotModel.Store.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="tbotModel.Store.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="tbotModel.Store.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="tbotModel.Store.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="tbotModel.Store.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="tbotModel.Store.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="tbotModel.Store.sp_upgraddiagrams" />
+          <FunctionImportMapping FunctionImportName="UnGroup_EndPointObject_By_EndPointObjectGroupId" FunctionName="tbotModel.Store.UnGroup_EndPointObject_By_EndPointObjectGroupId">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="tbotModel.UnGroup_EndPointObject_By_EndPointObjectGroupId_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EndPointObjectId" ColumnName="EndPointObjectId" />
+                <ScalarProperty Name="Section" ColumnName="Section" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

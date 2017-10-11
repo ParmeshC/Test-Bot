@@ -16,6 +16,7 @@ namespace tBOT.Models
     {
         public int Id { get; set; }
         public string AppServer { get; set; }
+        public Nullable<int> AppPort { get; set; }
         public string DBHostName { get; set; }
         public Nullable<int> DBPortNumber { get; set; }
         public string DBServiceName { get; set; }

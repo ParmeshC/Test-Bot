@@ -1,0 +1,30 @@
+﻿
+<div ng-controller="ImportComponentsCtrl as vm">
+    <div class="btn btn-info btn-block" ng-show="!vm.gridOptions.data.length">
+        <label for="file-upload" style="display:inline">Browse file</label>
+        <input id="file-upload" type="file" accept=".xls,.xlsx,.ods,.csv" fileread="" opts="vm.gridOptions" style="display:none" />
+    </div>
+    <div ng-show="vm.gridOptions.data.length">
+        <button type="button" class="btn btn-danger btn-block" ng-click="vm.reset()">Reset <span class="badge">{{vm.gridOptions.data.length}}</span> Grid Items</button>
+        <button type="button" class="btn btn-primary btn-block" ng-click="AddApiInfo()">Load Mapped Columns</button>
+        <br />
+        <table class="table table-bordered">
+            <tr>
+                <td ng-repeat="hdr in vm.gridOptions.columnDefs">
+                    {{mpdHdr[$index]}}
+                    <select ng-show="!mpdHdr[$index] && mpblHdr.length" style="width: inherit" title="App" class="form-control" multiselect="multiselect" data-ng-options="o.header for o in mpblHdr" data-ng-model="slctdHdr" ng-change="update($index)"></select>
+                </td>
+            </tr>
+            <tr>
+                <th ng-repeat="hdr in vm.gridOptions.columnDefs">
+                    {{hdr.field}}
+                </th>
+            </tr>
+            <tr ng-repeat="vlu in vm.gridOptions.data">
+                <td ng-repeat="hdr in vm.gridOptions.columnDefs">
+                    {{vlu[hdr.field]}}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

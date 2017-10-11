@@ -180,10 +180,19 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\API.cs">
+    <Compile Include="Models\Add_EndPointComponent_For_InstanceId_Result.cs">
       <DependentUpon>ApiTestModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ApiGroup.cs">
+    <Compile Include="Models\Add_EndPointObjectComponent_For_EndPointObjectId_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Add_EndPointObject_For_EndPointId_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Add_EndPoint_For_InstanceId_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Add_Instance_Result.cs">
       <DependentUpon>ApiTestModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ApiTestModel.Context.cs">
@@ -204,7 +213,79 @@
     <Compile Include="Models\Authorization.cs">
       <DependentUpon>ApiTestModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Edit_EndPointComponentValue_For_EndPointComponentId_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Edit_EndPointObjectComponentValue_For_EndPointObjectComponentId_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EndPoint.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EndPointComponent.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EndPointObject.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EndPointObjectComponent.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EndPointObjectGroup.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Environment.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Get_EndPointComponent_For_EndPointComponentId_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Get_EndPointObjectComponentCount_GroupedInCount_By_EndPointObject_For_EndPointId_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Get_EndPointObjectComponents_For_EndPointObjectGroupSection_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Get_EndPointObjectComponents_For_EndPointObjectId_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Get_EndPointObjectComponent_For_EndPointObjectComponentId_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Get_EndPointObjectGroups_For_EndPointObjectId_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Get_EndPointObject_EndPoint_For_EndPointObjectGroupSection_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Get_EndPoints_For_InstanceId_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Group_EndPointObject_By_EndPointObjectId_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Instance.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Remove_EndPointObjectComponent_By_EndPointObjectComponentId_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Remove_EndPointObject_By_EndPointObjectId_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Remove_EndPoint_By_EndPointId_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Remove_Instace_For_InstanceId_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sp_helpdiagrams_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>ApiTestModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TestCase.cs">
@@ -213,15 +294,35 @@
     <Compile Include="Models\TestSuite.cs">
       <DependentUpon>ApiTestModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\UnGroup_EndPointObject_By_EndPointObjectGroupId_Result.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\View_EndPointComponent.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\View_EndPointObjectComponent_By_EndPointObjectGroupIdWise.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\View_EndPointObjectComponent_By_EndPointObjectIdWise.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\View_EndPointObjectGroup_By_Count.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\View_EndPointObjectGroup_Distinct.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\View_EndPointObject_By_Count.cs">
+      <DependentUpon>ApiTestModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Services\API\RESTful\RESTfulExecution.cs" />
     <Compile Include="Services\API\RESTful\RESTfulRequest.cs" />
     <Compile Include="Services\API\RESTful\RESTfulRequestResponse.cs" />
     <Compile Include="Services\API\RESTful\RESTfulResponse.cs" />
-    <Compile Include="Services\API\Test\TestAuthorization.cs" />
     <Compile Include="Services\API\Test\TestCase.cs" />
     <Compile Include="Services\API\Test\TestCaseTemplate.cs" />
     <Compile Include="Services\API\Test\TestCaseCondition.cs" />
-    <Compile Include="Services\API\Test\TestEnvironment.cs" />
+    <Compile Include="Services\API\Test\DataBaseEnvironment.cs" />
     <Compile Include="Services\API\Test\TestFactory.cs" />
     <Compile Include="Services\API\Test\TestCaseTemplates\GuidHeaderMessage.cs" />
     <Compile Include="Services\API\Test\TestCaseTemplates\InvalidGuidHeaderMessage.cs" />
@@ -237,14 +338,15 @@
     <Compile Include="Services\API\Test\TestRequest.cs" />
     <Compile Include="Services\API\Test\TestResponse.cs" />
     <Compile Include="Services\ExtentionMethods\JsonExtensions.cs" />
+    <Compile Include="Services\ExtentionMethods\LinqExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\api-test.css" />
+    <Content Include="Content\api-test\api-test.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\landing-page.css" />
     <Content Include="Content\nested.css" />
-    <Content Include="Content\api-test-query-builder.css" />
-    <Content Include="Content\api-test-ui-layout.css" />
+    <Content Include="Content\api-test\api-test-query-builder.css" />
+    <Content Include="Content\api-test\api-test-ui-layout.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Models\ApiTestModel.Context.tt">
@@ -257,13 +359,27 @@
       <DependentUpon>ApiTestModel.edmx</DependentUpon>
       <LastGenOutput>ApiTestModel.cs</LastGenOutput>
     </Content>
-    <Content Include="Scripts\angular-drag-and-drop-lists.js" />
+    <Content Include="Scripts\ace\ace.js" />
+    <Content Include="Scripts\ace\snippets\snippets.js" />
+    <Content Include="Scripts\angular-animate.min.js" />
+    <Content Include="Scripts\angular-route.min.js" />
+    <Content Include="Scripts\api-test\api-test-design-execution.js" />
+    <Content Include="Scripts\api-test\api-test-endpoint-create-edit.js" />
+    <Content Include="Scripts\api-test\api-test-group-create-edit.js" />
+    <Content Include="Scripts\api-test\api-test-import-components.js" />
+    <Content Include="Scripts\api-test\api-test-json-editor.js" />
+    <Content Include="Scripts\api-test\api-test-javascript-editor.js" />
+    <Content Include="Scripts\ace\ext-language_tools.js" />
+    <Content Include="Scripts\ace\mode-javascript.js" />
+    <Content Include="Scripts\ace\ui-ace.js" />
+    <Content Include="Scripts\ace\worker-javascript.js" />
     <Content Include="Scripts\angular-drag-and-drop-lists.min.js" />
     <Content Include="Scripts\angular-jsoneditor.js" />
-    <Content Include="Scripts\angular.js" />
-    <Content Include="Scripts\api-test-builder.js" />
-    <Content Include="Scripts\api-test-design-testcase.js" />
-    <Content Include="Scripts\api-test.js" />
+    <Content Include="Scripts\api-test\api-test-builder.js" />
+    <Content Include="Scripts\api-test\api-test-design-testcase.js" />
+    <Content Include="Scripts\api-test\api-test-manage-settings.js" />
+    <Content Include="Scripts\api-test\api-test-request-response.js" />
+    <Content Include="Scripts\api-test\api-test.js" />
     <Content Include="Scripts\app.js" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -279,13 +395,12 @@
     </Content>
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <Content Include="Scripts\Draggable.js" />
-    <Content Include="Scripts\FlowChart.js" />
+    <Content Include="Scripts\api-test\api-test-sql-editor.js" />
     <Content Include="Scripts\ngFlowchart.js" />
-    <Content Include="Scripts\api-test-planner.js" />
-    <Content Include="Scripts\api-test-routine.js" />
-    <Content Include="Scripts\ui-bootstrap-tpls-0.6.0.js" />
-    <Content Include="Scripts\ui-bootstrap-tpls-2.5.0.min.js" />
-    <Content Include="Scripts\api-test-ui-layout.js" />
+    <Content Include="Scripts\api-test\api-test-planner.js" />
+    <Content Include="Scripts\api-test\api-test-routine.js" />
+    <Content Include="Scripts\api-test\api-test-ui-layout.js" />
+    <Content Include="Scripts\ui-bootstrap-tpls.min.js" />
     <Content Include="Scripts\xlsx.full.min.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -302,20 +417,21 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\ApiTest\Index.cshtml" />
-    <Content Include="Views\Planner\PlannerRequest.cshtml" />
-    <Content Include="Views\Routine\RoutineRequest.cshtml" />
-    <Content Include="Views\Planner\GetAllEnvironments.cshtml" />
-    <Content Include="Views\Planner\GetAllAuthorizations.cshtml" />
-    <Content Include="Views\Planner\GetApiResponse.cshtml" />
+    <Content Include="Views\Planner\Planner.cshtml" />
+    <Content Include="Views\Routine\Routine.cshtml" />
     <Content Include="Views\Builder\ResponseQuery.cshtml" />
-    <Content Include="Views\Builder\DatabaseQuery.cshtml" />
-    <Content Include="Views\Routine\AddApiInfo.cshtml" />
-    <Content Include="Views\Routine\GetApiInfo.cshtml" />
-    <Content Include="Views\Builder\BuilderRequest.cshtml" />
-    <Content Include="Views\Planner\GetAllTestTemplates.cshtml" />
-    <Content Include="Views\Builder\AddTestCases.cshtml" />
+    <Content Include="Views\Builder\SqlEditor.cshtml" />
+    <Content Include="Views\Builder\Builder.cshtml" />
     <Content Include="Views\Builder\DesignTestCase.cshtml" />
-    <Content Include="Views\Planner\GetAllTestCases.cshtml" />
+    <Content Include="Views\Planner\JavaScriptEditor.cshtml" />
+    <Content Include="Views\Builder\JsonEditor.cshtml" />
+    <Content Include="Views\Planner\RequestResponse.cshtml" />
+    <Content Include="Scripts\angular.min.js" />
+    <Content Include="Views\Planner\DesignExecution.cshtml" />
+    <Content Include="Views\Routine\ImportComponents.cshtml" />
+    <Content Include="Views\Routine\EndPointCreateEdit.cshtml" />
+    <Content Include="Views\Routine\ManageSettings.cshtml" />
+    <Content Include="Views\Routine\GroupCreateEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

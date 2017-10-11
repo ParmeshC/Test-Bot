@@ -1,0 +1,57 @@
+﻿<div ng-controller="DesignExecutionCtrl" class="container-fluid">
+
+    <div ng-show="ExecuteEndPointObjectComponents!=undefined">
+        <div class="form-inline">
+            <div class="input-group">
+                <select title="App" class="form-control" multiselect="multiselect" data-ng-options="om.AppServer for om in envOptions" data-ng-model="apiEnv"></select>
+            </div>
+            <div class="input-group">
+                <select title="App" class="form-control" multiselect="multiselect" data-ng-options="o.UserName for o in authOptions" data-ng-model="apiAuth"></select>
+            </div>
+
+            <a>Selected Objects<span class="badge">{{ExecuteEndPointObjectComponents.length}}</span></a>
+
+            <input ng-show="selectedTestCases.length>0 && !RequestResponseList.length>0 && !resolved" type="submit" value="Submit" ng-click="GetResponseRequest()" class="btn btn-primary btn-sm">
+            <input ng-show="resolved" type="submit" value="Cancel" ng-click="CancelRequest()" class="btn btn-danger btn-sm">
+        </div>
+        <pre>{{ExecuteEndPointObjectComponents|json}}</pre>
+        <pre>{{EndPointComponents|json}}</pre>
+
+        <div ng-show="!RequestResponseList.length>0">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <td>
+                            <nobr>
+                                <input type="checkbox" ng-change="toggleAll()" ng-model="isAllSelected">
+                                <a href="" ng-click="TestCasesSortType = 'selected'; TestCasesSortReverse = !TestCasesSortReverse">
+                                    <span ng-class="TestCasesSortType=='selected' && !TestCasesSortReverse?'glyphicon glyphicon-sort-by-attributes':
+                                                                    TestCasesSortType=='selected' && TestCasesSortReverse?'glyphicon glyphicon-sort-by-attributes-alt':
+                                                                    'glyphicon glyphicon-sort'">
+                                    </span>
+                                </a>
+                            </nobr>
+                        </td>
+                        <td>
+                            <nobr>
+                                <a href="" ng-click="TestCasesSortType = 'Name'; TestCasesSortReverse = !TestCasesSortReverse">
+                                    Test Cases
+                                    <span ng-show="TestCasesSortType == 'Name' && !TestCasesSortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                    <span ng-show="TestCasesSortType == 'Name' && TestCasesSortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                                </a>
+                            </nobr>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="testCase in TestCasesList | orderBy:TestCasesSortType:TestCasesSortReverse">
+                        <td><input type="checkbox" ng-model="testCase.selected" ng-change="optionToggled()"></td>
+                        <td>{{testCase.Name}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+</div>

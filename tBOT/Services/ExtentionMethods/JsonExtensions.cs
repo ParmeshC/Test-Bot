@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+
 
 namespace tBOT.Services.ExtentionMethods
 {
@@ -16,5 +14,8 @@ namespace tBOT.Services.ExtentionMethods
                    (token.Type == JTokenType.String && token.ToString() == String.Empty) ||
                    (token.Type == JTokenType.Null);
         }
+
     }
+
+
 }

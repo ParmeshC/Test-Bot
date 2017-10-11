@@ -5,8 +5,9 @@ namespace tBOT.Services.API.RESTful
 {
     public class RESTfulRequest
     {
-        public TestEnvironment Environment { get; set; }
-        public TestAuthorization Authorization { get; set; }
+        public string AuthType { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
         public string Accept { get; set; }
         public string ContentType { get; set; }
         public string LanguageCode { get; set; }
@@ -14,7 +15,6 @@ namespace tBOT.Services.API.RESTful
         public string RequestUrl { get; set; }
         public string RequestBody { get; set; }
         public string EndPoint { get; set; }
-
 
     }
 }

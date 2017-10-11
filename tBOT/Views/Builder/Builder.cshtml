@@ -1,0 +1,114 @@
+﻿<p></p>
+<div ng-controller="BuilderCtrl" class="container-fluid">    
+    <div class="form-inline">
+        @RenderPage("~/Views/Builder/JsonEditor.cshtml")
+    </div>
+
+    <div class="form-inline">        
+        @RenderPage("~/Views/Builder/SqlEditor.cshtml")
+    </div>
+        <div class="form-inline" ng-show="RequestResponse!=null">
+
+            <div style="padding-top:10px;padding-bottom:10px;">
+                <div style="float:left;">
+                    <div class="input-group">
+                        <a href="" ng-click="sortType = 'TestCaseResult.Status'; sortReverse = !sortReverse">
+                            <span class="badge" ng-style="sortType=='TestCaseResult.Status' && !sortReverse?{'background-color': '#c9302c'}:
+                                                                sortType=='TestCaseResult.Status' && sortReverse?{'background-color':'#449d44'}:
+                                                                {'background-color':'#777'}">
+                                <span ng-class="sortType=='TestCaseResult.Status' && !sortReverse?'glyphicon glyphicon glyphicon-thumbs-down':
+                                                                sortType=='TestCaseResult.Status' && sortReverse?'glyphicon glyphicon-thumbs-up':
+                                                                'glyphicon glyphicon-thumbs-up'">
+
+                                </span>
+                            </span>
+                            <span class="glyphicon glyphicon-sort"></span>
+                        </a>
+                        &nbsp;
+                        <a href="" ng-click="sortType = 'TestCaseName'; sortReverse = !sortReverse">
+                            Test Cases
+                            <span ng-class="sortType=='TestCaseName' && !sortReverse?'glyphicon glyphicon-sort-by-attributes':
+                                                                sortType=='TestCaseName' && sortReverse?'glyphicon glyphicon-sort-by-attributes-alt':
+                                                                'glyphicon glyphicon-sort'">
+                            </span>
+                        </a>
+                        &nbsp;
+                        <label class="switch" style="margin-bottom:-5px;margin-top:0px;">
+                                <input type="checkbox" ng-model="oneAtATime" ng-change="checkStatus()">
+                                <span class="slider round"></span>
+                            </label>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <a>{{RequestResponse.EndPoint}}
+                        <span class="badge" ng-style="RequestResponse.PassStatus?{'background-color': '#449d44'}:{'background-color':'#c9302c'}">
+                            {{RequestResponse.PassCount}}/{{RequestResponse.TotalCount}}
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <uib-accordion close-others="oneAtATime">
+                    <div uib-accordion-group class="panel-default" ng-repeat="item in RequestResponse.TestCasesList | orderBy:sortType:sortReverse" is-open="openStatus"  >
+                        <uib-accordion-heading>
+                            <div>
+                                <span class="badge" ng-style="item.TestCaseResult.Status?{'background-color': '#449d44'}:{'background-color':'#c9302c'}">
+                                    <span ng-class="item.TestCaseResult.Status?'glyphicon glyphicon-thumbs-up':'glyphicon glyphicon-thumbs-down'"></span>
+                                </span>
+                                {{item.TestCaseName}}
+                                <i class="pull-right glyphicon" ng-class="openStatus?'glyphicon-chevron-down':'glyphicon-chevron-right'"></i>
+                            </div>
+                        </uib-accordion-heading>
+                            <uib-tabset>
+                                <uib-tab heading="Result">
+                                    <ol style="padding-top:10px;">
+                                        <li ng-repeat="(Name, Value)  in item.TestCaseResult" ng-if="Name!='Status' && Name!='Response'  && Name!='Schema'">
+                                            <div ui-tree-handle>
+                                                {{Name}}:&nbsp;{{Value}}
+                                            </div>
+                                        </li>
+                                    </ol>
+                                </uib-tab>
+                                <uib-tab heading="Condition">                                    
+                                    <pre>{{item.TestCaseCondition| json}}</pre>
+                                </uib-tab>
+                                <uib-tab heading="Body">
+                                    <pre>{{item.TestCaseResult.Response.ResponseBody| json}}</pre>
+                                </uib-tab>
+                                <uib-tab heading="Headers">
+                                    <div ng-repeat="header in item.TestCaseResult.Response.ResponseHeaders">
+                                        <h5>
+                                            {{header.Key}}:-
+                                            <span style="font-size:small; overflow-wrap: break-word;" ng-repeat="value in header.Value">
+                                               {{value}}
+                                            </span>
+                                        </h5>
+                                    </div>
+                                </uib-tab>
+                                <uib-tab heading="Status">
+                                    <h5>
+                                        StatusCode:-
+                                        <span style="font-size:small; overflow-wrap: break-word;">
+                                            {{item.TestCaseResult.Response.StatusCode}}
+                                        </span>
+                                    </h5>
+                                    <h5>
+                                        ErrorMessage:-
+                                        <span style="font-size:small; overflow-wrap: break-word;">
+                                            {{item.TestCaseResult.Response.ErrorMessage}}
+                                        </span>
+                                    </h5>
+                                    <h5>
+                                        Description:-
+                                        <span style="font-size:small; overflow-wrap: break-word;">
+                                            {{item.TestCaseResult.Response.Description}}
+                                        </span>
+                                    </h5>
+                                </uib-tab>
+
+                            </uib-tabset>
+                    </div>
+                </uib-accordion>
+
+        </div>
+    </div>
+

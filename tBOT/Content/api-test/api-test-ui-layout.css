@@ -1,0 +1,138 @@
+
+.stretch {
+  position: absolute;
+  top: 17px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+}
+
+.animate-column {
+  -webkit-transition: width .8s cubic-bezier(0, 1.05, 0, 1);
+  -moz-transition: width .8s cubic-bezier(0, 1.05, 0, 1);
+  -ms-transition: width .8s cubic-bezier(0, 1.05, 0, 1);
+  -o-transition: width .8s cubic-bezier(0, 1.05, 0, 1);
+  transition: width .8s cubic-bezier(0, 1.05, 0, 1);
+
+  -webkit-transition: left .8s cubic-bezier(0, 1.05, 0, 1);
+  -moz-transition: left .8s cubic-bezier(0, 1.05, 0, 1);
+  -ms-transition: left .8s cubic-bezier(0, 1.05, 0, 1);
+  -o-transition: left .8s cubic-bezier(0, 1.05, 0, 1);
+  transition: left .8s cubic-bezier(0, 1.05, 0, 1);
+}
+
+
+.ui-splitbar-icon {
+  width: 0;
+  height: 0;
+  display: inline-block;
+}
+
+.ui-splitbar-icon-right {
+    border-top: 0.45em solid transparent;
+    border-bottom: 0.45em solid transparent;
+    border-left: 0.45em solid;
+}
+
+.ui-splitbar-icon-left {
+    border-top: 0.45em solid transparent;
+    border-bottom: 0.45em solid transparent;
+    border-right: 0.45em solid;
+    margin-top: 0.45em;
+}
+
+.ui-layout-hidden {
+  display: none;
+}
+
+
+.plan-split {
+    display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box; /* OLD - Firefox 19- (buggy but mostly works) */
+    display: -ms-flexbox; /* TWEENER - IE 10 */
+    display: -webkit-flex; /* NEW - Chrome */
+    display: flex; /* NEW, Spec - Opera 12.1, Firefox 20+ */
+    -webkit-justify-content: center;
+    justify-content: center;
+    background-color: #ffffff;
+    right: auto;
+    position: absolute;
+    z-index: 1;
+}
+
+.ui-layout-column > .plan-split {
+    width: 8px;
+    top:17px;
+    /*height: 100%;*/
+    cursor: w-resize;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    background: linear-gradient(to right, #fff 0%, #eee 100%);
+    overflow-x: hidden;
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+}
+
+.ui-layout-column > .plan-split > a {
+        cursor: pointer;
+        text-align: center;
+        font-size: 16px;
+        /*color: #aaa;*/
+    }
+
+
+.rotn-split {
+    display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box; /* OLD - Firefox 19- (buggy but mostly works) */
+    display: -ms-flexbox; /* TWEENER - IE 10 */
+    display: -webkit-flex; /* NEW - Chrome */
+    display: flex; /* NEW, Spec - Opera 12.1, Firefox 20+ */
+    -webkit-justify-content: center;
+    justify-content: center;
+    background-color: #ffffff;
+    right: auto;
+    position: absolute;
+    z-index: 1;
+}
+
+.ui-layout-column > .rotn-split {
+    width: 8px;
+    top: 17px;
+    /*height: 100%;*/
+    cursor: w-resize;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    background: linear-gradient(to right, #fff 0%, #eee 100%);
+    overflow-x: hidden;
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+}
+
+.ui-layout-column > .rotn-split > a {
+        cursor: pointer;
+        text-align: center;
+        font-size: 16px;
+        /*color: #aaa;*/
+    }
+
+.ui-layout-header {
+    padding-top: 5px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 0px;
+    color: inherit;
+    background-color: #eee
+}
+
+ .ui-layout-header > hr {
+        margin-top: 0px;
+        margin-bottom: 0px;
+        border: 0;
+        border-top: 1px solid #337ab7;
+    }
+
+
+
+
+
+
