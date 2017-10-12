@@ -1,6 +1,14 @@
 ﻿var JavaScriptEditorApp = angular.module('api.test.JavaScript.editor', ['ui.ace']);
 JavaScriptEditorApp.controller('JavaScriptEditorCtrl', function (JavaScriptEditorFactory, apiTestBroadcastService, $scope) {
 
+    var ObjectComponent;
+    var GlobalComponent;
+    JavaScriptEditorFactory.getEndPointComponentsAsJsonString().then(function (d) {
+        ObjectComponent=d.data;
+        GlobalComponent = d.data;
+    });
+
+
     var stringValue = '';
     $scope.$on('handleEditableComponentBroadcast', function () {
 
@@ -207,7 +215,11 @@ JavaScriptEditorApp.factory('JavaScriptEditorFactory', function ($http) {
 
          getEndPointComponent: function (endPointComponentId) {
              return $http.post("/Routine/GetEndPointComponent", endPointComponentId);
-         }
+         },
+
+         getEndPointComponentsAsJsonString: function () {
+             return $http.get("/Planner/GetEndPointComponentsAsJsonString");
+         },
 
     };
 });

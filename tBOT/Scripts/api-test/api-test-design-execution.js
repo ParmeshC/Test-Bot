@@ -2,24 +2,32 @@
 DesignExecutionApp.controller('DesignExecutionCtrl', function (DesignExecutionFactory, apiTestBroadcastService, $scope, $q) {
 
 
-    DesignExecutionFactory.getEndPointComponentsAsJsonString().then(function (d) {
-        $scope.EndPointComponents = JSON.parse(d.data);
-    });
 
 
     $scope.$on('handleExecuteEndPointObjectIdBroadcast', function () {
         var executeEndPointObjectId = {'EndPointObjectId':apiTestBroadcastService.sharedObjects.ExecuteEndPointObjectId };
         DesignExecutionFactory.getEndPointObjectComponentsforEndPointObjectId(executeEndPointObjectId).then(function (d) {
-            $scope.ExecuteEndPointObjectComponents = JSON.parse(d.data);
+            $scope.ObjectComponent = JSON.parse(d.data);
+
+
+            DesignExecutionFactory.getEndPointComponentsAsJsonString().then(function (d) {
+                $scope.GlobalComponent = JSON.parse(d.data);
+
+            });
        
         });
     });
     
     
-    $scope.$on('handleExecuteEndPointObjectGroupSectionBroadcast', function () {
+    $scope.$on('handleExecuteEndPointObjectGroupSectionBroadcast', function () {    
         var executeEndPointObjectGroupSection = { 'EndPointObjectGroupSection':apiTestBroadcastService.sharedObjects.ExecuteEndPointObjectGroupSection };
         DesignExecutionFactory.getEndPointObjectComponentsForEndPointObjectGroupSection(executeEndPointObjectGroupSection).then(function (d) {
-            $scope.ExecuteEndPointObjectComponents = JSON.parse(d.data);
+            $scope.ObjectComponent = JSON.parse(d.data);
+
+
+            DesignExecutionFactory.getEndPointComponentsAsJsonString().then(function (d) {
+                $scope.GlobalComponent = JSON.parse(d.data);
+            });
 
         });
     });
@@ -90,24 +98,40 @@ DesignExecutionApp.controller('DesignExecutionCtrl', function (DesignExecutionFa
 
  
     var GetResponseRequestHelper = function () {
-        angular.forEach($scope.ExecuteEndPointObjectComponents, function (endPointObject) {            
+        var processingObjects = [];
+        var row = -1;
+        angular.forEach($scope.ObjectComponent, function (ObjectComponent) {            
 
-            console.log($scope.EndPointComponents)
-            var endPointComponents = $scope.EndPointComponents
-            //for (endPointComponentKey in endPointComponents) {
-            //    console.log(endPointComponentKey + ':' + endPointComponents[endPointComponentKey])
+            var GlobalComponent={} = $scope.GlobalComponent[0];
+            row = row+1;
 
-            //    //for (endPointObjectComponentKey in endPointObjectComponent) {
-            //    //    if (endPointObjectComponentKey != 'EndPoint')
-            //    //    {
-            //    //        endPointObjectComponent[endPointObjectComponentKey] = eval(endPointObjectComponent[endPointObjectComponentKey]);
-            //    //    }
-            //    //    console.log(endPointComponentKey + ':' + endPointObjectComponent[endPointObjectComponentKey])
-            //    //}
-            //}
+            for (ObjectComponentKey in ObjectComponent) {
+                if (ObjectComponentKey === 'EndPoint') {
+                    processingObjects.push({ [ObjectComponentKey]: ObjectComponent[ObjectComponentKey] });                    
+                }
+                else
+                {
+                    ObjectComponent[ObjectComponentKey] = eval(ObjectComponent[ObjectComponentKey]);
+                }
+            }
 
+            for (GlobalComponentKey in GlobalComponent)
+            {
+                if (GlobalComponent[GlobalComponentKey] != '')
+                {
+                        processingObjects[row][GlobalComponentKey] = eval(GlobalComponent[GlobalComponentKey]);
+                }
+                else
+                {
+                        processingObjects[row][GlobalComponentKey] = GlobalComponent[GlobalComponentKey];
+               
+                }
+            }
+                
 
         });
+
+        console.log(processingObjects)
     }
 
     $scope.resolved = false;
@@ -117,10 +141,10 @@ DesignExecutionApp.controller('DesignExecutionCtrl', function (DesignExecutionFa
         $scope.resolved = true;
 
         $scope.requestData = [];
-        var GlobalSettings = {};
+        //var GlobalSettings = {};
 
-        apiTestBroadcastService.globalBroadcast('ApiResponseList', null);
-        apiTestBroadcastService.globalBroadcast('ApiResponseInfo', null);
+        //apiTestBroadcastService.globalBroadcast('ApiResponseList', null);
+        //apiTestBroadcastService.globalBroadcast('ApiResponseInfo', null);
 
 
         GetResponseRequestHelper();

@@ -1,6 +1,6 @@
 ﻿<div ng-controller="DesignExecutionCtrl" class="container-fluid">
 
-    <div ng-show="ExecuteEndPointObjectComponents!=undefined">
+    <div ng-show="ObjectComponent!=undefined">
         <div class="form-inline">
             <div class="input-group">
                 <select title="App" class="form-control" multiselect="multiselect" data-ng-options="om.AppServer for om in envOptions" data-ng-model="apiEnv"></select>
@@ -11,13 +11,14 @@
 
             <a>Selected Objects<span class="badge">{{ExecuteEndPointObjectComponents.length}}</span></a>
 
-            <input ng-show="selectedTestCases.length>0 && !RequestResponseList.length>0 && !resolved" type="submit" value="Submit" ng-click="GetResponseRequest()" class="btn btn-primary btn-sm">
+            <input ng-show="!RequestResponseList.length>0 && !resolved" type="submit" value="Submit" ng-click="GetResponseRequest()" class="btn btn-primary btn-sm">
             <input ng-show="resolved" type="submit" value="Cancel" ng-click="CancelRequest()" class="btn btn-danger btn-sm">
         </div>
-        <pre>{{ExecuteEndPointObjectComponents|json}}</pre>
-        <pre>{{EndPointComponents|json}}</pre>
+        
+        <pre>{{GlobalComponent|json}}</pre>
+        <pre>{{ObjectComponent|json}}</pre>
 
-        <div ng-show="!RequestResponseList.length>0">
+        @*<div ng-show="!RequestResponseList.length>0">
             <table class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
@@ -50,7 +51,7 @@
                     </tr>
                 </tbody>
             </table>
-        </div>
+        </div>*@
     </div>
 
 
