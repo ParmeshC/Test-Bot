@@ -62,8 +62,11 @@
                                 <uib-tab heading="Result">
                                     <ol style="padding-top:10px;">
                                         <li ng-repeat="(Name, Value)  in item.TestCaseResult" ng-if="Name!='Status' && Name!='Response'  && Name!='Schema'">
-                                            <div ui-tree-handle>
-                                                {{Name}}:&nbsp;{{Value}}
+                                            <div ui-tree-handle>                                                
+                                                {{Name}}:&nbsp;
+                                                <var>                                                    
+                                                    <a href="{{Name=='SchemaUrl' ? 'Value' : ''}}" target="{{Name=='SchemaUrl' ? '_blank' : ''}}" style="overflow-wrap: break-word;">{{Value}}</a>
+                                                </var>               
                                             </div>
                                         </li>
                                     </ol>

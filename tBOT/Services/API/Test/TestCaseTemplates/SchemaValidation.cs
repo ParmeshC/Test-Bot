@@ -3,6 +3,7 @@ using Newtonsoft.Json.Schema;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Web.Script.Serialization;
 using tBOT.Services.API.RESTful;
 using tBOT.Services.ExtentionMethods;
 
@@ -68,11 +69,12 @@ namespace tBOT.Services.API.Test
             if (result.Response.StatusCode == 200 )
             {
 
-                result.SchemaValidatedJson = result.Response.ResponseArray.Count != 0 ? result.Response.ResponseArray[0] as JObject : null;
- 
+                JObject schemaValidatedJson = result.Response.ResponseArray.Count != 0 ? result.Response.ResponseArray[0] as JObject : null;
+                result.SchemaValidatedJson = new JavaScriptSerializer().Deserialize<dynamic>(schemaValidatedJson.ToString());
 
                 IList<string> schemaErrorList;
-                SchemaAgainstJSON(result.Schema, result.SchemaValidatedJson, out IsShemaValid, out schemaErrorList);
+                SchemaAgainstJSON(result.Schema, schemaValidatedJson, out IsShemaValid, out schemaErrorList);
+
                 result.SchemaErrors = schemaErrorList != null ? string.Join(System.Environment.NewLine, schemaErrorList) : null;
             }
             result.Status = IsShemaValid;
@@ -83,7 +85,7 @@ namespace tBOT.Services.API.Test
     {
         public string SchemaUrl { get; set; }
         public string Schema { get; set; }
-        public JObject SchemaValidatedJson { get; set; }
+        public dynamic SchemaValidatedJson { get; set; }
         public RESTfulResponse Response { get; set; }
         public bool Status { get; set; }
         public string SchemaErrors { get; set; }
