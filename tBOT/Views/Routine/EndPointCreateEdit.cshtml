@@ -1,5 +1,4 @@
-﻿<div ng-app="api.test.endpoint.create.edit">
-    <div ng-controller="EndPointCreateEditCtrl">
+﻿    <div ng-controller="EndPointCreateEditCtrl">
         <div ng-show="EndPointObjects==undefined">
             <div>
                 <div class="input-group" data-toggle="tooltip" data-placement="top" title="valid characters are A-Z a-z -">
@@ -96,8 +95,8 @@
                                             <a style="border-color:tomato; padding:2px 20px 2px 20px; margin:2px" ng-show="EndPointObject.ComponentCount==0 && EndPointObject.EndPointObjectGroupCount==0" id="clickAlert" href="" ng-click="RemoveEndPointObject(EndPointObject.EndPointObjectId)">
                                                 Delete
                                             </a>
-                                            <a style="border-color:cornflowerblue; padding:2px 16px 2px 16px;margin:2px" id="clickAlert" href="" ng-click="ExecuteEndPointObjectId(EndPointObject.EndPointObjectId)">
-                                                Execute
+                                            <a style="border-color:cornflowerblue; padding:2px 14px 2px 14px;margin:2px" id="clickAlert" href="" ng-click="ExecuteEndPointObjectId(EndPointObject.EndPointObjectId)">
+                                               Evaluate
                                             </a>
 
                                         </li>
@@ -183,4 +182,3 @@
             </div><!-- /list-group -->
         </div>
     </div>
-</div>

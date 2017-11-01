@@ -1,11 +1,11 @@
 ﻿var JavaScriptEditorApp = angular.module('api.test.JavaScript.editor', ['ui.ace']);
 JavaScriptEditorApp.controller('JavaScriptEditorCtrl', function (JavaScriptEditorFactory, apiTestBroadcastService, $scope) {
 
-    var ObjectComponent;
-    var GlobalComponent;
+    var Component = {};
+
     JavaScriptEditorFactory.getEndPointComponentsAsJsonString().then(function (d) {
-        ObjectComponent=d.data;
         GlobalComponent = d.data;
+
     });
 
 
@@ -79,9 +79,10 @@ JavaScriptEditorApp.controller('JavaScriptEditorCtrl', function (JavaScriptEdito
         var annot = editor.getSession().getAnnotations();
         var gotError;
         var prevCode = undefined;
+        var evalCode = undefined;
         if (annot.length == 0) {
             try {
-                prevCode = eval(editor.getValue());
+                evalCode = eval(editor.getValue());
                 gotError = undefined;
             }
             catch (error) {
@@ -90,11 +91,13 @@ JavaScriptEditorApp.controller('JavaScriptEditorCtrl', function (JavaScriptEdito
 
                 if (gotError == undefined)
                 {
-                    $scope.ExecutionOutPut = prevCode
+                    $scope.ExecutionOutPut = evalCode
+
+                    prevCode = editor.getValue() === '' ? null : editor.getValue();
 
                     if ($scope.EditableComponent.EndPointComponentId != undefined)
                     {
-                        var endpointComponent = { "EndPointComponentId": $scope.EditableComponent.EndPointComponentId, "EndPointComponentValue": editor.getValue() };                        
+                        var endpointComponent = { "EndPointComponentId": $scope.EditableComponent.EndPointComponentId, "EndPointComponentValue": prevCode };                        
                         JavaScriptEditorFactory.editEndPointComponentValue(endpointComponent).then(function (d) {
                             console.log(d.data)                          
                         })
@@ -102,7 +105,7 @@ JavaScriptEditorApp.controller('JavaScriptEditorCtrl', function (JavaScriptEdito
                     }
                     else if ($scope.EditableComponent.EndPointObjectComponentId != undefined)
                     {
-                        var endpointObjectComponent = { "EndPointObjectComponentId": $scope.EditableComponent.EndPointObjectComponentId, "EndPointObjectComponentValue": editor.getValue() };
+                        var endpointObjectComponent = { "EndPointObjectComponentId": $scope.EditableComponent.EndPointObjectComponentId, "EndPointObjectComponentValue": prevCode };
                         JavaScriptEditorFactory.editEndPointObjectComponentValue(endpointObjectComponent).then(function (d) {
                             console.log(d.data)
                         })
@@ -129,17 +132,17 @@ JavaScriptEditorApp.controller('JavaScriptEditorCtrl', function (JavaScriptEdito
     $scope.EvaluteCode = function () {
         var annot = editor.getSession().getAnnotations();
         var gotError;
-        var prevCode = undefined;
+        var evalCode = undefined;
         if (annot.length == 0) {
             try {
-                prevCode = eval(editor.getValue());
+                evalCode = eval(editor.getValue());
                 gotError = undefined;
             }
             catch (error) {
                 gotError = error
             }
 
-            $scope.ExecutionOutPut = gotError == undefined ? prevCode : gotError.message;
+            $scope.ExecutionOutPut = gotError == undefined ? evalCode : gotError.message;
         }
         else {
             for (var key in annot) {

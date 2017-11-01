@@ -1,0 +1,40 @@
+﻿<div ng-controller="TestsCreateEditCtrl">
+    <table class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <td>
+                        Sl.no
+                    </td>
+
+                    <td>
+                        <nobr>
+                            <a href="" ng-click="TestCasesSortType = 'Name'; TestCasesSortReverse = !TestCasesSortReverse">
+                                Test Cases
+                                <span ng-show="TestCasesSortType == 'Name' && !TestCasesSortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                <span ng-show="TestCasesSortType == 'Name' && TestCasesSortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                            </a>
+                        </nobr>
+                    </td>
+                    <td>
+                        <nobr>
+                            <input type="checkbox" ng-change="toggleAll()" ng-model="isAllSelected">
+                            <a href="" ng-click="TestCasesSortType = 'selected'; TestCasesSortReverse = !TestCasesSortReverse">
+                                <span ng-class="TestCasesSortType=='selected' && !TestCasesSortReverse?'glyphicon glyphicon-sort-by-attributes':
+                                                                    TestCasesSortType=='selected' && TestCasesSortReverse?'glyphicon glyphicon-sort-by-attributes-alt':
+                                                                    'glyphicon glyphicon-sort'">
+                                </span>
+                            </a>
+                        </nobr>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="testCase in TestTemplates | orderBy:TestCasesSortType:TestCasesSortReverse">
+                    <td>{{$index+1}}</td>
+                    <td>{{testCase.Name}}</td>
+                    <td><input type="checkbox" ng-model="testCase.selected" ng-change="optionToggled()"></td>
+                    
+                </tr>
+            </tbody>
+        </table>
+</div>

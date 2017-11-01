@@ -15,6 +15,6 @@ namespace tBOT.Services.API.RESTful
         public string RequestUrl { get; set; }
         public string RequestBody { get; set; }
         public string EndPoint { get; set; }
-
+        public string EndPointObjectId { get; set; }
     }
 }

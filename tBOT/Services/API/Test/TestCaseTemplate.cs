@@ -92,7 +92,7 @@ namespace tBOT.Services.API.Test
                 testCase.ApiEndPoint = requestItem.ApiEndPoint;
 
                 //Creatting the instance of Validation
-                var testCaseTemplate = TestFactory.CreateTestCaseTemplate(requestItem.TestCaseTemplateName);
+                var testCaseTemplate = TestFactory.CreateTestCaseTemplate(requestItem.TestCaseName);
 
                 //Getting the type array of the created Validation instance
                 Type[] info = testCaseTemplate.GetType().GetInterface("ITestCaseTemplate`2").GetGenericArguments();
@@ -100,7 +100,7 @@ namespace tBOT.Services.API.Test
 
                 var testCaseCondition = TestFactory.CreateTestCondition(info[0].Name.ToString());
                 testCaseCondition = JsonConvert.DeserializeObject(requestItem.TestCaseCondition, testCaseCondition.GetType());
-                testCase.TestCaseCondition = testCaseCondition;                
+                testCase.TestCaseCondition = testCaseCondition;
 
                 testCase.TestCaseResult = testCaseTemplate.Execute(testCaseCondition);
 

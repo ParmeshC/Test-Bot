@@ -7,7 +7,6 @@ namespace tBOT.Services.API.Test
     {
         public GuidHeaderMessageResult Execute(GuidHeaderMessageCondition condition)
         {
-
             RESTfulRequestResponse requestResponse = new RESTfulRequestResponse();
             requestResponse = RESTfulOperation.GetRequestResponse(condition.Request);
 
@@ -16,6 +15,7 @@ namespace tBOT.Services.API.Test
                 Status = false,
                 ExpectedGuidHeaderMessage = "Details for the " + SingularizeEndPoint(condition.Request.EndPoint) + " resource"
             };
+
             if (requestResponse.Response.StatusCode == 200)
             {
                 result.Guid = GetResponseFieldValue(requestResponse.Response.ResponseArray, 1, "id");
@@ -23,10 +23,8 @@ namespace tBOT.Services.API.Test
 
                 result.Response = RESTfulOperation.GetResponse(condition.Request);
                 result.GuidHeaderMessage = GetResponseHeaderValue(result.Response.ResponseHeaders, "X-hedtech-message");
-                result.Status = CheckHeaderMessage(result.GuidHeaderMessage, result.ExpectedGuidHeaderMessage);
-                
+                result.Status = CheckHeaderMessage(result.GuidHeaderMessage, result.ExpectedGuidHeaderMessage);                
             }
-
             return result;
         }
     }
@@ -42,6 +40,7 @@ namespace tBOT.Services.API.Test
     public class GuidHeaderMessageCondition: ITestCaseCondition
     {
         public RESTfulRequest Request { get; set; }
+
 
     }
 }

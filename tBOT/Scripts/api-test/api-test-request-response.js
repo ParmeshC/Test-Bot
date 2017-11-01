@@ -1,148 +1,79 @@
 ﻿var RequestResponseApp = angular.module('api.test.request.response', []);
 RequestResponseApp.controller('RequestResponseCtrl', function (RequestResponseFactory, apiTestBroadcastService, $scope, $q) {
 
-    $scope.$on('handleApiRequestListBroadcast', function () {
-        $scope.ApiRequestList = apiTestBroadcastService.sharedObjects.ApiRequestList;
-
-        PlannerFactory.getEndPointObjectComponents($scope.ApiRequestList[0]).then(function (d) {
-            $scope.EndPointObjectComponents = d.data;
-        });
-
-    });
 
     $scope.$on('handleEndPointComponentBroadcast', function () {
         $scope.EditableEndPointComponent = apiTestBroadcastService.sharedObjects.EndPointComponent;
     });
 
 
-    $scope.getApiInfo = function (RequestResponse) {
-        apiTestBroadcastService.globalBroadcast('ApiResponseInfo', RequestResponse)
-    };
+    $scope.$on('handleRequestObjectsAndTestCasesAppliedBroadcast', function () {
+        $scope.ApiRequestObjectList = apiTestBroadcastService.sharedObjects.RequestObjectsAndTestCasesApplied; 
+        $scope.GetResponseRequest();
+    });
 
+    $scope.$on('handleExecutionCancelBroadcast', function () {
+        CancelRequest();
+    });
+
+        $scope.getApiInfo = function (RequestResponse) {
+            apiTestBroadcastService.globalBroadcast('ApiResponseInfo', RequestResponse);
+    };
+    
 
     $scope.ClearResult = function () {
         $scope.RequestResponseList = [];
         apiTestBroadcastService.globalBroadcast('ApiResponseInfo', null)
     };
 
-
-    PlannerFactory.getTestTemplates().then(function (d) {
-        $scope.TestTemplates = d.data.List;
-    });
-
-
-
-    PlannerFactory.getEnvironments().then(function (d) {
-        $scope.envOptions = d.data;
-        $scope.apiEnv = $scope.envOptions[0];
-    });
-
-
-    PlannerFactory.getTestCases().then(function (d) {
-        $scope.TestCasesList = d.data;
-    });
-
-
-    $scope.authOptions;
-    PlannerFactory.getAuthorizations().then(function (d) {
-        $scope.authOptions = d.data;
-        $scope.apiAuth = $scope.authOptions[0];
-    });
-
-
-    $scope.AppOptions = [{ app: "IntegrationApi", id: 1 }, { app: "StudentApi", id: 2 }];
-    $scope.apiApp = $scope.AppOptions[0];
-
-
-
-
     $scope.sortType = 'EndPoint'; // set the default sort type
     $scope.sortReverse = false;  // set the default sort order
-
-
-    //*****************
-    //This section helps to toggle with the check box
-    $scope.selectedTestCases = [];
-    $scope.isAllSelected = false;
-    var getAllSelected = function () {
-        var selectedItems = $scope.TestCasesList.filter(function (item) {
-            return item.selected;
-        });
-        $scope.selectedTestCases = selectedItems;
-    };
-
-    $scope.toggleAll = function () {
-        //$scope.isAllSelected = !$scope.isAllSelected; //this line of code is needed if it is an array
-        var toggleStatus = $scope.isAllSelected;
-        angular.forEach($scope.TestCasesList, function (itm) { itm.selected = toggleStatus; });
-        getAllSelected();
-    };
-
-    $scope.optionToggled = function () {
-        $scope.isAllSelected = $scope.TestCasesList.every(function (itm) { return itm.selected; });
-        getAllSelected();
-    };
-    //*****************
-
-
 
     $scope.DesignTestCase = function (designTestTemplate) {
         apiTestBroadcastService.globalBroadcast('DesignTestTemplate', designTestTemplate)
     };
 
-    $scope.CancelRequest = function () {
+    var CancelRequest = function () {
         $scope.canceler.resolve("http call aborted");
         $scope.resolved = false;
     };
 
+    var RequestComponents = [
+        'AuthType',
+        'UserName',
+        'Password',
+        'Accept',
+        'ContentType',
+        'LanguageCode',
+        'RequestMethod',
+        'RequestUrl',
+        'RequestBody',
+        'EndPoint',
+        'EndPointObjectId'
+    ];
 
     var GetResponseRequestHelper = function () {
-        angular.forEach($scope.ApiRequestList, function (info) {
+        angular.forEach($scope.ApiRequestObjectList, function (info) {
 
-            angular.forEach($scope.selectedTestCases, function (TestCaseSelected) {
+            var testCondtion = { 'Request': {} };
+            angular.forEach(RequestComponents, function (comp) {
+                for (prop in info) {                    
+                    if (comp === prop) {
+                        testCondtion['Request'][prop] = info[prop];
+                    } 
+                }
+            });
+            testCondtion = Object.assign({}, info, testCondtion);
 
-                GlobalSettings = {
-                    "Request": {
-                        "Environment": {
-                            "App": {
-                                "Server": $scope.apiEnv.AppServer + ":" + $scope.apiEnv.AppPort
-                            },
-                            "DB": {
-                                "HostName": "149.24.38.229",
-                                "PortNumber": "1521",
-                                "ServiceName": "BAN83",
-                                "UserId": "baninst1",
-                                "Password": "u_pick_it"
-                            }
-                        },
-                        "Authorization": {
-                            "AuthType": $scope.apiAuth.Type,
-                            "UserName": $scope.apiAuth.UserName,
-                            "Password": $scope.apiAuth.Password
-                        },
-                        "Accept": "application/json",
-                        "ContentType": "application/json",
-                        "LanguageCode": "en-in",
-                        "RequestMethod": "GET",
-                        "RequestUrl": "http://" + $scope.apiEnv.AppServer + "/" + info.APP + "/" + info.Connector + "/" + info.EndPoint,
-                        "RequestBody": "",
-                        "EndPoint": info.EndPoint
-                    },
-                    "RawschemaUrl": info.SchemaUrl,
-                    "Version": info.Version,
-                    "TotalCountQuery": ""
-                };
 
-                var testCondtion = JSON.parse(TestCaseSelected.Condition, (key, value) =>
-                    value = typeof value === 'string' ? value.startsWith("GlobalSettings") ? eval(value) : value : value
-                );
-
-                $scope.requestData.push({
-                    "ApiEndPoint": GlobalSettings.Request.EndPoint,
-                    "TestCaseTemplateName": TestCaseSelected.Template,
-                    "TestCaseCondition": JSON.stringify(testCondtion),
-                    "TestCaseName": TestCaseSelected.Name
-                });
+            angular.forEach(info.TestCaseList, function (TestCase) {
+                if (TestCase.selected) {
+                    $scope.requestData.push({
+                        "ApiEndPoint": testCondtion.Request.EndPoint,
+                        "TestCaseCondition": JSON.stringify(testCondtion),
+                        "TestCaseName": TestCase.Name
+                    });
+                }
             });
 
         });
@@ -155,20 +86,12 @@ RequestResponseApp.controller('RequestResponseCtrl', function (RequestResponseFa
         $scope.resolved = true;
 
         $scope.requestData = [];
-        $scope.requestData = [];
-        var GlobalSettings = {};
 
         apiTestBroadcastService.globalBroadcast('ApiResponseList', null);
         apiTestBroadcastService.globalBroadcast('ApiResponseInfo', null);
         
 
         GetResponseRequestHelper();
-
-        //RequestResponseFactory.getApiResponseList($scope).then(function (d) {
-        //    $scope.RequestResponseList = d.data;
-        //    $scope.resolved = false;
-        //});
-
 
 
         RequestResponseFactory.getApiResponseList($scope).then(function (value) {
@@ -198,21 +121,6 @@ RequestResponseApp.factory('RequestResponseFactory', function ($http) {
                     timeout: scp.canceler.promise
                 }
             return $http.post("/Planner/GetApiResponseList", scp.requestData, config);
-        },
-
-        getTestTemplates: function (scp) {
-            return $http.post("/Planner/GetAllTestTemplates");
-        },
-
-        getEnvironments: function () {
-            return $http.get("/Planner/GetAllEnvironments");
-        },
-
-        getAuthorizations: function () {
-            return $http.get("/Planner/GetAllAuthorizations");
-        },
-        getTestCases: function () {
-            return $http.get("/Planner/GetAllTestCases");
         },
 
         getEndPointObjectComponents: function (item) {

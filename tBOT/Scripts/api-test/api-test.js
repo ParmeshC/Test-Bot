@@ -18,7 +18,8 @@
         'api.test.endpoint.create.edit',
         'api.test.import.components',
         'api.test.manage.settings',
-        'api.test.group.create.edit'
+        'api.test.group.create.edit',
+        'api.test.tests.create.edit'
     ]);
 
 ApiTest.service('apiTestBroadcastService', function ($rootScope) {

@@ -25,6 +25,14 @@
                             <span class="glyphicon glyphicon-sort"></span>
                         </a>
                         &nbsp;
+                        <a href="" ng-click="sortType = 'TestCaseCondition.Request.EndPointObjectId'; sortReverse = !sortReverse">
+                            ID
+                            <span ng-class="sortType=='TestCaseCondition.Request.EndPointObjectId' && !sortReverse?'glyphicon glyphicon-sort-by-attributes':
+                                                                sortType=='TestCaseCondition.Request.EndPointObjectId' && sortReverse?'glyphicon glyphicon-sort-by-attributes-alt':
+                                                                'glyphicon glyphicon-sort'">
+                            </span>
+                        </a>
+                        &nbsp;
                         <a href="" ng-click="sortType = 'TestCaseName'; sortReverse = !sortReverse">
                             Test Cases
                             <span ng-class="sortType=='TestCaseName' && !sortReverse?'glyphicon glyphicon-sort-by-attributes':
@@ -53,6 +61,9 @@
                             <div>
                                 <span class="badge" ng-style="item.TestCaseResult.Status?{'background-color': '#449d44'}:{'background-color':'#c9302c'}">
                                     <span ng-class="item.TestCaseResult.Status?'glyphicon glyphicon-thumbs-up':'glyphicon glyphicon-thumbs-down'"></span>
+                                </span>
+                                <span class="badge" style="background-color:slategrey">
+                                    {{item.TestCaseCondition.Request.EndPointObjectId}}
                                 </span>
                                 {{item.TestCaseName}}
                                 <i class="pull-right glyphicon" ng-class="openStatus?'glyphicon-chevron-down':'glyphicon-chevron-right'"></i>

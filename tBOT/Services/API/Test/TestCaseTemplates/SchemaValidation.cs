@@ -47,7 +47,7 @@ namespace tBOT.Services.API.Test
 
             SchemaValidationResult result = new SchemaValidationResult
             {
-                SchemaUrl = condition.RawschemaUrl,
+                SchemaUrl = condition.RawSchemaUrl,
                 Schema = "",
                 Response = RESTfulOperation.GetResponse(condition.Request)
             };
@@ -57,7 +57,7 @@ namespace tBOT.Services.API.Test
                 try
                 {
                     using (WebClient client = new WebClient())
-                    { result.Schema = client.DownloadString(condition.RawschemaUrl); }
+                    { result.Schema = client.DownloadString(condition.RawSchemaUrl); }
                 }
                 catch
                 {
@@ -94,7 +94,7 @@ namespace tBOT.Services.API.Test
     public class SchemaValidationContion: ITestCaseCondition
     {
         public RESTfulRequest Request{ get; set; }
-        public string RawschemaUrl { get; set; }
+        public string RawSchemaUrl { get; set; }
 
     }
 }

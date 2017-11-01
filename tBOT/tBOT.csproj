@@ -379,6 +379,7 @@
     <Content Include="Scripts\api-test\api-test-design-testcase.js" />
     <Content Include="Scripts\api-test\api-test-manage-settings.js" />
     <Content Include="Scripts\api-test\api-test-request-response.js" />
+    <Content Include="Scripts\api-test\api-test-tests-create-edit.js" />
     <Content Include="Scripts\api-test\api-test.js" />
     <Content Include="Scripts\app.js" />
     <Content Include="ApplicationInsights.config">
@@ -422,7 +423,7 @@
     <Content Include="Views\Builder\ResponseQuery.cshtml" />
     <Content Include="Views\Builder\SqlEditor.cshtml" />
     <Content Include="Views\Builder\Builder.cshtml" />
-    <Content Include="Views\Builder\DesignTestCase.cshtml" />
+    <Content Include="Views\Planner\DesignTestCase.cshtml" />
     <Content Include="Views\Planner\JavaScriptEditor.cshtml" />
     <Content Include="Views\Builder\JsonEditor.cshtml" />
     <Content Include="Views\Planner\RequestResponse.cshtml" />
@@ -432,6 +433,7 @@
     <Content Include="Views\Routine\EndPointCreateEdit.cshtml" />
     <Content Include="Views\Routine\ManageSettings.cshtml" />
     <Content Include="Views\Routine\GroupCreateEdit.cshtml" />
+    <Content Include="Views\Routine\TestsCreateEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

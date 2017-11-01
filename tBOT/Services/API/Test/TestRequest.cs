@@ -9,7 +9,6 @@ namespace tBOT.Services.API.Test
     {
         public string ApiEndPoint { get; set; }
         public string TestCaseName { get; set; }
-        public string TestCaseTemplateName { get; set; }
         public string TestCaseCondition { get; set; }
     }
 }

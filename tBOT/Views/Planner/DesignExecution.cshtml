@@ -1,58 +1,150 @@
 ﻿<div ng-controller="DesignExecutionCtrl" class="container-fluid">
 
-    <div ng-show="ObjectComponent!=undefined">
-        <div class="form-inline">
-            <div class="input-group">
-                <select title="App" class="form-control" multiselect="multiselect" data-ng-options="om.AppServer for om in envOptions" data-ng-model="apiEnv"></select>
-            </div>
-            <div class="input-group">
-                <select title="App" class="form-control" multiselect="multiselect" data-ng-options="o.UserName for o in authOptions" data-ng-model="apiAuth"></select>
-            </div>
+    <div ng-show="ObjectsComponents!=undefined">
 
-            <a>Selected Objects<span class="badge">{{ExecuteEndPointObjectComponents.length}}</span></a>
 
-            <input ng-show="!RequestResponseList.length>0 && !resolved" type="submit" value="Submit" ng-click="GetResponseRequest()" class="btn btn-primary btn-sm">
-            <input ng-show="resolved" type="submit" value="Cancel" ng-click="CancelRequest()" class="btn btn-danger btn-sm">
+        <div style="padding-top:10px;padding-bottom:10px;">
+            
+                <div class="form-inline">
+                        <div class="input-group" ng-repeat="Option in DropDownOptions">
+                            <span class="input-group-addon">{{Option.ComponentKey}}</span>
+                            <select title="App" class="form-control" multiselect="multiselect" data-ng-options="opt.Value for opt in Option.ValueList" data-ng-model="selectedDropDownOption[$index]" ng-change="OptionChange(selectedDropDownOption[$index])"></select>
+                        </div>
+                    </div>
+            <hr style="margin:5px;"  />
+
+            
+            <div style="float:left;">
+                <ul class="pager" style="margin:0px; text-align:unset;">
+                    <li>
+                        <a style="border-color:cornflowerblue; padding:2px 16px 2px 16px;margin:2px" id="clickAlert" href="" ng-click="showEvaluatedObjectsAndTests=!showEvaluatedObjectsAndTests">
+                            Evaluated Objects:
+                            <span class="badge" style="background-color:lightsteelblue">
+                                {{RequestObjects.length}}
+                            </span>
+                            |
+                            Tests To Apply:
+                            <span class="badge" style="background-color:lightsteelblue">
+                                {{RequestObjects[0].TestCaseList!=undefined?RequestObjects[0].TestCaseList.length:0}}
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="text-right">
+                <ul class="pager" style="margin:0px; text-align:unset;">
+                    <li ng-show="RequestObjects[0].TestCaseList.length>0">
+                        <a style="border-color:cornflowerblue; padding:2px 16px 2px 16px;margin:2px; background-color:#5cb85c; color:white" id="clickAlert" href="" ng-click="ExecuteApiRequest()">
+                            Execute
+                            <span class="glyphicon glyphicon-play"></span>                            
+                        </a>
+                    </li>
+                    <li ng-show="showExecutionCancel">
+                        <a style="border-color:cornflowerblue; padding:2px 16px 2px 16px;margin:2px; background-color:#d9534f; color:white" id="clickAlert" href="" ng-click="">
+                            Cancel
+                            <span class="glyphicon glyphicon-stop"></span>   
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
         </div>
-        
-        <pre>{{GlobalComponent|json}}</pre>
-        <pre>{{ObjectComponent|json}}</pre>
 
-        @*<div ng-show="!RequestResponseList.length>0">
-            <table class="table table-bordered table-striped table-hover">
-                <thead>
-                    <tr>
-                        <td>
-                            <nobr>
-                                <input type="checkbox" ng-change="toggleAll()" ng-model="isAllSelected">
-                                <a href="" ng-click="TestCasesSortType = 'selected'; TestCasesSortReverse = !TestCasesSortReverse">
-                                    <span ng-class="TestCasesSortType=='selected' && !TestCasesSortReverse?'glyphicon glyphicon-sort-by-attributes':
+        <table class="table table-bordered table-striped table-hover" ng-show="showTestCaseSelected && TestCaseSelected.length>0">
+            <thead>
+                <tr>
+                    <td>
+                        Sl.no
+                    </td>
+                    <td>
+                        <nobr>
+                            <a href="" ng-click="TestCasesSortType = 'Name'; TestCasesSortReverse = !TestCasesSortReverse">
+                                Test Cases
+                                <span ng-show="TestCasesSortType == 'Name' && !TestCasesSortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                <span ng-show="TestCasesSortType == 'Name' && TestCasesSortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                            </a>
+                        </nobr>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="testCase in TestCaseSelected | orderBy:TestCasesSortType:TestCasesSortReverse">
+                    <td>{{$index+1}}</td>
+                    <td>{{testCase.Name}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <uib-accordion ng-show="showEvaluatedObjectsAndTests">
+            <div uib-accordion-group class="panel-default" ng-repeat="objct in RequestObjects| orderBy:sortType:sortReverse" is-open="openStatus">
+                <uib-accordion-heading>
+                    <div>
+                        <span class="badge" style="background-color:slategrey">
+                            {{objct.EndPointObjectId}}
+                        </span>
+                        {{objct.EndPoint}}
+                        <i class="pull-right glyphicon" ng-class="openStatus?'glyphicon-chevron-down':'glyphicon-chevron-right'"></i>
+                    </div>
+                </uib-accordion-heading>
+                <uib-tabset>
+                    <uib-tab heading="Evaluated Components">
+                        <ol style="padding-top:10px;">
+                            <li ng-repeat="(key,Val)  in objct" ng-if="key!='EndPointObjectId' && key!='EndPoint' && key!='TestCaseList'">
+                                <div ui-tree-handle>
+                                    {{key}}:&nbsp;
+                                    <var>
+                                        <a style="overflow-wrap: break-word;">{{Val}}</a>
+                                    </var>
+                                </div>
+                            </li>
+                        </ol>
+                    </uib-tab>
+                    <uib-tab heading="Applied Tests">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <td>
+                                        Sl.no
+                                    </td>
+                                    <td>
+                                        <nobr>
+                                            <a href="" ng-click="TestCasesSortType = 'Name'; TestCasesSortReverse = !TestCasesSortReverse">
+                                                Test Cases
+                                                <span ng-show="TestCasesSortType == 'Name' && !TestCasesSortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
+                                                <span ng-show="TestCasesSortType == 'Name' && TestCasesSortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
+                                            </a>
+                                        </nobr>
+                                    </td>
+                                    <td>
+                                        <nobr>                                            
+                                            <input type="checkbox" ng-change="toggleAll($index)" ng-model="objct.isAllSelected">
+                                            
+                                            <a href="" ng-click="TestCasesSortType = 'selected'; TestCasesSortReverse = !TestCasesSortReverse">
+                                                Apply
+                                                <span ng-class="TestCasesSortType=='selected' && !TestCasesSortReverse?'glyphicon glyphicon-sort-by-attributes':
                                                                     TestCasesSortType=='selected' && TestCasesSortReverse?'glyphicon glyphicon-sort-by-attributes-alt':
                                                                     'glyphicon glyphicon-sort'">
-                                    </span>
-                                </a>
-                            </nobr>
-                        </td>
-                        <td>
-                            <nobr>
-                                <a href="" ng-click="TestCasesSortType = 'Name'; TestCasesSortReverse = !TestCasesSortReverse">
-                                    Test Cases
-                                    <span ng-show="TestCasesSortType == 'Name' && !TestCasesSortReverse" class="glyphicon glyphicon-sort-by-attributes"></span>
-                                    <span ng-show="TestCasesSortType == 'Name' && TestCasesSortReverse" class="glyphicon glyphicon-sort-by-attributes-alt"></span>
-                                </a>
-                            </nobr>
-                        </td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="testCase in TestCasesList | orderBy:TestCasesSortType:TestCasesSortReverse">
-                        <td><input type="checkbox" ng-model="testCase.selected" ng-change="optionToggled()"></td>
-                        <td>{{testCase.Name}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>*@
-    </div>
-
+                                                </span>
+                                            </a>                                            
+                                        </nobr>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="testCase in objct.TestCaseList | orderBy:TestCasesSortType:TestCasesSortReverse">
+                                    <td>{{$index+1}}</td>
+                                    <td>{{testCase.Name}}</td>
+                                    <td><input type="checkbox" ng-model="testCase.selected" ng-change="optionToggled($parent.$index)"></td>
+                                    
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        
+                    </uib-tab>
+                </uib-tabset>
+            </div>
+        </uib-accordion>
+   </div>
 
 </div>
