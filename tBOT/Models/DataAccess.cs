@@ -215,6 +215,57 @@ namespace tBOT.Services.API
             return scalarValue;
         }
 
+        public int InsertIntoDB(string InsertQuery, string GuidField,DataConnection dtConn)
+        {
+            int nonQueryReturnValue = -1;
+            try
+            {
+                string connectionString = GetConnectionString(dtConn);
+                using (OracleConnection connection = new OracleConnection())
+                {
+                    connection.ConnectionString = connectionString;
+                    connection.Open();
+
+                    OracleCommand command = connection.CreateCommand();
+                    // INSERT statement with RETURNING clause to get the generated ID 
+                    //command.CommandText = "INSERT INTO teams (name) VALUES ('West Ham United') RETURNING id INTO :id";
+
+                    command.CommandText = InsertQuery+" RETURNING "+ GuidField + " INTO :id";
+                    command.Parameters.Add(new OracleParameter
+                    {
+                        //ParameterName = ":id",
+                        ParameterName = ":id",
+                        OracleDbType = OracleDbType.Varchar2,
+                        //OracleType = OracleType.Number,
+                        Direction = ParameterDirection.Output
+                    });
+
+                    nonQueryReturnValue = command.ExecuteNonQuery();
+
+                    // Output ID 
+                    Console.WriteLine("ID: {0}", command.Parameters[":id"].Value.ToString());
+                }
+
+            }
+            catch (Exception err)
+            {
+                //log the error
+                Console.WriteLine("An error occurred: '{0}'", err);
+
+            }
+            return nonQueryReturnValue;
+        }
+
+        public int UpdateInDB(string UpdateQuery, DataConnection dtConn)
+        {
+            return ExecuteNonQuery(UpdateQuery, dtConn);
+        }        
+
+        public int DeleteFromDB(string DeleteQuery, DataConnection dtConn)
+        {
+            return ExecuteNonQuery(DeleteQuery, dtConn);
+        }
+
         public string GetTotalCout(string totalCountQuery,DataConnection dtConn)
         {
             return ExecuteScalarQuery(totalCountQuery, dtConn);
