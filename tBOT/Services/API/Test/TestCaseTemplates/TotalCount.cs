@@ -15,9 +15,29 @@ namespace tBOT.Services.API.Test
 
             };
 
+            DataAccess DtAcss = new DataAccess();
+
+            DataConnection dtcon = new DataConnection();
+            dtcon.HostName = condition.DBHostName;
+            dtcon.PortNumber = condition.DBPortNumber;
+            dtcon.ServiceName = condition.DBServiceName;
+            dtcon.UserId = condition.DBUserId;
+            dtcon.Password = condition.DBPassword;
+
+
+
             if (result.Response.StatusCode == 200)
             {
                 result.ApiTotalCount = int.Parse(GetResponseHeaderValue(result.Response.ResponseHeaders, "X-Total-Count"));
+                string count = DtAcss.GetTotalCout(condition.TotalCountQuery, dtcon);
+                    if (count!=null)
+                {
+                    result.DBTotalCount = Int32.Parse(count);
+                    result.Status = result.DBTotalCount == result.ApiTotalCount;
+                }
+
+                
+
             }
             return result;
         }
@@ -34,5 +54,11 @@ namespace tBOT.Services.API.Test
     {
         public RESTfulRequest Request { get; set; }
         public string TotalCountQuery { get; set; }
+        public string DBHostName { get; set; }
+        public string DBPortNumber { get; set; }
+        public string DBServiceName { get; set; }
+        public string DBUserId { get; set; }
+        public string DBPassword { get; set; }
+
     }
 }

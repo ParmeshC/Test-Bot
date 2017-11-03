@@ -4,7 +4,7 @@ using Oracle.ManagedDataAccess.Client;
 using System.Data;
 using System.Collections.Generic;
 
-namespace tBOT.API
+namespace tBOT.Services.API
 {
     class DataAccess
     {
@@ -86,7 +86,6 @@ namespace tBOT.API
             return columnNamesDictionay;
         }
 
-
         public List<TableSchemaDescription> GetTableDescribe(TableShemaRequest tableShemaRequest)
         {
             List<TableSchemaDescription> tableDescribeList = new List<TableSchemaDescription>();
@@ -159,6 +158,40 @@ namespace tBOT.API
                 Console.WriteLine("An error occurred: '{0}'", err);
             }
             return tableNames;
+        }
+
+        //ExecuteReaderQuery
+        //ExecuteNonQuery
+
+        public string ExecuteScalarQuery(string scalarQuery, DataConnection connParam)
+        {
+            string scalarValue = null;
+            try
+            {
+                string connectionString = GetConnectionString(connParam);
+                using (OracleConnection connection = new OracleConnection())
+                {
+                    connection.ConnectionString = connectionString;
+                    connection.Open();
+
+                    OracleCommand command = connection.CreateCommand();
+                    command.CommandText = scalarQuery;
+                    scalarValue = command.ExecuteScalar().ToString();
+                }
+
+            }
+            catch (Exception err)
+            {
+                //log the error
+                Console.WriteLine("An error occurred: '{0}'", err);
+
+            }
+            return scalarValue;
+        }
+
+        public string GetTotalCout(string totalCountQuery,DataConnection dtConn)
+        {
+            return ExecuteScalarQuery(totalCountQuery, dtConn);
         }
     }
 
