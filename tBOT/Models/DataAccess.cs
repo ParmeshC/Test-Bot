@@ -163,6 +163,32 @@ namespace tBOT.Services.API
         //ExecuteReaderQuery
         //ExecuteNonQuery
 
+        public int ExecuteNonQuery(string NonQuery, DataConnection connParam)
+        {
+            int nonQueryReturnValue =-1;
+            try
+            {
+                string connectionString = GetConnectionString(connParam);
+                using (OracleConnection connection = new OracleConnection())
+                {
+                    connection.ConnectionString = connectionString;
+                    connection.Open();
+
+                    OracleCommand command = connection.CreateCommand();
+                    command.CommandText = NonQuery;
+                    nonQueryReturnValue = command.ExecuteNonQuery();
+                }
+
+            }
+            catch (Exception err)
+            {
+                //log the error
+                Console.WriteLine("An error occurred: '{0}'", err);
+
+            }
+            return nonQueryReturnValue;
+        }
+
         public string ExecuteScalarQuery(string scalarQuery, DataConnection connParam)
         {
             string scalarValue = null;
@@ -194,8 +220,6 @@ namespace tBOT.Services.API
             return ExecuteScalarQuery(totalCountQuery, dtConn);
         }
     }
-
-
 
     public class DataConnection
     {
