@@ -31,7 +31,7 @@ ManageSettingsApp.controller('ManageSettingsCtrl', function (ManageSettingsFacto
         else {
             angular.forEach($scope.Instances, function (itm) {
                 {
-                    if (itm.Name !== newValue && $scope.ValidInstance !== undefined) {
+                    if (itm.InstanceName !== newValue && $scope.ValidInstance !== undefined) {
                         $scope.ValidInstance.status = true
                     }
                     else {
@@ -46,7 +46,7 @@ ManageSettingsApp.controller('ManageSettingsCtrl', function (ManageSettingsFacto
     $scope.AddInstance = function (val) {
         console.log(val)
     };
-    //**************Instance****************
+    //**************Instance*************************
 
 
     //**************EndPointComponent****************
@@ -54,14 +54,13 @@ ManageSettingsApp.controller('ManageSettingsCtrl', function (ManageSettingsFacto
         $scope.EndPointComponents = d.data;
     });
 
-
     //***********start-using apiTestBroadcastService********************
     $scope.EditEndPointComponent = function (EndPointComponentId) {
         apiTestBroadcastService.globalBroadcast('EditableComponent', { "EndPointComponentId": EndPointComponentId })
     }
     //***********end-using apiTestBroadcastService********************
 
-    //***********start-Validate EndPointComponent********************
+    //***********start-Validate EndPointComponent*********************
     $scope.NewComponent = { Value: '' };
     $scope.$watch('NewComponent.Value', function (newValue, oldValue) {
         $scope.ValidComponent = { status: false };
@@ -73,7 +72,7 @@ ManageSettingsApp.controller('ManageSettingsCtrl', function (ManageSettingsFacto
             if ($scope.EndPointComponents.length === 0) { $scope.ValidComponent.status = true }
             angular.forEach($scope.EndPointComponents, function (itm) {
                 {
-                    if (itm.Name !== newValue && $scope.ValidComponent !== undefined) {
+                    if (itm.ComponentName !== newValue && $scope.ValidComponent !== undefined) {
                         $scope.ValidComponent.status = true
                     }
                     else {
@@ -86,9 +85,10 @@ ManageSettingsApp.controller('ManageSettingsCtrl', function (ManageSettingsFacto
     });
     //***********end-Validate EndPointComponent********************
 
+    //**************start-Add EndPointComponent****************
     $scope.AddEndPointComponent = function (val) {
 
-        //this code helps to close the javascript editor in the planner area
+        //This code helps to close the javascript editor in the planner area
         apiTestBroadcastService.globalBroadcast('EditableComponent', undefined)
 
         var endPointComponentInfo = { "InstanceId": 1, "ComponentName": val };
@@ -101,7 +101,7 @@ ManageSettingsApp.controller('ManageSettingsCtrl', function (ManageSettingsFacto
             $scope.NewComponent.Value = '';
         });
     }
-    //**************EndPointComponent****************
+    //**************end-Add EndPointComponent****************
 
 });
 
