@@ -215,9 +215,9 @@ namespace tBOT.Services.API
             return scalarValue;
         }
 
-        public int InsertIntoDB(string InsertQuery, string GuidField,DataConnection dtConn)
+        public string InsertIntoDB(string InsertQuery, string UniqueField, DataConnection dtConn)
         {
-            int nonQueryReturnValue = -1;
+            string uniqueFieldValue=null;
             try
             {
                 string connectionString = GetConnectionString(dtConn);
@@ -227,34 +227,36 @@ namespace tBOT.Services.API
                     connection.Open();
 
                     OracleCommand command = connection.CreateCommand();
-                    // INSERT statement with RETURNING clause to get the generated ID 
-                    //command.CommandText = "INSERT INTO teams (name) VALUES ('West Ham United') RETURNING id INTO :id";
-
-                    command.CommandText = InsertQuery+" RETURNING "+ GuidField + " INTO :id";
+                    // INSERT statement with RETURNING clause to get the generated ID
+                    command.CommandText = InsertQuery + " RETURNING " + UniqueField + " INTO :" + UniqueField;
                     command.Parameters.Add(new OracleParameter
                     {
-                        //ParameterName = ":id",
-                        ParameterName = ":id",
+                        ParameterName = ":" + UniqueField,
                         OracleDbType = OracleDbType.Varchar2,
-                        //OracleType = OracleType.Number,
                         Direction = ParameterDirection.Output
                     });
+                    command.Parameters[":"+ UniqueField].Size = 255;
 
-                    nonQueryReturnValue = command.ExecuteNonQuery();
-
-                    // Output ID 
-                    Console.WriteLine("ID: {0}", command.Parameters[":id"].Value.ToString());
+                    command.ExecuteNonQuery();
+                    // Output uniqueFieldValue
+                    uniqueFieldValue = command.Parameters[":" + UniqueField].Value.ToString();
                 }
 
             }
             catch (Exception err)
             {
-                //log the error
                 Console.WriteLine("An error occurred: '{0}'", err);
 
             }
-            return nonQueryReturnValue;
+            return uniqueFieldValue;
         }
+
+        public string GetGuidInDB(string GuidQuery, string GuidLinkField , string GuidLinkFieldValue, DataConnection dtConn)
+        {
+            GuidQuery = GuidQuery + " WHERE " + GuidLinkField + " = '" + GuidLinkFieldValue+"'";
+            return ExecuteScalarQuery(GuidQuery, dtConn);
+        }
+
 
         public int UpdateInDB(string UpdateQuery, DataConnection dtConn)
         {
