@@ -19,32 +19,33 @@ namespace tBOT.Services.API.Test
             if (result.Response.StatusCode == 200)
             {
                 int pagemaxsize;
-                int.TryParse(GetResponseHeaderValue(result.Response.ResponseHeaders, "x-hedtech-pagemaxsize"),out pagemaxsize);
+                int.TryParse(GetResponseHeaderValue(result.Response.ResponseHeaders, "X-Max-Page-Size"),out pagemaxsize);
                 result.Pagemaxsize = pagemaxsize;
 
                 int totalcount;
-                int.TryParse(GetResponseHeaderValue(result.Response.ResponseHeaders, "x-hedtech-totalcount"),out totalcount);
+                int.TryParse(GetResponseHeaderValue(result.Response.ResponseHeaders, "X-Total-Count"),out totalcount);
                 result.Totalcount = totalcount;
 
                 if(result.Totalcount>0)
                 {
                     int offsetCountLowRange = 0;
                     int offsetCountHighRange = pagemaxsize<totalcount? (totalcount / pagemaxsize): totalcount;
-                    List<int> offsetCountList = Enumerable.Range(offsetCountLowRange, offsetCountHighRange).Select(i => i + pagemaxsize).ToList();
+                    List<int> offsetCountList = Enumerable.Range(offsetCountLowRange, offsetCountHighRange).Select(i => i * pagemaxsize).ToList();
 
                     List<OffsetInfo> OffsetInfoList = new List<OffsetInfo>();
 
                     Parallel.ForEach(offsetCountList, (pageoffset) =>
                     {
                         OffsetInfo info = new OffsetInfo();
-                        var newConditon = condition;
+                        GetTotalRecordsByOffsetCondition newConditon = new GetTotalRecordsByOffsetCondition();
+                        newConditon = condition;
                         newConditon.Request.RequestUrl = condition.Request.RequestUrl + @"?offset=" + pageoffset;
                         var response = RESTfulOperation.GetResponse(newConditon.Request);
 
                         info.OffsetUrl = newConditon.Request.RequestUrl;
 
                         int headerPageoffsetValue;
-                        int.TryParse(GetResponseHeaderValue(response.ResponseHeaders, "x-hedtech-pageoffset"), out headerPageoffsetValue);
+                        int.TryParse(GetResponseHeaderValue(response.ResponseHeaders, "X-hedtech-pageOffset"), out headerPageoffsetValue);
                         info.Pageoffset = headerPageoffsetValue;
 
                         OffsetInfoList.Add(info);
