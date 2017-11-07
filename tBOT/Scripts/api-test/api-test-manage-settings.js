@@ -102,7 +102,6 @@ ManageSettingsApp.controller('ManageSettingsCtrl', function (ManageSettingsFacto
         });
     }
     //**************end-Add EndPointComponent****************
-
 });
 
 

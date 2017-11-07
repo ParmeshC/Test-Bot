@@ -7,23 +7,23 @@ namespace tBOT.Services.API.Test
     {
         public GuidHeaderMessageResult Execute(GuidHeaderMessageCondition condition)
         {
-            RESTfulRequestResponse requestResponse = new RESTfulRequestResponse();
-            requestResponse = RESTfulOperation.GetRequestResponse(condition.Request);
-
             GuidHeaderMessageResult result = new GuidHeaderMessageResult
             {
                 Status = false,
-                ExpectedGuidHeaderMessage = "Details for the " + SingularizeEndPoint(condition.Request.EndPoint) + " resource"
-            };
+                ExpectedGuidHeaderMessage = "Details for the " + SingularizeEndPoint(condition.Request.EndPoint) + " resource",
+                Response = RESTfulOperation.GetResponse(condition.Request)
+            };            
 
-            if (requestResponse.Response.StatusCode == 200)
+            if (result.Response.StatusCode == 200)
             {
-                result.Guid = GetResponseFieldValue(requestResponse.Response.ResponseArray, 1, "id");
-                condition.Request.RequestUrl= condition.Request.RequestUrl + @"/" + result.Guid;
-
-                result.Response = RESTfulOperation.GetResponse(condition.Request);
-                result.GuidHeaderMessage = GetResponseHeaderValue(result.Response.ResponseHeaders, "X-hedtech-message");
-                result.Status = CheckHeaderMessage(result.GuidHeaderMessage, result.ExpectedGuidHeaderMessage);                
+                result.Guid = GetResponseFieldValue(result.Response.ResponseArray, 1, "id");
+                if (!string.IsNullOrEmpty(result.Guid))
+                {
+                    condition.Request.RequestUrl = condition.Request.RequestUrl + @"/" + result.Guid;
+                    result.Response = RESTfulOperation.GetResponse(condition.Request);
+                    result.GuidHeaderMessage = GetResponseHeaderValue(result.Response.ResponseHeaders, "X-hedtech-message");
+                    result.Status = CheckHeaderMessage(result.GuidHeaderMessage, result.ExpectedGuidHeaderMessage);
+                }        
             }
             return result;
         }

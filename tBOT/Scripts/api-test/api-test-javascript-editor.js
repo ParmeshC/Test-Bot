@@ -20,6 +20,7 @@ JavaScriptEditorApp.controller('JavaScriptEditorCtrl', function (JavaScriptEdito
                     $scope.EditableComponent = d.data[0];
                     stringValue = $scope.EditableComponent.ComponentValue == null ? '' : $scope.EditableComponent.ComponentValue;
                     editor.setValue(stringValue, stringValue.length) 
+                    editor.focus();
                 })
             }
             else if (apiTestBroadcastService.sharedObjects.EditableComponent.EndPointComponentId !== undefined) {                
@@ -27,6 +28,7 @@ JavaScriptEditorApp.controller('JavaScriptEditorCtrl', function (JavaScriptEdito
                     $scope.EditableComponent = d.data[0];
                     stringValue = $scope.EditableComponent.ComponentValue == null ? '' : $scope.EditableComponent.ComponentValue;
                     editor.setValue(stringValue, stringValue.length)
+                    editor.focus();
                 })
             }
 
@@ -38,13 +40,12 @@ JavaScriptEditorApp.controller('JavaScriptEditorCtrl', function (JavaScriptEdito
             apiTestBroadcastService.globalBroadcast('ShowJsonEditor', false)
             apiTestBroadcastService.globalBroadcast('ShowSqlEditor', false)
         }
-        //**********************end-Get EndPointObjectComponent or EndPointComponent based the Id**************************
-
-        
+        //**********************end-Get EndPointObjectComponent or EndPointComponent based the Id**************************        
 
         
         $scope.ExecutionOutPut=undefined
-         editor.focus();
+        editor.focus();
+
     });
 
 
