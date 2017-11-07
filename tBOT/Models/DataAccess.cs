@@ -215,6 +215,59 @@ namespace tBOT.Services.API
             return scalarValue;
         }
 
+        public string InsertIntoDB(string InsertQuery, string UniqueField, DataConnection dtConn)
+        {
+            string uniqueFieldValue=null;
+            try
+            {
+                string connectionString = GetConnectionString(dtConn);
+                using (OracleConnection connection = new OracleConnection())
+                {
+                    connection.ConnectionString = connectionString;
+                    connection.Open();
+
+                    OracleCommand command = connection.CreateCommand();
+                    // INSERT statement with RETURNING clause to get the generated ID
+                    command.CommandText = InsertQuery + " RETURNING " + UniqueField + " INTO :" + UniqueField;
+                    command.Parameters.Add(new OracleParameter
+                    {
+                        ParameterName = ":" + UniqueField,
+                        OracleDbType = OracleDbType.Varchar2,
+                        Direction = ParameterDirection.Output
+                    });
+                    command.Parameters[":"+ UniqueField].Size = 255;
+
+                    command.ExecuteNonQuery();
+                    // Output uniqueFieldValue
+                    uniqueFieldValue = command.Parameters[":" + UniqueField].Value.ToString();
+                }
+
+            }
+            catch (Exception err)
+            {
+                Console.WriteLine("An error occurred: '{0}'", err);
+
+            }
+            return uniqueFieldValue;
+        }
+
+        public string GetGuidInDB(string GuidQuery, string GuidLinkField , string GuidLinkFieldValue, DataConnection dtConn)
+        {
+            GuidQuery = GuidQuery + " WHERE " + GuidLinkField + " = '" + GuidLinkFieldValue+"'";
+            return ExecuteScalarQuery(GuidQuery, dtConn);
+        }
+
+
+        public int UpdateInDB(string UpdateQuery, DataConnection dtConn)
+        {
+            return ExecuteNonQuery(UpdateQuery, dtConn);
+        }        
+
+        public int DeleteFromDB(string DeleteQuery, DataConnection dtConn)
+        {
+            return ExecuteNonQuery(DeleteQuery, dtConn);
+        }
+
         public string GetTotalCout(string totalCountQuery,DataConnection dtConn)
         {
             return ExecuteScalarQuery(totalCountQuery, dtConn);
