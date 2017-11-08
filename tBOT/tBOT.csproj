@@ -323,7 +323,7 @@
     <Compile Include="Services\API\Test\TestCaseTemplate.cs" />
     <Compile Include="Services\API\Test\TestCaseCondition.cs" />
     <Compile Include="Services\API\Test\DataBaseEnvironment.cs" />
-    <Compile Include="Services\API\Test\TestCaseTemplates\GetTotalRecordsByOffset.cs" />
+    <Compile Include="Services\API\Test\TestCaseTemplates\OffsetValidation.cs" />
     <Compile Include="Services\API\Test\TestCaseTemplates\CRUDvalidation.cs" />
     <Compile Include="Services\API\Test\TestFactory.cs" />
     <Compile Include="Services\API\Test\TestCaseTemplates\GuidHeaderMessage.cs" />

@@ -47,7 +47,6 @@ namespace tBOT.Services.API.Test
             return testCondition;
         }
 
-
         public static List<TestResponse> GetRequestResponse(List<TestRequest> TestRequest)
         {
             List<TestResponse> testResponseList = new List<TestResponse>();
@@ -177,6 +176,20 @@ namespace tBOT.Services.API.Test
                 }
             }
             return fieldValue;
+        }
+
+        protected static JArray FilterFieldValueInJsonArray(JArray JsonArray, string FieldName, string FieldValue)
+        {
+            List<JToken> listJsonObject = new List<JToken>();
+            JArray filteredObjects = new JArray();
+
+            foreach (JToken token in JsonArray
+                .Where(obj => (obj[FieldName] != null ? obj[FieldName] : "").ToString() == FieldValue))
+            {
+                filteredObjects.Add(token);
+                //listJsonObject.Add(token);
+            }
+            return filteredObjects;
         }
 
 

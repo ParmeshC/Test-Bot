@@ -18,7 +18,7 @@ JavaScriptEditorApp.controller('JavaScriptEditorCtrl', function (JavaScriptEdito
             if (apiTestBroadcastService.sharedObjects.EditableComponent.EndPointObjectComponentId !== undefined) {
                 JavaScriptEditorFactory.getEndPointObjectComponent({ "EndPointObjectComponentId": apiTestBroadcastService.sharedObjects.EditableComponent.EndPointObjectComponentId }).then(function (d) {
                     $scope.EditableComponent = d.data[0];
-                    stringValue = $scope.EditableComponent.ComponentValue == null ? '' : $scope.EditableComponent.ComponentValue;
+                    stringValue = $scope.EditableComponent.ComponentValue === null ? '' : $scope.EditableComponent.ComponentValue;
                     editor.setValue(stringValue, stringValue.length) 
                     editor.focus();
                 })
@@ -26,7 +26,7 @@ JavaScriptEditorApp.controller('JavaScriptEditorCtrl', function (JavaScriptEdito
             else if (apiTestBroadcastService.sharedObjects.EditableComponent.EndPointComponentId !== undefined) {                
                 JavaScriptEditorFactory.getEndPointComponent({ "EndPointComponentId": apiTestBroadcastService.sharedObjects.EditableComponent.EndPointComponentId }).then(function (d) {
                     $scope.EditableComponent = d.data[0];
-                    stringValue = $scope.EditableComponent.ComponentValue == null ? '' : $scope.EditableComponent.ComponentValue;
+                    stringValue = $scope.EditableComponent.ComponentValue === null ? '' : $scope.EditableComponent.ComponentValue;
                     editor.setValue(stringValue, stringValue.length)
                     editor.focus();
                 })
@@ -51,7 +51,7 @@ JavaScriptEditorApp.controller('JavaScriptEditorCtrl', function (JavaScriptEdito
 
     $scope.$on('handleJsonValueBroadcast', function () {
         var InseretedJsonValue = JSON.stringify(apiTestBroadcastService.sharedObjects.JsonValue, null, 2);
-        if (InseretedJsonValue != undefined) { $scope.InsertSnippet(InseretedJsonValue);}
+        if (InseretedJsonValue !== undefined) { $scope.InsertSnippet(InseretedJsonValue);}
     });
 
     
@@ -81,7 +81,7 @@ JavaScriptEditorApp.controller('JavaScriptEditorCtrl', function (JavaScriptEdito
         var gotError;
         var prevCode = undefined;
         var evalCode = undefined;
-        if (annot.length == 0) {
+        if (annot.length === 0) {
             try {
                 evalCode = eval(editor.getValue());
                 gotError = undefined;
@@ -90,13 +90,13 @@ JavaScriptEditorApp.controller('JavaScriptEditorCtrl', function (JavaScriptEdito
                 gotError = error
             }
 
-                if (gotError == undefined)
+                if (gotError === undefined)
                 {
                     $scope.ExecutionOutPut = evalCode
 
                     prevCode = editor.getValue() === '' ? null : editor.getValue();
 
-                    if ($scope.EditableComponent.EndPointComponentId != undefined)
+                    if ($scope.EditableComponent.EndPointComponentId !== undefined)
                     {
                         var endpointComponent = { "EndPointComponentId": $scope.EditableComponent.EndPointComponentId, "EndPointComponentValue": prevCode };                        
                         JavaScriptEditorFactory.editEndPointComponentValue(endpointComponent).then(function (d) {
@@ -104,7 +104,7 @@ JavaScriptEditorApp.controller('JavaScriptEditorCtrl', function (JavaScriptEdito
                         })
 
                     }
-                    else if ($scope.EditableComponent.EndPointObjectComponentId != undefined)
+                    else if ($scope.EditableComponent.EndPointObjectComponentId !== undefined)
                     {
                         var endpointObjectComponent = { "EndPointObjectComponentId": $scope.EditableComponent.EndPointObjectComponentId, "EndPointObjectComponentValue": prevCode };
                         JavaScriptEditorFactory.editEndPointObjectComponentValue(endpointObjectComponent).then(function (d) {
@@ -120,7 +120,7 @@ JavaScriptEditorApp.controller('JavaScriptEditorCtrl', function (JavaScriptEdito
         else {
             for (var key in annot) {
                 if (annot.hasOwnProperty(key)) {
-                    var rowNumber = annot[key].row == -1 ? 0 : annot[key].row;
+                    var rowNumber = annot[key].row === -1 ? 0 : annot[key].row;
                     var errorMessage = "Row: " + rowNumber + '\n' + "Error: " + annot[key].text;
                     $scope.ExecutionOutPut = errorMessage;
                 }
@@ -134,7 +134,7 @@ JavaScriptEditorApp.controller('JavaScriptEditorCtrl', function (JavaScriptEdito
         var annot = editor.getSession().getAnnotations();
         var gotError;
         var evalCode = undefined;
-        if (annot.length == 0) {
+        if (annot.length === 0) {
             try {
                 evalCode = eval(editor.getValue());
                 gotError = undefined;
@@ -143,12 +143,12 @@ JavaScriptEditorApp.controller('JavaScriptEditorCtrl', function (JavaScriptEdito
                 gotError = error
             }
 
-            $scope.ExecutionOutPut = gotError == undefined ? evalCode : gotError.message;
+            $scope.ExecutionOutPut = gotError === undefined ? evalCode : gotError.message;
         }
         else {
             for (var key in annot) {
                 if (annot.hasOwnProperty(key)) {
-                    var rowNumber = annot[key].row == -1 ? 0 : annot[key].row;
+                    var rowNumber = annot[key].row === -1 ? 0 : annot[key].row;
                     var errorMessage = "Row: " + rowNumber + '\n' + "Error: " + annot[key].text;
                     $scope.ExecutionOutPut = errorMessage;
                 }

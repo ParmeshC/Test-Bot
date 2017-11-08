@@ -1,5 +1,5 @@
 ﻿var RequestResponseApp = angular.module('api.test.request.response', []);
-RequestResponseApp.controller('RequestResponseCtrl', function (RequestResponseFactory, apiTestBroadcastService, $scope, $q) {
+RequestResponseApp.controller('RequestResponseCtrl', function ($scope, $timeout, $q, RequestResponseFactory, apiTestBroadcastService) {
 
 
     $scope.$on('handleEndPointComponentBroadcast', function () {
@@ -84,6 +84,8 @@ RequestResponseApp.controller('RequestResponseCtrl', function (RequestResponseFa
 
         $scope.canceler = $q.defer();
         $scope.resolved = true;
+        $scope.counter = 0;
+        var mytimeout = $timeout($scope.onTimeout, 1000);
 
         $scope.requestData = [];
 
@@ -97,6 +99,7 @@ RequestResponseApp.controller('RequestResponseCtrl', function (RequestResponseFa
         RequestResponseFactory.getApiResponseList($scope).then(function (value) {
             $scope.RequestResponseList = value.data;
             $scope.resolved = false;
+            $scope.stop();
             console.log(value); // "Success!"
             return Promise.reject('oh, no!');
         }).catch(function (e) {
@@ -108,6 +111,19 @@ RequestResponseApp.controller('RequestResponseCtrl', function (RequestResponseFa
         });
 
     };
+
+
+    //*****************Timmer*******
+    $scope.counter = 0;
+    $scope.onTimeout = function () {
+        $scope.counter++;
+        mytimeout = $timeout($scope.onTimeout, 1000);
+    }    
+
+    $scope.stop = function () {
+        $timeout.cancel(mytimeout);
+    }
+    //*****************Timmer*******
 
 });
 
