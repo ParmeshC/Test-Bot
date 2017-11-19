@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using tBOT.Services.API.RESTful;
@@ -105,7 +107,38 @@ namespace tBOT.Services.API.Test
         public static ConcurrentBag<OffsetInfo> GetOffsetInfo(List<RESTfulRequest> RequestList)
         {
             ConcurrentBag<OffsetInfo> infoBag = new ConcurrentBag<OffsetInfo>();
-            Parallel.ForEach(RequestList, (requestItem) =>
+
+            //Parallel.ForEach(RequestList, (requestItem) =>
+            //{
+            //    var Response = RESTfulOperation.GetResponse(requestItem);
+
+            //    OffsetInfo info = new OffsetInfo();
+            //    info.OffsetUrl = requestItem.RequestUrl;
+            //    info.ResponseStatus = Response.StatusCode + ", " + Response.ResponsePhrase;
+
+            //    int headerPageoffsetValue;
+            //    int.TryParse(GetResponseHeaderValue(Response.ResponseHeaders, "X-hedtech-pageOffset"), out headerPageoffsetValue);
+            //    if(Response.ResponseArray != null)
+            //    {
+            //        info.ItemCount = 0;
+            //        idFieldValuesBag.Add(GetByFieldNameInJsonArray(Response.ResponseArray, "id", headerPageoffsetValue));
+            //    }
+            //    info.TimeTakenInMs = Response.TimeTakenInMs;
+            //    ResponseBodyBag.Add(Response.ResponseBody);                
+
+            //    int urlOffsetNumber = -1;
+            //    var splitArry = info.OffsetUrl.Split(new[] { "?offset=" }, StringSplitOptions.None);
+            //    if (splitArry.Length > 1)
+            //    {
+            //        int.TryParse(splitArry[1], out urlOffsetNumber);
+            //    }
+            //    info.Pass = Response.StatusCode == 200 ? "Yes" : "No";
+            //    infoBag.Add(info);
+            //});
+
+            ServicePointManager.DefaultConnectionLimit = 20;
+            //var blockOptions = new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 10 };
+            var workerBlock = new System.Threading.Tasks.Dataflow.ActionBlock<RESTfulRequest>(requestItem =>
             {
                 var Response = RESTfulOperation.GetResponse(requestItem);
 
@@ -115,13 +148,13 @@ namespace tBOT.Services.API.Test
 
                 int headerPageoffsetValue;
                 int.TryParse(GetResponseHeaderValue(Response.ResponseHeaders, "X-hedtech-pageOffset"), out headerPageoffsetValue);
-                if(Response.ResponseArray != null)
+                if (Response.ResponseArray != null)
                 {
                     info.ItemCount = 0;
                     idFieldValuesBag.Add(GetByFieldNameInJsonArray(Response.ResponseArray, "id", headerPageoffsetValue));
                 }
                 info.TimeTakenInMs = Response.TimeTakenInMs;
-                ResponseBodyBag.Add(Response.ResponseBody);                
+                ResponseBodyBag.Add(Response.ResponseBody);
 
                 int urlOffsetNumber = -1;
                 var splitArry = info.OffsetUrl.Split(new[] { "?offset=" }, StringSplitOptions.None);
@@ -131,12 +164,13 @@ namespace tBOT.Services.API.Test
                 }
                 info.Pass = Response.StatusCode == 200 ? "Yes" : "No";
                 infoBag.Add(info);
-            });
+            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 10 });
 
-            //Inserted for Duplicate Check
-            //idFieldValues.Add(new OffsetIds() { PageOffset = 2500, ID = "5561b8ff-17bf-475c-9844-10c1a0524a31" });
-            //idFieldValues.Add(new OffsetIds() { PageOffset = 3500, ID = "3554940a-1961-44e4-b63a-8b02299aa2a6" });
-            //idFieldValues.Add(new OffsetIds() { PageOffset = 500, ID = "3554940a-1961-44e4-b63a-8b02299aa2a6" });
+            foreach (var item in RequestList)
+            {
+                workerBlock.Post(item);
+            }
+            workerBlock.Complete();
 
             return infoBag;
         }
