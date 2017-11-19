@@ -12,6 +12,7 @@ namespace tBOT.Services.API.RESTful
         public string ResponsePhrase { get; set; }
         public string ErrorMessage { get; set; }
         public string Description { get; set; }
-    }
+        public string TimeTakenInMs{ get; set; }
+}
 
 }

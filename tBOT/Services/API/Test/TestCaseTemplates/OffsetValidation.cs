@@ -2,10 +2,13 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
+using System.Web.Mvc;
+using System.Web.Script.Serialization;
 using tBOT.Services.API.RESTful;
 
 namespace tBOT.Services.API.Test
@@ -35,6 +38,8 @@ namespace tBOT.Services.API.Test
                     int offsetCountLowRange = 0;
 
                     int offsetCountHighRange = pagemaxsize < totalcount ? (1 + (totalcount - 1) / pagemaxsize) : 0;
+                    //6599
+                    offsetCountHighRange = 6600;
 
                     //List<int> offsetCountList = Enumerable.Range(offsetCountLowRange, offsetCountHighRange).Select(i => i * pagemaxsize).ToList();
                     List<RESTfulRequest> requestList = new List<RESTfulRequest>();
@@ -56,7 +61,9 @@ namespace tBOT.Services.API.Test
                             EndPointObjectId = condition.Request.EndPointObjectId
                         });
                     }
-                    OffsetInfoList = GetOffsetInfo(requestList);
+
+
+                    OffsetInfoList = GetOffsetInfo(requestList).ToList();
                 }
 
             }
@@ -64,68 +71,127 @@ namespace tBOT.Services.API.Test
             if (passNoCount ==0) { result.Status = true; }
             result.OffsetInfo = OffsetInfoList;
             result.NumberOfPages = OffsetInfoList.Count;
-            result.IDFields = idFieldValues.OrderBy(o => o.PageOffset).ToList();
-            result.NumberOfIDFields = idFieldValues.Count;
-            var DuplicateIDsList = idFieldValues.GroupBy(c => c.ID).Where(g => g.Skip(1).Any()).SelectMany(c => c);
+            //result.IDFields = idFieldValues.OrderBy(o => o.PageOffset).ToList();
+
+            //Convert the concurrentBag to list and flatten the list of lists
+            var idFieldValuesList = idFieldValuesBag.ToList().SelectMany(x => x).ToList();
+
+            result.NumberOfIDFields = idFieldValuesList.Count;
+            var DuplicateIDsList = idFieldValuesList.GroupBy(c => c.ID).Where(g => g.Skip(1).Any()).SelectMany(c => c);
             result.DuplicateIDs = DuplicateIDsList.GroupBy(u => u.ID).Select(grp => grp.ToList()).ToList();
             result.NumberOfDuplicateIDs = result.DuplicateIDs.Count;
 
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            serializer.MaxJsonLength = int.MaxValue; // The value of this constant is 2,147,483,647
+            var requestResponseListJson = serializer.Serialize(ResponseBodyBag.ToList());
+
+            //string path = Server.MapPath("~/App_Data/");
+
+            string path = Path.GetTempPath();
+
+            var fileName = condition.Request.EndPoint+ "_OffsetValidationRequestResponse_" + DateTime.Now.ToString("ddMMyyHHmmss")+".json";
+
+            // Write that JSON to txt file,
+            File.WriteAllText(path + fileName, requestResponseListJson);
+
+
             return result;
         }
-        private static List<OffsetIds> idFieldValues = new List<OffsetIds>();
 
-        private static List<OffsetInfo> GetOffsetInfo(List<RESTfulRequest> RequestList)
+        private static ConcurrentBag<List<OffsetIds>> idFieldValuesBag = new ConcurrentBag<List<OffsetIds>>();
+        private static ConcurrentBag<dynamic> ResponseBodyBag = new ConcurrentBag<dynamic>();
+
+
+        public static ConcurrentBag<OffsetInfo> GetOffsetInfo(List<RESTfulRequest> RequestList)
         {
-            List<OffsetInfo> infoList = new List<OffsetInfo>();
-            
+            ConcurrentBag<OffsetInfo> infoBag = new ConcurrentBag<OffsetInfo>();
             Parallel.ForEach(RequestList, (requestItem) =>
             {
-                var RequestResponse = RESTfulOperation.GetRequestResponse(requestItem);
+                var Response = RESTfulOperation.GetResponse(requestItem);
 
                 OffsetInfo info = new OffsetInfo();
                 info.OffsetUrl = requestItem.RequestUrl;
-                info.ResponseStatus= RequestResponse.Response.StatusCode +", "+ RequestResponse.Response.ResponsePhrase;
+                info.ResponseStatus = Response.StatusCode + ", " + Response.ResponsePhrase;
 
                 int headerPageoffsetValue;
-                int.TryParse(GetResponseHeaderValue(RequestResponse.Response.ResponseHeaders, "X-hedtech-pageOffset"), out headerPageoffsetValue);
-                var idFields = GetByFieldNameInJsonArray(RequestResponse.Response.ResponseArray, "id", headerPageoffsetValue);
-                idFieldValues.AddRange(idFields);
+                int.TryParse(GetResponseHeaderValue(Response.ResponseHeaders, "X-hedtech-pageOffset"), out headerPageoffsetValue);
+                if(Response.ResponseArray != null)
+                {
+                    info.ItemCount = 0;
+                    idFieldValuesBag.Add(GetByFieldNameInJsonArray(Response.ResponseArray, "id", headerPageoffsetValue));
+                }
+                info.TimeTakenInMs = Response.TimeTakenInMs;
+                ResponseBodyBag.Add(Response.ResponseBody);                
 
-                int urlOffsetNumber=-1;
+                int urlOffsetNumber = -1;
                 var splitArry = info.OffsetUrl.Split(new[] { "?offset=" }, StringSplitOptions.None);
-                if(splitArry.Length>1)
+                if (splitArry.Length > 1)
                 {
                     int.TryParse(splitArry[1], out urlOffsetNumber);
                 }
-                info.ItemCount = idFields.Count;
-                info.Pass = RequestResponse.Response.StatusCode == 200 ? "Yes" : "No";
-                infoList.Add(info);
+                info.Pass = Response.StatusCode == 200 ? "Yes" : "No";
+                infoBag.Add(info);
             });
 
             //Inserted for Duplicate Check
-            idFieldValues.Add(new OffsetIds() { PageOffset = 2500, ID = "5561b8ff-17bf-475c-9844-10c1a0524a31" });
-            idFieldValues.Add(new OffsetIds() { PageOffset = 3500, ID = "3554940a-1961-44e4-b63a-8b02299aa2a6" });
-            idFieldValues.Add(new OffsetIds() { PageOffset = 500, ID = "3554940a-1961-44e4-b63a-8b02299aa2a6" });
+            //idFieldValues.Add(new OffsetIds() { PageOffset = 2500, ID = "5561b8ff-17bf-475c-9844-10c1a0524a31" });
+            //idFieldValues.Add(new OffsetIds() { PageOffset = 3500, ID = "3554940a-1961-44e4-b63a-8b02299aa2a6" });
+            //idFieldValues.Add(new OffsetIds() { PageOffset = 500, ID = "3554940a-1961-44e4-b63a-8b02299aa2a6" });
 
-            return infoList.OrderBy(o => o.OffsetUrl).ToList();
+            return infoBag;
         }
 
-
-        public int Pageoffset { get; set; }
         private static List<OffsetIds> GetByFieldNameInJsonArray(JArray JsonArray, string FieldName,int pageOffset )
         {
             List<OffsetIds> listOfIds = new List<OffsetIds>();
-            
-            JArray filteredObjects = new JArray();
-
-            foreach (JToken token in JsonArray
-                .Where(obj => obj[FieldName] != null))
+                JArray filteredObjects = new JArray();
+            try
             {
-                listOfIds.Add(new OffsetIds() { PageOffset=pageOffset, ID=token[FieldName].ToString() });
+                foreach (var token in JsonArray
+                .Where(obj => obj[FieldName] != null))
+                {
+                    listOfIds.Add(new OffsetIds() { PageOffset = pageOffset, ID = token[FieldName].ToString() });
+
+                 }
+                   
+                }
+            catch (Exception)
+            {
+
+
             }
             return listOfIds;
         }
+        public static object ConvertJTokenToObject(JToken token)
+        {
+            if (token is JValue)
+            {
+                return ((JValue)token).Value;
+            }
+            if (token is JObject)
+            {
+                ExpandoObject expando = new ExpandoObject();
+                (from childToken in ((JToken)token) where childToken is JProperty select childToken as JProperty).ToList().ForEach(property => {
+                    ((IDictionary<string, object>)expando).Add(property.Name, ConvertJTokenToObject(property.Value));
+                });
+                return expando;
+            }
+            if (token is JArray)
+            {
+                object[] array = new object[((JArray)token).Count];
+                int index = 0;
+                foreach (JToken arrayItem in ((JArray)token))
+                {
+                    array[index] = ConvertJTokenToObject(arrayItem);
+                    index++;
+                }
+                return array;
+            }
+            throw new ArgumentException(string.Format("Unknown token type '{0}'", token.GetType()), "token");
+        }
     }
+
+    
 
 
     public class OffsetIds
@@ -139,6 +205,7 @@ namespace tBOT.Services.API.Test
         public string OffsetUrl { get; set; }
         public int ItemCount  { get; set; }
         public string ResponseStatus { get; set; }
+        public string TimeTakenInMs { get; set; }
         public string Pass { get; set; }
     }
 
@@ -149,10 +216,9 @@ namespace tBOT.Services.API.Test
         public int Totalcount { get; set; }
         public int NumberOfPages { get; set; }  
         public int NumberOfIDFields { get; set; }
-        public int NumberOfDuplicateIDs { get; set; }              
-        public List<OffsetInfo> OffsetInfo { get; set; }        
+        public int NumberOfDuplicateIDs { get; set; } 
         public List<List<OffsetIds>> DuplicateIDs { get; set; }
-        public List<OffsetIds> IDFields { get; set; }
+        public List<OffsetInfo> OffsetInfo { get; set; }
         public RESTfulResponse Response { get; set; }
 
         public Boolean Status { get; set; }

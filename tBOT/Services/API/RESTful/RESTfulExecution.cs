@@ -8,7 +8,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
-
+using System.Diagnostics;
 
 namespace tBOT.Services.API.RESTful
 {
@@ -48,11 +48,11 @@ namespace tBOT.Services.API.RESTful
 
         private static HttpResponseMessage executeHttpMethod(RESTfulRequest request)
         {
-            HttpResponseMessage response=null;
+            HttpResponseMessage response=null;            
             try
             {
-                HttpContent requestBody = !string.IsNullOrEmpty(request.RequestBody) ? new StringContent(request.RequestBody, Encoding.UTF8, request.ContentType) : null;                
-
+                HttpContent requestBody = !string.IsNullOrEmpty(request.RequestBody) ? new StringContent(request.RequestBody, Encoding.UTF8, request.ContentType) : null;
+                
                 using (HttpClient Client = new HttpClient())
                 {
                     Client.DefaultRequestHeaders.Accept.Clear();
@@ -60,7 +60,8 @@ namespace tBOT.Services.API.RESTful
                     Client.DefaultRequestHeaders.AcceptLanguage.ParseAdd(request.LanguageCode);
                     Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(request.AuthType, Convert.ToBase64String(System.Text.ASCIIEncoding.ASCII.GetBytes(
                     string.Format("{0}:{1}", request.UserName, request.Password))));
-
+                    Client.Timeout = TimeSpan.FromSeconds(300);
+                    
                     switch (request.RequestMethod.ToUpper())
                     {
                         case "GET":
@@ -79,7 +80,9 @@ namespace tBOT.Services.API.RESTful
                             response = null;
                             break;
                     }
+                    
                 }
+                
             }
             catch(Exception ex)
             {
@@ -96,16 +99,21 @@ namespace tBOT.Services.API.RESTful
             string errorMessage = null;
             string description = null;
             string responseContent = null;
+            Stopwatch timer = new Stopwatch();
 
             try
             {
+                
                 if (!Enum.IsDefined(typeof(HttpMethods), request.RequestMethod))
                 {
                     description = request.RequestMethod + " Method deos not exist";
                     return response;
                 }
-
+                timer.Start();
                 httpResponse =executeHttpMethod(request);
+                timer.Stop();
+                response.TimeTakenInMs = Convert.ToInt64(timer.Elapsed.TotalMilliseconds) + " ms";
+
                 if (httpResponse != null)
                 {
                     if (!string.IsNullOrEmpty(httpResponse.Content.ReadAsStringAsync().Result))

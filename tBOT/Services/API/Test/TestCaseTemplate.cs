@@ -79,12 +79,7 @@ namespace tBOT.Services.API.Test
 
         public static ConcurrentQueue<TestCase> RunTestCases(List<TestRequest> TestRequest)
         {
-
-            List<TestCase> TestCasesList = new List<TestCase>();
-
             ConcurrentQueue<TestCase> queue = new ConcurrentQueue<TestCase>();
-
-
             Parallel.ForEach(TestRequest, (requestItem) =>
             {
                 TestCase testCase = new TestCase();
@@ -104,8 +99,6 @@ namespace tBOT.Services.API.Test
                 testCase.TestCaseCondition = testCaseCondition;
 
                 testCase.TestCaseResult = testCaseTemplate.Execute(testCaseCondition);
-
-                TestCasesList.Add(testCase);
 
                 queue.Enqueue(testCase);
             });

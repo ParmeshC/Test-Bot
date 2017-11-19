@@ -38,6 +38,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -345,6 +346,7 @@
   <ItemGroup>
     <Content Include="Content\api-test\api-test.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\images\491.gif" />
     <Content Include="Content\landing-page.css" />
     <Content Include="Content\nested.css" />
     <Content Include="Content\api-test\api-test-query-builder.css" />
