@@ -20,7 +20,7 @@ ImportComponentsApp.controller('ImportComponentsCtrl', function (ImportComponent
         $scope.mpblHdr = jsonData;
     };
 
-    $scope.AddApiInfo = function () {
+    $scope.AddApiInfo = function () {   
         ImportComponentsFactory.addApiInfoToDB($scope.mpdHdrNdata);
     };
 
@@ -60,8 +60,7 @@ ImportComponentsApp.controller('ImportComponentsCtrl', function (ImportComponent
                 }
             }
         }
-    }
-
+    }   
 });
 
 ImportComponentsApp.directive("fileread", [function () {
@@ -78,6 +77,12 @@ ImportComponentsApp.directive("fileread", [function () {
                         var workbook = XLSX.read(data, { type: 'binary' });
                         var headerNames = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], { header: 1 })[0];
                         data = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+
+                        //XLSX.utils.aoa_to_sheet converts an array of arrays of JS data to a worksheet.
+                        //XLSX.utils.json_to_sheet converts an array of JS objects to a worksheet.
+                        //XLSX.utils.table_to_sheet converts a DOM TABLE element to a worksheet.
+
+
                         $scope.opts.columnDefs = [];
                         headerNames.forEach(function (h) {
                             $scope.opts.columnDefs.push({ field: h });
