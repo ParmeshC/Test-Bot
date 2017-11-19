@@ -13,19 +13,7 @@ namespace tBOT.Services.API.Test
 {
     public class CRUDvalidation : TestCaseTemplate, ITestCaseTemplate<CRUDvalidationCondition, CRUDvalidationResult>
     {
-        private JArray FilterFieldValueInJsonArray(JArray JsonArray, string FieldName, string FieldValue)
-        {
-            List<JToken> listJsonObject = new List<JToken>();
-            JArray filteredObjects = new JArray();
-
-            foreach (JToken token in JsonArray
-                .Where(obj => (obj[FieldName] != null ? obj[FieldName] :"").ToString()== FieldValue))
-            {
-                filteredObjects.Add(token);
-                //listJsonObject.Add(token);
-            }
-            return filteredObjects;
-        }
+        
 
         public CRUDvalidationResult Execute(CRUDvalidationCondition condition)
         {

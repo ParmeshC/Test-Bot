@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
 
+
 namespace tBOT.Services.API.RESTful
 {
 
@@ -111,9 +112,9 @@ namespace tBOT.Services.API.RESTful
                     {
                         responseContent = httpResponse.Content.ReadAsStringAsync().Result;
 
-
-                        response.ResponseBody = new JavaScriptSerializer().Deserialize<dynamic>(responseContent);
-
+                        JavaScriptSerializer serializer = new JavaScriptSerializer();
+                        serializer.MaxJsonLength = int.MaxValue; // The value of this constant is 2,147,483,647
+                        response.ResponseBody =  serializer.Deserialize<dynamic>(responseContent);
                         response.ResponseArray = JToken.Parse(responseContent) is JArray ? JArray.Parse(responseContent) : new JArray() { responseContent };
 
                         if (httpResponse.IsSuccessStatusCode)
