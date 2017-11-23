@@ -39,9 +39,8 @@ namespace tBOT.Services.API.Test
                 {
                     int offsetCountLowRange = 0;
 
-                    int offsetCountHighRange = pagemaxsize < totalcount ? (1 + (totalcount - 1) / pagemaxsize) : 0;
-                    //6599
-                    offsetCountHighRange = 6600;
+                    int offsetCountHighRange = pagemaxsize < totalcount ? (1 + (totalcount - 1) / pagemaxsize) : 0;                    
+                    offsetCountHighRange = 1000;
 
                     //List<int> offsetCountList = Enumerable.Range(offsetCountLowRange, offsetCountHighRange).Select(i => i * pagemaxsize).ToList();
                     List<RESTfulRequest> requestList = new List<RESTfulRequest>();
@@ -106,39 +105,11 @@ namespace tBOT.Services.API.Test
 
         public static ConcurrentBag<OffsetInfo> GetOffsetInfo(List<RESTfulRequest> RequestList)
         {
+            //ServicePointManager.DefaultConnectionLimit = 20;
             ConcurrentBag<OffsetInfo> infoBag = new ConcurrentBag<OffsetInfo>();
-
-            //Parallel.ForEach(RequestList, (requestItem) =>
-            //{
-            //    var Response = RESTfulOperation.GetResponse(requestItem);
-
-            //    OffsetInfo info = new OffsetInfo();
-            //    info.OffsetUrl = requestItem.RequestUrl;
-            //    info.ResponseStatus = Response.StatusCode + ", " + Response.ResponsePhrase;
-
-            //    int headerPageoffsetValue;
-            //    int.TryParse(GetResponseHeaderValue(Response.ResponseHeaders, "X-hedtech-pageOffset"), out headerPageoffsetValue);
-            //    if(Response.ResponseArray != null)
-            //    {
-            //        info.ItemCount = 0;
-            //        idFieldValuesBag.Add(GetByFieldNameInJsonArray(Response.ResponseArray, "id", headerPageoffsetValue));
-            //    }
-            //    info.TimeTakenInMs = Response.TimeTakenInMs;
-            //    ResponseBodyBag.Add(Response.ResponseBody);                
-
-            //    int urlOffsetNumber = -1;
-            //    var splitArry = info.OffsetUrl.Split(new[] { "?offset=" }, StringSplitOptions.None);
-            //    if (splitArry.Length > 1)
-            //    {
-            //        int.TryParse(splitArry[1], out urlOffsetNumber);
-            //    }
-            //    info.Pass = Response.StatusCode == 200 ? "Yes" : "No";
-            //    infoBag.Add(info);
-            //});
-
-            ServicePointManager.DefaultConnectionLimit = 20;
             //var blockOptions = new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 10 };
-            var workerBlock = new System.Threading.Tasks.Dataflow.ActionBlock<RESTfulRequest>(requestItem =>
+            //Parallel.ForEach(RequestList, new ParallelOptions { MaxDegreeOfParallelism = 10 }, (requestItem) =>
+            foreach (var requestItem in RequestList)
             {
                 var Response = RESTfulOperation.GetResponse(requestItem);
 
@@ -164,13 +135,42 @@ namespace tBOT.Services.API.Test
                 }
                 info.Pass = Response.StatusCode == 200 ? "Yes" : "No";
                 infoBag.Add(info);
-            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 10 });
+            };
 
-            foreach (var item in RequestList)
-            {
-                workerBlock.Post(item);
-            }
-            workerBlock.Complete();
+            //ServicePointManager.DefaultConnectionLimit = 20;
+            //var workerBlock = new System.Threading.Tasks.Dataflow.ActionBlock<RESTfulRequest>(requestItem =>
+            //{
+            //    var Response = RESTfulOperation.GetResponse(requestItem);
+
+            //    OffsetInfo info = new OffsetInfo();
+            //    info.OffsetUrl = requestItem.RequestUrl;
+            //    info.ResponseStatus = Response.StatusCode + ", " + Response.ResponsePhrase;
+
+            //    int headerPageoffsetValue;
+            //    int.TryParse(GetResponseHeaderValue(Response.ResponseHeaders, "X-hedtech-pageOffset"), out headerPageoffsetValue);
+            //    if (Response.ResponseArray != null)
+            //    {
+            //        info.ItemCount = 0;
+            //        idFieldValuesBag.Add(GetByFieldNameInJsonArray(Response.ResponseArray, "id", headerPageoffsetValue));
+            //    }
+            //    info.TimeTakenInMs = Response.TimeTakenInMs;
+            //    ResponseBodyBag.Add(Response.ResponseBody);
+
+            //    int urlOffsetNumber = -1;
+            //    var splitArry = info.OffsetUrl.Split(new[] { "?offset=" }, StringSplitOptions.None);
+            //    if (splitArry.Length > 1)
+            //    {
+            //        int.TryParse(splitArry[1], out urlOffsetNumber);
+            //    }
+            //    info.Pass = Response.StatusCode == 200 ? "Yes" : "No";
+            //    infoBag.Add(info);
+            //}, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 10 });
+
+            //foreach (var item in RequestList)
+            //{
+            //    workerBlock.Post(item);
+            //}
+            //workerBlock.Complete();
 
             return infoBag;
         }
@@ -223,9 +223,7 @@ namespace tBOT.Services.API.Test
             }
             throw new ArgumentException(string.Format("Unknown token type '{0}'", token.GetType()), "token");
         }
-    }
-
-    
+    }    
 
 
     public class OffsetIds
