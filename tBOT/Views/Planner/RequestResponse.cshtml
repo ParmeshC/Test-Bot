@@ -1,6 +1,5 @@
 ﻿<div ng-controller="RequestResponseCtrl" class="container-fluid">
-
-    {{counter}}
+    <div ng-show="showCounter">sec:{{counter}}<img ng-show="resolved" id="spinner" ng-src="Content/images/491.gif" style="display:inline-block; text-align:center"></div>
     <div class="input-group-addon" ng-show="RequestResponseList.length>0">
         <div style=" padding-bottom:5px;">
             <div style="float:left;">
@@ -46,8 +45,4 @@
             </tbody>
         </table>
     </div>
-
-
-    @*<img ng-show="resolved" id="spinner" ng-src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" style="display:inline-block; text-align:center">*@
-    <img ng-show="resolved" id="spinner" ng-src="Content/images/491.gif" style="display:inline-block; text-align:center">
 </div>

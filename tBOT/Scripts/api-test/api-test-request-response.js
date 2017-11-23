@@ -1,6 +1,7 @@
 ﻿var RequestResponseApp = angular.module('api.test.request.response', []);
 RequestResponseApp.controller('RequestResponseCtrl', function ($scope, $timeout, $q, RequestResponseFactory, apiTestBroadcastService) {
 
+    $scope.showCounter = false;
 
     $scope.$on('handleEndPointComponentBroadcast', function () {
         $scope.EditableEndPointComponent = apiTestBroadcastService.sharedObjects.EndPointComponent;
@@ -16,15 +17,24 @@ RequestResponseApp.controller('RequestResponseCtrl', function ($scope, $timeout,
         CancelRequest();
     });
 
-        $scope.getApiInfo = function (RequestResponse) {
+    $scope.getApiInfo = function (RequestResponse) {
             apiTestBroadcastService.globalBroadcast('ApiResponseInfo', RequestResponse);
     };
-    
+
+
+    var sendRequestResponseInfo = function (RequestResponseList) {
+        apiTestBroadcastService.globalBroadcast('RequestResponseInfo', RequestResponseList);
+    };
+
+
 
     $scope.ClearResult = function () {
         $scope.RequestResponseList = [];
         apiTestBroadcastService.globalBroadcast('ApiResponseInfo', null)
+        apiTestBroadcastService.globalBroadcast('RequestResponseInfo', null);
+        $scope.showCounter = false;
     };
+
 
     $scope.sortType = 'EndPoint'; // set the default sort type
     $scope.sortReverse = false;  // set the default sort order
@@ -36,6 +46,8 @@ RequestResponseApp.controller('RequestResponseCtrl', function ($scope, $timeout,
     var CancelRequest = function () {
         $scope.canceler.resolve("http call aborted");
         $scope.resolved = false;
+        $scope.stopTimeout();
+        $scope.showCounter = false;
     };
 
     var RequestComponents = [
@@ -85,7 +97,8 @@ RequestResponseApp.controller('RequestResponseCtrl', function ($scope, $timeout,
         $scope.canceler = $q.defer();
         $scope.resolved = true;
         $scope.counter = 0;
-        var mytimeout = $timeout($scope.onTimeout, 1000);
+        $scope.showCounter = true;
+        $scope.startTimeout();
 
         $scope.requestData = [];
 
@@ -98,8 +111,9 @@ RequestResponseApp.controller('RequestResponseCtrl', function ($scope, $timeout,
 
         RequestResponseFactory.getApiResponseList($scope).then(function (value) {
             $scope.RequestResponseList = value.data;
+            sendRequestResponseInfo($scope.RequestResponseList);
             $scope.resolved = false;
-            $scope.stop();
+            $scope.stopTimeout();
             console.log(value); // "Success!"
             return Promise.reject('oh, no!');
         }).catch(function (e) {
@@ -108,23 +122,25 @@ RequestResponseApp.controller('RequestResponseCtrl', function ($scope, $timeout,
             console.log('after a catch the chain is restored');
         }, function () {
             console.log('Not fired due to the catch');
-        });
+            });
+        
 
     };
 
 
+
     //*****************Timmer*******
     $scope.counter = 0;
-    $scope.onTimeout = function () {
-        $scope.counter++;
-        mytimeout = $timeout($scope.onTimeout, 1000);
-    }    
-
-    $scope.stop = function () {
-        $timeout.cancel(mytimeout);
+    $scope.startTimeout = function () {
+        $scope.counter = $scope.counter + 1;
+        mytimeout = $timeout($scope.startTimeout, 1000);
     }
-    //*****************Timmer*******
+    
 
+    $scope.stopTimeout = function () {
+        $timeout.cancel(mytimeout);
+    }  
+    //*****************Timmer*******
 });
 
 RequestResponseApp.factory('RequestResponseFactory', function ($http) {

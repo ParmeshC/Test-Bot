@@ -3,37 +3,63 @@ DesignExecutionApp.controller('DesignExecutionCtrl', function ($filter, $scope, 
      $scope.GlobalComponents = {};
      $scope.DropDownOptions = [];
 
+     $scope.showExecutionBtn = true;
+     $scope.showExecutionCancelBtn = false;
+     $scope.showEndPointObjects = true;
 
-     $scope.showEvaluatedObjectsAndTests = false;
-     $scope.showExecutionCancel = false;
+     $scope.showTestCases = false;
+
 
      var tempGlobalComponents = {};
-     var tempComponents = {}
+     var tempComponents = {};
+
+
+     $scope.selectedFilter = function (object) {
+         return object.selected === true;
+     };
+
+
+     designExecutionFactory.getTestTemplates().then(function (d) {
+         $scope.TestTemplates = []
+         for (prop in d.data.List) {
+             $scope.TestTemplates.push({ 'Name': prop });
+         }
+     });
 
 
 
     $scope.ExecuteApiRequest = function () {
         var RequestObjectsAndTestCasesApplied = angular.copy($scope.RequestObjects);
         apiTestBroadcastService.globalBroadcast('RequestObjectsAndTestCasesApplied', RequestObjectsAndTestCasesApplied)
-        $scope.showExecutionCancel = true;
+        $scope.showExecutionCancelBtn = true;
+        $scope.showExecutionBtn = false;
+        $scope.showTestCases = false;
+        $scope.showEndPointObjects = false;
+        
     }
-
 
 
     $scope.ExecutionCancel = function () {
         apiTestBroadcastService.globalBroadcast('ExecutionCancel', true)
-
+        $scope.showExecutionBtn = true;
+        $scope.showExecutionCancelBtn = false;
+        $scope.showEndPointObjects = true;
     }
 
-    $scope.$on('handleTestCaseSelectedBroadcast', function () {
-        if ($scope.RequestObjects != undefined)
+    $scope.$on('handleRequestResponseInfoBroadcast', function () {
+        if (apiTestBroadcastService.sharedObjects.RequestResponseInfo === null) {
+            $scope.showExecutionBtn = true;
+            $scope.showExecutionCancelBtn = false;  
+            $scope.showEndPointObjects = true;
+        }
+        else
         {
-            for (var i = 0; i < $scope.RequestObjects.length; i++) {
-                $scope.RequestObjects[i]['TestCaseList'] = angular.copy(apiTestBroadcastService.sharedObjects.TestCaseSelected);
-                $scope.RequestObjects[i]['isAllSelected'] = true;
-            }
-        }        
+            $scope.showExecutionBtn = false;
+            $scope.showExecutionCancelBtn = false;  
+            $scope.showEndPointObjects = false;
+        }
     });
+
 
 
     $scope.$on('handleExecuteEndPointObjectIdBroadcast', function () {
@@ -81,6 +107,7 @@ DesignExecutionApp.controller('DesignExecutionCtrl', function ($filter, $scope, 
             })
         })
         $scope.GetRequestObjects();
+        
     }
 
 
@@ -93,22 +120,68 @@ DesignExecutionApp.controller('DesignExecutionCtrl', function ($filter, $scope, 
 
     
     $scope.GetRequestObjects = function () {
-
-        $scope.RequestObjects = [];
-        angular.forEach($scope.ObjectsComponents, function (ObjectComponents) {
-            $scope.RequestObjects.push(DesignExecutionService.prepareRequestObject($scope.GlobalComponents, ObjectComponents));
-
-        });
+        var newRequestObjects = [];        
+        for (var k = 0; k < $scope.ObjectsComponents.length; k++) {
+            newRequestObjects.push(DesignExecutionService.prepareRequestObject($scope.GlobalComponents, $scope.ObjectsComponents[k]));
+            //Copying selected TestCases if the object and TestCases are already selected
+            if ($scope.RequestObjects !== undefined)
+            {
+                newRequestObjects[k]['TestCaseList'] = angular.copy($scope.RequestObjects[k].TestCaseList);
+                newRequestObjects[k]['isAllSelected'] = angular.copy($scope.RequestObjects[k].isAllSelected);
+            }
+        }
+        $scope.RequestObjects = [];//clearing objects if data is already present or will be creating an new array object
+        $scope.RequestObjects = angular.copy(newRequestObjects);//copying the new object values
 
     };
 
     $scope.ClearRequestObjects = function () {
-
         $scope.RequestObjects = undefined;
     }
 
-    //*****************
-    //This section helps to toggle with the check box
+
+    //*****************************Beginning******
+    //This section helps to toggle with the check box for TestCaseSelection
+    $scope.testCaseSelectionIsAllSelected = false;
+    var testCaseSelectionGetAllSelected = function () {
+        var testCaseSelectionSelectedItems = $scope.TestTemplates.filter(function (item) {
+            return item.selected;
+        });
+
+        selectedTestCases(testCaseSelectionSelectedItems);
+    };
+
+    $scope.testCaseSelectionToggleAll = function () {
+        //$scope.isAllSelected = !$scope.isAllSelected; //this line of code is needed if it is an array
+        var testCaseSelectionToggleStatus = $scope.testCaseSelectionIsAllSelected;
+        angular.forEach($scope.TestTemplates, function (itm) { itm.selected = testCaseSelectionToggleStatus; });
+        testCaseSelectionGetAllSelected();
+    };
+
+    $scope.testCaseSelectionOptionToggled = function () {
+        $scope.testCaseSelectionIsAllSelected = $scope.TestTemplates.every(function (itm) { return itm.selected; });
+        testCaseSelectionGetAllSelected();
+    };
+    //*******************************End************
+
+    var selectedTestCases = function (itemsSelected) {
+
+        $scope.selectedTestCasesFromList = itemsSelected;
+        copySelectedTestCasesList()
+    };
+
+    var copySelectedTestCasesList = function () {
+
+        if ($scope.RequestObjects != undefined) {
+            for (var i = 0; i < $scope.RequestObjects.length; i++) {
+                $scope.RequestObjects[i]['TestCaseList'] = angular.copy($scope.selectedTestCasesFromList);
+                $scope.RequestObjects[i]['isAllSelected'] = true;
+            }
+        }
+    }
+
+    //******************Beginning******
+    //This section helps to toggle with the check box for TestCase applied for each Object
     var getAllSelected = function (index) {
         var selectedItems = $scope.RequestObjects[index]['TestCaseList'].filter(function (item) {
             return item.selected;
@@ -122,12 +195,10 @@ DesignExecutionApp.controller('DesignExecutionCtrl', function ($filter, $scope, 
     };
 
     $scope.optionToggled = function (index) {
-        $scope.RequestObjects[index]['isAllSelected']  = $scope.RequestObjects[index]['TestCaseList'].every(function (itm) { return itm.selected; });
+        $scope.RequestObjects[index]['isAllSelected'] = $scope.RequestObjects[index]['TestCaseList'].every(function (itm) { return itm.selected; });
         getAllSelected(index);
     };
-    //*****************
-
-
+    //*****************End***********
 });
 
 
@@ -321,6 +392,10 @@ DesignExecutionApp.service('DesignExecutionService', function (designExecutionFa
 
 DesignExecutionApp.factory('designExecutionFactory', function ($http) {
     return {
+
+        getTestTemplates: function () {
+            return $http.get("/Planner/GetAllTestTemplates");
+        },
 
         getEndPointComponentsAsJsonString: function () {
             return $http.get("/Planner/GetEndPointComponentsAsJsonString");
