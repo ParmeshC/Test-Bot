@@ -40,7 +40,7 @@ namespace tBOT.Services.API.Test
                     int offsetCountLowRange = 0;
 
                     int offsetCountHighRange = pagemaxsize < totalcount ? (1 + (totalcount - 1) / pagemaxsize) : 0;                    
-                    offsetCountHighRange = 1000;
+                    //offsetCountHighRange = 1000;
 
                     //List<int> offsetCountList = Enumerable.Range(offsetCountLowRange, offsetCountHighRange).Select(i => i * pagemaxsize).ToList();
                     List<RESTfulRequest> requestList = new List<RESTfulRequest>();
@@ -108,8 +108,8 @@ namespace tBOT.Services.API.Test
             //ServicePointManager.DefaultConnectionLimit = 20;
             ConcurrentBag<OffsetInfo> infoBag = new ConcurrentBag<OffsetInfo>();
             //var blockOptions = new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 10 };
-            //Parallel.ForEach(RequestList, new ParallelOptions { MaxDegreeOfParallelism = 10 }, (requestItem) =>
-            foreach (var requestItem in RequestList)
+            Parallel.ForEach(RequestList, new ParallelOptions { MaxDegreeOfParallelism = 4 }, (requestItem) =>
+            //foreach (var requestItem in RequestList)
             {
                 var Response = RESTfulOperation.GetResponse(requestItem);
 
@@ -135,7 +135,8 @@ namespace tBOT.Services.API.Test
                 }
                 info.Pass = Response.StatusCode == 200 ? "Yes" : "No";
                 infoBag.Add(info);
-            };
+            });
+        //};
 
             //ServicePointManager.DefaultConnectionLimit = 20;
             //var workerBlock = new System.Threading.Tasks.Dataflow.ActionBlock<RESTfulRequest>(requestItem =>

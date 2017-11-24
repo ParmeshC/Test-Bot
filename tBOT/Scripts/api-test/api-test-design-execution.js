@@ -34,7 +34,7 @@ DesignExecutionApp.controller('DesignExecutionCtrl', function ($filter, $scope, 
         $scope.showExecutionCancelBtn = true;
         $scope.showExecutionBtn = false;
         $scope.showTestCases = false;
-        $scope.showEndPointObjects = false;
+        //$scope.showEndPointObjects = false;
         
     }
 
@@ -117,22 +117,27 @@ DesignExecutionApp.controller('DesignExecutionCtrl', function ($filter, $scope, 
             GetGlobalComponents();
         }
     }
-
     
     $scope.GetRequestObjects = function () {
         var newRequestObjects = [];        
         for (var k = 0; k < $scope.ObjectsComponents.length; k++) {
             newRequestObjects.push(DesignExecutionService.prepareRequestObject($scope.GlobalComponents, $scope.ObjectsComponents[k]));
             //Copying selected TestCases if the object and TestCases are already selected
-            if ($scope.RequestObjects !== undefined)
+            if ($scope.RequestObjects !== undefined && $scope.RequestObjects[k] !== undefined)
             {
-                newRequestObjects[k]['TestCaseList'] = angular.copy($scope.RequestObjects[k].TestCaseList);
-                newRequestObjects[k]['isAllSelected'] = angular.copy($scope.RequestObjects[k].isAllSelected);
+                if (newRequestObjects[k].EndPointObjectId === $scope.RequestObjects[k].EndPointObjectId) {
+                    newRequestObjects[k]['TestCaseList'] = angular.copy($scope.RequestObjects[k].TestCaseList);
+                    newRequestObjects[k]['isAllSelected'] = angular.copy($scope.RequestObjects[k].isAllSelected);
+                }
+                else
+                {
+                    newRequestObjects[k]['TestCaseList'] = angular.copy($scope.selectedTestCasesFromList);
+                    newRequestObjects[k]['isAllSelected'] = true;
+                }
             }
         }
         $scope.RequestObjects = [];//clearing objects if data is already present or will be creating an new array object
         $scope.RequestObjects = angular.copy(newRequestObjects);//copying the new object values
-
     };
 
     $scope.ClearRequestObjects = function () {
@@ -216,7 +221,7 @@ DesignExecutionApp.service('DesignExecutionService', function (designExecutionFa
 
          //EndPoint and EndPointObjectId does not need evaluation and are added directrly
          requestObjectComponents['EndPoint'] = ObjectComponents['EndPoint'] 
-         requestObjectComponents['EndPointObjectId'] = ObjectComponents['EndPointObjectId']          
+         requestObjectComponents['EndPointObjectId'] = ObjectComponents['EndPointObjectId']    
 
          return requestObjectComponents;
      };
