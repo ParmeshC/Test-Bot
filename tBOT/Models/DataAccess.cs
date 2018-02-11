@@ -12,12 +12,6 @@ namespace tBOT.Services.API
         private static string GetConnectionString(DataConnection ConnParam)
         {
 
-            //string hostName = "149.24.38.229";
-            //string portNumber = "1521";
-            //string serviceName = "BAN83";
-            //string userId = "baninst1";
-            //string password = "u_pick_it";
-
 
             String connString = "Data Source = (DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = " + ConnParam.HostName + ")(PORT = " + ConnParam.PortNumber +
                 "))(CONNECT_DATA = (SERVICE_NAME = " + ConnParam.ServiceName + "))); user id = " + ConnParam.UserId + "; Password = " + ConnParam.Password + ";";
